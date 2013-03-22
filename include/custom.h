@@ -1,0 +1,15 @@
+#undef USE_OPENMP
+
+#undef USE_PTHREADS
+
+#ifndef MATIO_MINOR_VERSION
+
+#define MATIO_MINOR_VERSION 5
+
+#endif
+
+#ifndef MATIO_MAJOR_VERSION
+
+#define MATIO_MAJOR_VERSION 1
+
+#endif

@@ -1,0 +1,1 @@
+File 'custom.h' is modified by CMake during project generation.
