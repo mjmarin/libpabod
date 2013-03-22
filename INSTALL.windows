@@ -1,0 +1,28 @@
+HOW TO GENERATE LibPaBOD ON WINDOWS
+===================================
+The following process has been tested on Windows XP with MS Visual C++ Express 2008, libmatio 1.5.0 and OpenCV 2.1:
+
+1. Decompress this package. Let us assume that <libpabod_dir> contains the extracted files.
+2. Decompress the binary version of libmatio. Let us name <libmatio_bin_dir> the generated directory.
+3. Download and decompress the source libmatio files (v. 1.5.0 tested). Let us name <libmatio_src_dir> the generated directory.
+4. Open the command line terminal of Windows (e.g. Start->Run->cmd)
+5. cd <libpabod_dir>
+6. mkdir releasewin
+7. cd releasewin
+8. cmake-gui .. (CMake-gui pops up)
+9. You will get an error indicating that Matio has not been found. So, we have to indicate where matio is located.
+10. Set MATIO_INCLUDE_DIRS to <libmatio_src_dir>\src (where 'matio.h' should be).
+11. Set MATIO_LIBRARIES to libmatio.lib
+12. Set MATIO_LIBRARY_DIRS to <libmatio_bin_dir> (where 'libmatio.lib' should be).
+13. Press button 'Configure'
+14. Press button 'Generate'
+15. Open the generated solution (should be 'pabod.sln') in your MS Visual C++ software.
+16. Build in Release mode.
+17. Run the excutables in the command line and enjoy detecting on Windows. Note that the dll's must be in your system search path.
+
+NOTE: you will probably need to have HDF51810 (win32) installed in your system to run the executables.
+
+FAQs
+~~~~
+Q1) I get the error "undefined identifier 'BY_NAME'" during compilation of libpabod.
+A1) In CMake-gui, use the button 'Add Entry' to add two new variables of type string named MATIO_MAJOR_VERSION and MATIO_MINOR_VERSION. Assign values depending on the libmatio version that you are using. E.g. Values 1 and 5 for version 1.5.0

@@ -1,0 +1,4 @@
+Q1. Is there any restriction with regard to the version of the mat files that can be used with libpabod?
+A1. It depends on the version of libmatio that you have installed in your system. For example, libmatio-1.3.4 does not support mat files v.7.3. Therefore, it is recommended to use mat files saved with flag '-V6'.
+
+

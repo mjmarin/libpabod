@@ -1,0 +1,30 @@
+\documentstyle{article}
+\begin{document}
+
+\title{LibPaBOD: quick start}
+\author{Daniel Rodriguez-Molina and Manuel J. Marin-Jimenez}
+
+\maketitle
+
+\section{Easy detection with LibPaBOD}
+
+Object detection was never so simple! Follow the next steps and you will get the objects detected and drawn on your input image:
+
+\begin{verbatim}
+	CvMat *detections = NULL;
+
+	IplImage * img = cvLoadImage ("my_image.jpg", CV_LOAD_IMAGE_COLOR);
+
+	Pabod detector("data/models/person_v6.mat");
+	
+	detector.detect(img, POSITIVE_INF, &detections);
+	
+	detector.drawDetections(img, detections);
+
+	cvSaveImage("my_image_dets.jpg", img);
+\end{verbatim} 
+
+\noindent So easy!
+
+\end{document}
+
