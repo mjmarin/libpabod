@@ -22,11 +22,12 @@
 
 using namespace std;
 
-
-double timeval_diff(struct timeval *a, struct timeval *b)
-{
-	return (double)(a->tv_sec + (double)a->tv_usec/1000000) - (double)(b->tv_sec + (double)b->tv_usec/1000000);
-}
+#ifndef _WIN32
+  double timeval_diff(struct timeval *a, struct timeval *b)
+  {
+	 return (double)(a->tv_sec + (double)a->tv_usec/1000000) - (double)(b->tv_sec + (double)b->tv_usec/1000000);
+  }
+#endif
 
 
 string extractModelName (string modelPath)
@@ -170,7 +171,9 @@ string saveImage (const IplImage *im, string imgPath, int mode, const CvMat *res
 
 int main ( int argc, char *argv[] )
 {
+#ifndef _WIN32
 	struct timeval t_ini, t_fin;
+#endif
 	double secs;
 	string modelfile(""), imName(""), aux, datafile;
 	IplImage *im = NULL, *copy = NULL;
@@ -275,12 +278,12 @@ int main ( int argc, char *argv[] )
 	// Get the current time after load the model
 #ifndef _WIN32
 	gettimeofday(&t_fin, NULL);
-#endif
 
 	// Number of secs taken to load the whole model
 	secs = timeval_diff(&t_fin, &t_ini);
 
 	cout << "Elapsed time: " << secs << " seconds" << endl << endl;
+#endif
 
 	cout << nDetected << " object(s) found using threshold = " << usedThresh << endl;
 	cout << "----------------------------------------------" << endl << endl;

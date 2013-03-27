@@ -5,7 +5,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 PROJECT(pabod)
-set(PROJECT_VERSION "0.2.4")
+set(PROJECT_VERSION "0.2.5")
 string(REGEX MATCHALL "[0-9]" PROJECT_VERSION_PARTS "${PROJECT_VERSION}")
 list(GET PROJECT_VERSION_PARTS 0 PROJECT_VERSION_MAJOR)
 list(GET PROJECT_VERSION_PARTS 1 PROJECT_VERSION_MINOR)
@@ -106,31 +106,43 @@ if(WIN32)
    set(USE_PTHREADS OFF)
 endif()
 
+# GENERATING CUSTOM_H
+# --------------------------------------------------------------------
+SET(CUSTOM_H "${PROJECT_SOURCE_DIR}/include/custom.h")
+file(WRITE ${CUSTOM_H} "#ifndef _CUSTOM_H_ \n #define _CUSTOM_H_ 1\n\n")
+
 if(USE_OPENMP)
- file(WRITE ${PROJECT_SOURCE_DIR}/include/custom.h "#define USE_OPENMP 1 \n#undef USE_PTHREADS\n")
+ file(APPEND ${CUSTOM_H} "#define USE_OPENMP 1 \n#undef USE_PTHREADS\n")
 else()
- file(WRITE ${PROJECT_SOURCE_DIR}/include/custom.h "#undef USE_OPENMP\n")
+ file(APPEND ${CUSTOM_H} "#undef USE_OPENMP\n")
  if(USE_PTHREADS)
-  file(APPEND ${PROJECT_SOURCE_DIR}/include/custom.h "\n#define USE_PTHREADS 1\n")
+  file(APPEND ${CUSTOM_H} "\n#define USE_PTHREADS 1\n")
  else()
-   file(APPEND ${PROJECT_SOURCE_DIR}/include/custom.h "\n#undef USE_PTHREADS\n")
+   file(APPEND ${CUSTOM_H} "\n#undef USE_PTHREADS\n")
  endif()
 endif()
+
+# ADDING PROJECT VERSION
+file(APPEND ${CUSTOM_H} "\n#define PABOD_MAJOR_VERSION ${PROJECT_VERSION_MAJOR}\n")
+file(APPEND ${CUSTOM_H} "\n#define PABOD_MINOR_VERSION ${PROJECT_VERSION_MINOR}\n")
+file(APPEND ${CUSTOM_H} "\n#define PABOD_PATCH_VERSION ${PROJECT_VERSION_PATCH}\n")
 
 # DEALING WITH MATIO VERSIONS
 IF(WIN32)
    IF(MATIO_MINOR_VERSION)
-	   file(APPEND ${PROJECT_SOURCE_DIR}/include/custom.h "\n#ifndef MATIO_MINOR_VERSION\n")	
-      file(APPEND ${PROJECT_SOURCE_DIR}/include/custom.h "\n#define MATIO_MINOR_VERSION ${MATIO_MINOR_VERSION}\n")	
-		file(APPEND ${PROJECT_SOURCE_DIR}/include/custom.h "\n#endif\n")	
+	   file(APPEND ${CUSTOM_H} "\n#ifndef MATIO_MINOR_VERSION\n")	
+      file(APPEND ${CUSTOM_H} "\n#define MATIO_MINOR_VERSION ${MATIO_MINOR_VERSION}\n")	
+		file(APPEND ${CUSTOM_H} "\n#endif\n")	
    ENDIF()
 
    IF(MATIO_MAJOR_VERSION)
-	   file(APPEND ${PROJECT_SOURCE_DIR}/include/custom.h "\n#ifndef MATIO_MAJOR_VERSION\n")	
-      file(APPEND ${PROJECT_SOURCE_DIR}/include/custom.h "\n#define MATIO_MAJOR_VERSION ${MATIO_MAJOR_VERSION}\n")	
-		file(APPEND ${PROJECT_SOURCE_DIR}/include/custom.h "\n#endif\n")	
+	   file(APPEND ${CUSTOM_H} "\n#ifndef MATIO_MAJOR_VERSION\n")	
+      file(APPEND ${CUSTOM_H} "\n#define MATIO_MAJOR_VERSION ${MATIO_MAJOR_VERSION}\n")	
+		file(APPEND ${CUSTOM_H} "\n#endif\n")	
    ENDIF()
 ENDIF()
+
+file(APPEND ${CUSTOM_H} "\n#endif\n")
 
 # ----------------------------------------------------------------------------
 #   Uninstall target, for "make uninstall"

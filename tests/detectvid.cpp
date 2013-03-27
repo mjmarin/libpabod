@@ -12,20 +12,13 @@
 #include <highgui.h>
 #include <makeDetection.h>
 #include <ctime>
-//#include <sys/time.h>
 #include <pabod.h>
+#include <crossplatform.h>
 
 #define TAGGED	0
 #define CUT		1
 
 using namespace std;
-
-/*
-double timeval_diff(struct timeval *a, struct timeval *b)
-{
-	return (double)(a->tv_sec + (double)a->tv_usec/1000000) - (double)(b->tv_sec + (double)b->tv_usec/1000000);
-}
-*/
 
 string extractModelName (string modelPath)
 {
@@ -166,7 +159,7 @@ string saveImage (const IplImage *im, string imgPath, int mode, const CvMat *res
 
 int main ( int argc, char *argv[] )
 {
-	struct timeval t_ini, t_fin;
+	TIMER t_ini, t_fin;
 	double secs=0;
 	string modelfile(""), vidName(""), imName(""), aux, datafile;
 	IplImage *im = NULL, *copy = NULL, *frame= NULL;
@@ -233,9 +226,7 @@ int main ( int argc, char *argv[] )
          exit(-1);
      }
 
-     // Preload class model
-     //Model * objmodel;
-     //objmodel = new Model(modelfile);
+     // Create Pabod detector from file
 	  Pabod detector(modelfile);
      
      // Detection per frame 
@@ -278,25 +269,25 @@ int main ( int argc, char *argv[] )
 
 	cout << "Searching for objects... This operation may take a few seconds" << endl << endl;
 
-	// Get the current time before load the model
-//	gettimeofday(&t_ini, NULL);
+	// Get the current time before starting detection
+	GET_TIME(&t_ini);
 
-    // Call to main function
-	//usedThresh = makeDetection (&results, im, objmodel, thresh);
-	detector.detect(im, thresh, &results);
+    // Call to main function	
+	usedThresh = detector.detect(im, thresh, &results);
 
 	if (results != NULL)
 		nDetected = results->rows;
 	else
 		nDetected = 0;
 
-	// Get the current time after load the model
-//	gettimeofday(&t_fin, NULL);
+	// Get the current time after detection
+	GET_TIME(&t_fin);
 
-	// Number of secs taken to load the whole model
-//	secs = timeval_diff(&t_fin, &t_ini);
+	// Number of secs taken to run detection	
+	secs = TIME_DIFF(t_fin, t_ini);
 
 	cout << "Elapsed time: " << secs << " seconds" << endl << endl;
+
 
 	cout << nDetected << " object(s) found using threshold = " << usedThresh << endl;
 	cout << "----------------------------------------------" << endl << endl;
@@ -426,8 +417,7 @@ int main ( int argc, char *argv[] )
 
      } // while-doProcessing
 
-     // Delete model
-     //delete objmodel;     
+   cout << "Running libPaBOD version " << PABOD_MAJOR_VERSION << "." << PABOD_MINOR_VERSION << "." << PABOD_PATCH_VERSION << endl;
 
      return 0;
 }

@@ -644,7 +644,7 @@ public:
  *  \return The double value of <tt>_thresh</tt>
  *  \note Inline function
  */
-  double getThresh () const  {return _thresh;}
+  float getThresh () const  {return _thresh;}
 
 
 /** Sets the value of private variable <tt>_thresh</tt> to <tt>d</tt>.

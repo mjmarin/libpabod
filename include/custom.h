@@ -1,15 +1,14 @@
+#ifndef _CUSTOM_H_ 
+ #define _CUSTOM_H_ 1
+
 #undef USE_OPENMP
 
 #undef USE_PTHREADS
 
-#ifndef MATIO_MINOR_VERSION
+#define PABOD_MAJOR_VERSION 0
 
-#define MATIO_MINOR_VERSION 5
+#define PABOD_MINOR_VERSION 2
 
-#endif
-
-#ifndef MATIO_MAJOR_VERSION
-
-#define MATIO_MAJOR_VERSION 1
+#define PABOD_PATCH_VERSION 5
 
 #endif
