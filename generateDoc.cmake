@@ -1,8 +1,8 @@
-# -helper macro to add a "doc" target with CMake build system. 
+# -helper macro to add a "doc" target with CMake build system.
 # and configure doxy.config.in to doxy.config
 #
 # target "doc" allows building the documentation with doxygen/dot on WIN32 and Linux
-# Creates .chm windows help file if MS HTML help workshop 
+# Creates .chm windows help file if MS HTML help workshop
 # (available from http://msdn.microsoft.com/workshop/author/htmlhelp)
 # is installed with its DLLs in PATH.
 #
@@ -11,7 +11,7 @@
 # doxygen, dot, latex, dvips, makeindex, gswin32, etc.
 # must be in path.
 #
-# Note about Visual Studio Projects: 
+# Note about Visual Studio Projects:
 # MSVS hast its own path environment which may differ from the shell.
 # See "Menu Tools/Options/Projects/VC++ Directories" in VS 7.1
 #
@@ -69,12 +69,12 @@ IF (DOXYGEN_FOUND)
 	IF    (NOT DVIPS_CONVERTER)
 		MESSAGE(STATUS "dvips command DVIPS_CONVERTER not found but usually required.")
 	ENDIF (NOT DVIPS_CONVERTER)
-	  
+
 	# Check config file
 	IF   (EXISTS "${DOX_CONFIG_FILE}")
 		CONFIGURE_FILE(${DOX_CONFIG_FILE} ${CMAKE_CURRENT_BINARY_DIR}/doxy.config @ONLY ) #OUT-OF-PLACE LOCATION
 		SET(DOXY_CONFIG "${CMAKE_CURRENT_BINARY_DIR}/doxy.config")
-	ELSE () 
+	ELSE ()
 		MESSAGE(SEND_ERROR "Please create configuration file for doxygen in ${CMAKE_CURRENT_SOURCE_DIR}")
 	ENDIF()
 
@@ -83,7 +83,7 @@ IF (DOXYGEN_FOUND)
 
 	IF (WIN32 AND GENERATE_WIN_CHM STREQUAL "YES")
 		FIND_PACKAGE(HTMLHelp)
-		IF   (HTML_HELP_COMPILER)      
+		IF   (HTML_HELP_COMPILER)
 			ADD_CUSTOM_TARGET(winhelp ${HTML_HELP_COMPILER} ${HHP_FILE})
 			ADD_DEPENDENCIES (winhelp doc)
 			IF   (EXISTS ${CHM_FILE})
@@ -97,7 +97,7 @@ IF (DOXYGEN_FOUND)
 					IF   (${PROJECT_NAME}_VERSION_MINOR)
 						SET(OUT  "${OUT}.${${PROJECT_NAME}_VERSION_MINOR}")
 						IF   (${PROJECT_NAME}_VERSION_PATCH)
-							SET(OUT "${OUT}.${${PROJECT_NAME}_VERSION_PATCH}")      
+							SET(OUT "${OUT}.${${PROJECT_NAME}_VERSION_PATCH}")
 						ENDIF()
 					ENDIF()
 				ENDIF()
@@ -107,7 +107,7 @@ IF (DOXYGEN_FOUND)
 		ELSE()
 			MESSAGE(FATAL_ERROR "You have not Microsoft Help Compiler")
 		ENDIF()
-	ENDIF () 
+	ENDIF ()
 
 	INSTALL(DIRECTORY "${PROJECT_BINARY_DIR}/doc/html/" DESTINATION "share/doc/lib${PROJECT_NAME}")
 

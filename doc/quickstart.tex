@@ -25,13 +25,13 @@ Object detection was never so simple! Follow the next steps and you will get the
 	IplImage * img = cvLoadImage ("my_image.jpg", CV_LOAD_IMAGE_COLOR);
 
 	Pabod detector("data/models/person_v6.mat");
-	
+
 	detector.detect(img, POSITIVE_INF, &detections);
-	
+
 	detector.drawDetections(img, detections);
 
 	cvSaveImage("my_image_dets.jpg", img);
-\end{verbatim} 
+\end{verbatim}
 
 \noindent So easy!
 

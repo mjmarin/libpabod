@@ -12,7 +12,7 @@
 
 /** This is a recursive function. Computes the generalized distance, either
  *  along columns or rows. Uses a divide and conquer algorithm. The code
- *  is a bit convoluted to get the function work either along a row or 
+ *  is a bit convoluted to get the function work either along a row or
  *  column of an array.
  *  \param src - is the source matrix, given in a linear vector way
  *  \param dst - is the destiny matrix, given in a linear vector way
@@ -25,24 +25,24 @@
  *  \param a - auxiliar value given by the model used
  *  \param b - auxiuliar value given by the model used
  */
-void dtHelper (double *src, double *dst, int *ptr, int step, int s1, int s2, 
+void dtHelper (double *src, double *dst, int *ptr, int step, int s1, int s2,
                int d1, int d2, double a, double b);
 
 
-/** This is the function which calls the recursive function 
+/** This is the function which calls the recursive function
  *  <tt>dtHelper</tt>, which actually carry on the work. It deals with
  *  ordering the parameters.
- *  \param src - is the source matrix, given in a linear vector way 
+ *  \param src - is the source matrix, given in a linear vector way
  *  \param dst - is the destiny matrix, given in a linear vector way
  *  \param ptr - is an index vector
  *  \param step - indicates how large steps are
- *  \param n - indicates the length of any dimension of the matrix (rows 
+ *  \param n - indicates the length of any dimension of the matrix (rows
  *  or columns), depending which one is measuring
  *  \param a - auxiliar value given by the model used
  *  \param b - auxiliar value given by the model used
  *  \sa dtHelper
  */
-void dt1d (double *src, double *dst, int *ptr, int step, int n, double a, 
+void dt1d (double *src, double *dst, int *ptr, int step, int n, double a,
            double b);
 
 
@@ -65,7 +65,7 @@ void dt1d (double *src, double *dst, int *ptr, int step, int n, double a,
  *  \param mIy - is a reference parameter. Indicates indexes changes done in
  *  rows (vertical axis)
  */
-void dt (const CvMat* score, double d0, double d1, double d2, double d3, 
+void dt (const CvMat* score, double d0, double d1, double d2, double d3,
          CvMat **scoreRet, CvMat** mIx, CvMat** mIy);
 
 

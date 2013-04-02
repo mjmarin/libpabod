@@ -58,7 +58,7 @@ void Cell::destroyCell ()
 
         delete[] _anchor;
         _anchor = NULL;
-      } 
+      }
 
       if (_score != NULL)
       {
@@ -70,7 +70,7 @@ void Cell::destroyCell ()
             _score[i] = NULL;
           }
         }
-      
+
         delete[] _score;
         _score = NULL;
       }
@@ -368,7 +368,7 @@ void Cell::setAnchor (anchor *a)
 
 
 void Cell::setScore (CvMat **score)
-{  
+{
   assert (getScoreDim() > 0);
 
   _score = new CvMat* [getScoreDim()];

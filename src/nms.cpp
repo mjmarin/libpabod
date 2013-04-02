@@ -1,7 +1,7 @@
 #include <nms.h>
 
 
-void nms (int** pick, int *pickDim,  
+void nms (int** pick, int *pickDim,
           CvMat *dets, double overlap)
 {
   if (dets == NULL)
@@ -17,7 +17,7 @@ void nms (int** pick, int *pickDim,
 
     int *rows = new int [dets->rows];
     for (int i = 0; i < dets->rows; i++)
-      rows[i] = i;  
+      rows[i] = i;
 
     int col;
     col = 0;
@@ -87,7 +87,7 @@ void nms (int** pick, int *pickDim,
     double xx1;
     double yy1;
     double xx2;
-    double yy2;  
+    double yy2;
     double w;
     double h;
 
@@ -106,13 +106,13 @@ void nms (int** pick, int *pickDim,
       suppressDim++;
 
       for (int pos = 0; pos < last; pos++)
-      {  
+      {
         j = idx[pos];
 
         xx1 = max (x1Ptr[i], x1Ptr[j]);
         yy1 = max (y1Ptr[i], y1Ptr[j]);
         xx2 = min (x2Ptr[i], x2Ptr[j]);
-        yy2 = min (y2Ptr[i], y2Ptr[j]);  
+        yy2 = min (y2Ptr[i], y2Ptr[j]);
         w = xx2 - xx1 + 1;
         h = yy2 - yy1 + 1;
 

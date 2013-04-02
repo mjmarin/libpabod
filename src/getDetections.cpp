@@ -94,7 +94,6 @@ static void trace(int padX, int padY, const float *scales, int sx, int sy,
   int x2;
   int y2;
 
-  bool success = false;
   rules symRules;
   int rulesDim;
   int r = 0;
@@ -176,7 +175,6 @@ static void trace(int padX, int padY, const float *scales, int sx, int sy,
 
     // Find the rule that produced the current node by looking at
     // which score table holds n.val at the symbol's location
-    success = false;
     symRules = rul[n.symbol];
     rulesDim = symRules.n;
     r = 0;
@@ -194,7 +192,6 @@ static void trace(int padX, int padY, const float *scales, int sx, int sy,
       // pick this rule if the score at the probe location matches n.val
       if (score[probeX*sz[0] + probeY] - 0.005 <= n.val && score[probeX*sz[0] + probeY] + 0.005 >= n.val)
       {
-        success = true;
         delete [] score;
         break;
       }

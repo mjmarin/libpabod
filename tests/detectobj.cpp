@@ -20,8 +20,6 @@
 #define TAGGED	0
 #define CUT		1
 
-using namespace std;
-
 #ifndef _WIN32
   double timeval_diff(struct timeval *a, struct timeval *b)
   {
@@ -30,9 +28,9 @@ using namespace std;
 #endif
 
 
-string extractModelName (string modelPath)
+std::string extractModelName (std::string modelPath)
 {
-	string name;
+    std::string name;
 	size_t pos = modelPath.find_last_of("_");
 
 	name = modelPath.substr (0, pos);
@@ -50,7 +48,7 @@ string extractModelName (string modelPath)
 	return name;
 }
 
-void drawBoxes (IplImage *im, const CvPoint p1, const CvPoint p2, const string modelName, int i,
+void drawBoxes (IplImage *im, const CvPoint p1, const CvPoint p2, const std::string modelName, int i,
 				float maxScore, float minScore, float curScore)
 {
 	CvScalar color;
@@ -110,9 +108,9 @@ void drawBoxes (IplImage *im, const CvPoint p1, const CvPoint p2, const string m
 	cvPutText (im, modelNameCh, textPoint, &font, cvScalarAll (255));
 }
 
-string saveImage (const IplImage *im, string imgPath, int mode, const CvMat *results)
+std::string saveImage (const IplImage *im, std::string imgPath, int mode, const CvMat *results)
 {
-	string name, path;
+    std::string name, path;
 	size_t pos;
 	char imgNameCh[8];
 	IplImage *cut = NULL;
@@ -137,10 +135,10 @@ string saveImage (const IplImage *im, string imgPath, int mode, const CvMat *res
 	{
 		for (int i = 0; i < results->rows; i++)
 		{
-			x = min (cvGetReal2D (results, i, 0), cvGetReal2D (results, i, 2));
-			y = min (cvGetReal2D (results, i, 1), cvGetReal2D (results, i, 3));
-			w = abs(cvGetReal2D (results, i, 0) - cvGetReal2D (results, i, 2));
-			h = abs(cvGetReal2D (results, i, 1) - cvGetReal2D (results, i, 3));
+			x = min(cvGetReal2D (results, i, 0), cvGetReal2D (results, i, 2));
+			y = min(cvGetReal2D (results, i, 1), cvGetReal2D (results, i, 3));
+			w = std::abs(cvGetReal2D (results, i, 0) - cvGetReal2D (results, i, 2));
+			h = std::abs(cvGetReal2D (results, i, 1) - cvGetReal2D (results, i, 3));
 
 			cut = cvCreateImage (cvSize (w, h), im->depth, im->nChannels);
 
@@ -175,18 +173,18 @@ int main ( int argc, char *argv[] )
 	struct timeval t_ini, t_fin;
 #endif
 	double secs;
-	string modelfile(""), imName(""), aux, datafile;
+    std::string modelfile(""), imName(""), aux, datafile;
 	IplImage *im = NULL, *copy = NULL;
 	CvMat *results = NULL;
 	int nDetected = 0;
 	float usedThresh=NEGATIVE_INF, thresh = POSITIVE_INF;
 	float minScore, maxScore;
         bool savedata = false, display = true;
-   
+
 	if (argc < 5)
 	{
-		cout << "  >> ERROR: the general form is:\n"
-				"            ./detectobj -m <model_path> -i <image_path> [-t <threshold> -o <detections_path> -d <0/1>]" << endl;
+        std::cout << "  >> ERROR: the general form is:\n"
+				"            ./detectobj -m <model_path> -i <image_path> [-t <threshold> -o <detections_path> -d <0/1>]" << std::endl;
 		return -1;
 	}
 
@@ -196,24 +194,24 @@ int main ( int argc, char *argv[] )
 
             if (i + 1 != argc) // Check that we haven't finished parsing already
             {
-                if (string(argv[i]) == "-i") {
+                if (std::string(argv[i]) == "-i") {
                     // We know the next argument *should* be the image filename:
                     imName = argv[i + 1];
 
-                } else if (string(argv[i]) == "-m") {
+                } else if (std::string(argv[i]) == "-m") {
                     modelfile = argv[i + 1];
 
-                } else if (string(argv[i]) == "-o") {
+                } else if (std::string(argv[i]) == "-o") {
                     datafile = argv[i + 1];
                     savedata = true;
-                } else if (string(argv[i]) == "-d") { // Display images?
+                } else if (std::string(argv[i]) == "-d") { // Display images?
                     display = atoi(argv[i+1]);
 
-                } else if (string(argv[i]) == "-t") {
+                } else if (std::string(argv[i]) == "-t") {
                     thresh = atof(argv[i + 1]);
 
                 } else {
-                    cerr << ">> ERROR: Not enough or invalid arguments, please try again.\n";
+                    std::cerr << ">> ERROR: Not enough or invalid arguments, please try again.\n";
 
                     exit(1);
                 }
@@ -222,12 +220,12 @@ int main ( int argc, char *argv[] )
 
      if (imName == "")
      {
-         cerr << ">> ERROR: input image is needed (-i option)" << endl;
+         std::cerr << ">> ERROR: input image is needed (-i option)" << std::endl;
          exit(1);
      }
      if (modelfile == "")
      {
-         cerr << ">> ERROR: model file is needed (-m option)" << endl;
+         std::cerr << ">> ERROR: model file is needed (-m option)" << std::endl;
          exit(1);
      }
 
@@ -236,19 +234,19 @@ int main ( int argc, char *argv[] )
 
     if (im == NULL)
    {
-	cerr << ">> ERROR: the image cannot be loaded" << endl;
+       std::cerr << ">> ERROR: the image cannot be loaded" << std::endl;
 	exit(-1);
    }
 
 
-	cout << endl << endl << endl << endl;
-	cout << "  Model: " << modelfile << endl;
-	cout << "  Image: " << imName << endl;
+    std::cout << std::endl << std::endl << std::endl << std::endl;
+    std::cout << "  Model: " << modelfile << std::endl;
+    std::cout << "  Image: " << imName << std::endl;
 	if (thresh < POSITIVE_INF)
-		cout << "  Threshold used:      " << thresh << endl;
+		std::cout << "  Threshold used:      " << thresh << std::endl;
 	else
-		cout << "  Threshold used:      auto" << endl;
-	cout << endl;
+		std::cout << "  Threshold used:      auto" << std::endl;
+    std::cout << std::endl;
 
         if (display)
         {
@@ -257,7 +255,7 @@ int main ( int argc, char *argv[] )
 	   cvWaitKey(250);
         }
 
-	cout << "Searching for objects... This operation may take a few seconds" << endl << endl;
+        std::cout << "Searching for objects... This operation may take a few seconds" << std::endl << std::endl;
 
 	// Get the current time before load the model
 #ifndef _WIN32
@@ -282,11 +280,11 @@ int main ( int argc, char *argv[] )
 	// Number of secs taken to load the whole model
 	secs = timeval_diff(&t_fin, &t_ini);
 
-	cout << "Elapsed time: " << secs << " seconds" << endl << endl;
+    std::cout << "Elapsed time: " << secs << " seconds" << std::endl << std::endl;
 #endif
 
-	cout << nDetected << " object(s) found using threshold = " << usedThresh << endl;
-	cout << "----------------------------------------------" << endl << endl;
+    std::cout << nDetected << " object(s) found using threshold = " << usedThresh << std::endl;
+    std::cout << "----------------------------------------------" << std::endl << std::endl;
 
 	if (nDetected > 0)
 	{
@@ -310,21 +308,21 @@ int main ( int argc, char *argv[] )
                 if (savedata)
                 {
                    // Open file to save detections
-                   ofstream fid(datafile.c_str());
+                    std::ofstream fid(datafile.c_str());
                    if (!fid.is_open())
                    {
-                      cerr << "WARNING: cannot create output file." << endl;
+                       std::cerr << "WARNING: cannot create output file." << std::endl;
                    }
                    else
                    {
                       // Save to file
-                      fid << nDetected << endl;
+                      fid << nDetected << std::endl;
                       for (int i = nDetected - 1; i >= 0; i--)
 		      {
 
 			fid << cvGetReal2D(results, i, 0) << " " << cvGetReal2D(results, i, 1) << " ";
 			fid << cvGetReal2D(results, i, 2) << " " << cvGetReal2D(results, i, 3) << " ";
-			fid << cvGetReal2D (results, i, 4) << endl;
+			fid << cvGetReal2D (results, i, 4) << std::endl;
 		      }
 
                       // Close file
@@ -349,7 +347,7 @@ int main ( int argc, char *argv[] )
 		}
 
 		for (int i = 0; i < nDetected; i++)
-			cout << "  - " << extractModelName(modelfile) << " " << i+1 << ", score = " << cvGetReal2D (results, i, 4) << endl;
+			std::cout << "  - " << extractModelName(modelfile) << " " << i+1 << ", score = " << cvGetReal2D (results, i, 4) << std::endl;
 
                 if (display)
                 {
@@ -357,9 +355,9 @@ int main ( int argc, char *argv[] )
 		   cvShowImage ("Detected image", im);
 
 
-		   cout << endl << "Push 't' key to save a copy of (t)agged image" << endl;
-		   cout << "Push 'c' key to save each of objects found on differents (c)ut images" << endl;
-		   cout << "Push 'q' key to (q)uit" << endl << endl;
+           std::cout << std::endl << "Push 't' key to save a copy of (t)agged image" << std::endl;
+           std::cout << "Push 'c' key to save each of objects found on differents (c)ut images" << std::endl;
+           std::cout << "Push 'q' key to (q)uit" << std::endl << std::endl;
 
 		   char c = 0;
 
@@ -370,37 +368,37 @@ int main ( int argc, char *argv[] )
 			if (c == 't' || c == 'T')
 			{
 				aux = saveImage (im, imName, TAGGED, NULL);
-				cout << "  >> Tagged image saved on <" << aux << "> folder" << endl << endl;
+                std::cout << "  >> Tagged image saved on <" << aux << "> folder" << std::endl << std::endl;
 
 				c = 0;
 
-				cout << endl << "Push 't' key to save a copy of (t)agged image" << endl;
-				cout << "Push 'c' key to save each of objects found on differents (c)ut images" << endl;
-				cout << "Push 'q' key to (q)uit" << endl << endl;
+                std::cout << std::endl << "Push 't' key to save a copy of (t)agged image" << std::endl;
+                std::cout << "Push 'c' key to save each of objects found on differents (c)ut images" << std::endl;
+                std::cout << "Push 'q' key to (q)uit" << std::endl << std::endl;
 			}
 
 			else if (c == 'c' || c == 'C')
 			{
 				aux = saveImage (copy, imName, CUT, results);
-				cout << "  >> Cut images saved on <" << aux << "> folder" << endl << endl;
+                std::cout << "  >> Cut images saved on <" << aux << "> folder" << std::endl << std::endl;
 
 				c = 0;
 
-				cout << endl << "Push 't' key to save a copy of (t)agged image" << endl;
-				cout << "Push 'c' key to save each of objects found on differents (c)ut images" << endl;
-				cout << "Push 'q' key to (q)uit" << endl << endl;
+                std::cout << std::endl << "Push 't' key to save a copy of (t)agged image" << std::endl;
+                std::cout << "Push 'c' key to save each of objects found on differents (c)ut images" << std::endl;
+                std::cout << "Push 'q' key to (q)uit" << std::endl << std::endl;
 			}
 
 		} while ( (c != 'q') && (c != 'Q'));
            }
            else
            {
-              cout << endl << "* End of detection process." << endl << endl;
+               std::cout << std::endl << "* End of detection process." << std::endl << std::endl;
            } // if display
 	}
 
 	else
-		cout << endl << "  >> No objects found" << endl << endl;
+		std::cout << std::endl << "  >> No objects found" << std::endl << std::endl;
 
 	cvReleaseImage (&im);
 	cvReleaseMat (&results);

@@ -1,8 +1,6 @@
 #include <fstream>
 #include <handlerOpenCVStructs.h>
 
-using namespace std;
-
 void createMatrix (int nDims, int *sizes, int type, CvMat **mat)
 {
   assert (nDims == 2);
@@ -45,8 +43,8 @@ CvMat* subMat (const CvMat* mat, int* iy, int iyDim, int* ix, int ixDim)
 {
   CvMat *aux;
 
-  if ( (iyDim >= mat->rows && ixDim >= mat->cols) || 
-        iyDim <= 0 || 
+  if ( (iyDim >= mat->rows && ixDim >= mat->cols) ||
+        iyDim <= 0 ||
         ixDim <= 0)
     aux = cvCloneMat (mat);
 
@@ -62,7 +60,7 @@ CvMat* subMat (const CvMat* mat, int* iy, int iyDim, int* ix, int ixDim)
   return aux;
 }
 
-void ind2sub (const int nRows, const int nCols, const int *v, const int nV, 
+void ind2sub (const int nRows, const int nCols, const int *v, const int nV,
               int **rowsIdx, int **colsIdx)
 {
   (*rowsIdx) = new int [nV];
@@ -82,7 +80,7 @@ void ind2sub (const int nRows, const int nCols, const int *v, const int nV,
 
 bool matToFile(const CvMat * mat, const char * filename)
 {
-   ofstream fid;
+    std::ofstream fid;
    fid.open(filename);
    if (!fid.is_open())
       return false;
@@ -92,7 +90,7 @@ bool matToFile(const CvMat * mat, const char * filename)
    {
       for (j = 0; j < mat->cols; j++)
          fid << cvGetReal2D(mat, i,j) << " ";
-      fid << endl;
+      fid << std::endl;
    }
    fid.close();
    return true;

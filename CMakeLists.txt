@@ -52,7 +52,7 @@ OPTION(BUILD_SHARED_LIBS 	"Set to OFF to build static libraries" ${SHARED_LIBS_D
 FIND_PACKAGE(OpenCV 	REQUIRED )
 set (REQUIRED_LIBRARIES ${OpenCV_LIBS} )
 FIND_PACKAGE(PkgConfig)	#Enable PKG-CONFIG suport
-IF ( PKG_CONFIG_FOUND ) 
+IF ( PKG_CONFIG_FOUND )
   PKG_CHECK_MODULES(MATIO  matio>=1.3.3 REQUIRED)
 ELSE()
  	# require explicit definition of directories
@@ -65,14 +65,14 @@ ELSE()
 		   SET( MATIO_LIBRARIES "" CACHE STRING "Library to be linked")
 		ENDIF()
 	ENDIF ()
-	
+
 	IF (MATIO_INCLUDE_DIRS)
 	 	SET ( MATIO_FOUND 1)
  		MESSAGE(STATUS "include: " ${MATIO_INCLUDE_DIRS})
  		MESSAGE(STATUS "lib dir: " ${MATIO_LIBRARY_DIRS})
  		MESSAGE(STATUS "library: " ${MATIO_LIBRARIES})
 	ENDIF()
-ENDIF ()	
+ENDIF ()
 
 IF (MATIO_FOUND)
   INCLUDE_DIRECTORIES(${MATIO_INCLUDE_DIRS})
@@ -130,15 +130,15 @@ file(APPEND ${CUSTOM_H} "\n#define PABOD_PATCH_VERSION ${PROJECT_VERSION_PATCH}\
 # DEALING WITH MATIO VERSIONS
 IF(WIN32)
    IF(MATIO_MINOR_VERSION)
-	   file(APPEND ${CUSTOM_H} "\n#ifndef MATIO_MINOR_VERSION\n")	
-      file(APPEND ${CUSTOM_H} "\n#define MATIO_MINOR_VERSION ${MATIO_MINOR_VERSION}\n")	
-		file(APPEND ${CUSTOM_H} "\n#endif\n")	
+	   file(APPEND ${CUSTOM_H} "\n#ifndef MATIO_MINOR_VERSION\n")
+      file(APPEND ${CUSTOM_H} "\n#define MATIO_MINOR_VERSION ${MATIO_MINOR_VERSION}\n")
+		file(APPEND ${CUSTOM_H} "\n#endif\n")
    ENDIF()
 
    IF(MATIO_MAJOR_VERSION)
-	   file(APPEND ${CUSTOM_H} "\n#ifndef MATIO_MAJOR_VERSION\n")	
-      file(APPEND ${CUSTOM_H} "\n#define MATIO_MAJOR_VERSION ${MATIO_MAJOR_VERSION}\n")	
-		file(APPEND ${CUSTOM_H} "\n#endif\n")	
+	   file(APPEND ${CUSTOM_H} "\n#ifndef MATIO_MAJOR_VERSION\n")
+      file(APPEND ${CUSTOM_H} "\n#define MATIO_MAJOR_VERSION ${MATIO_MAJOR_VERSION}\n")
+		file(APPEND ${CUSTOM_H} "\n#endif\n")
    ENDIF()
 ENDIF()
 

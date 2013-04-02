@@ -5,17 +5,14 @@
 #include <cell.h>
 #include <iostream>
 
-using namespace std;
-
 /** \file
- *  This file contains the definition of <tt>Model</tt> class. This class 
+ *  This file contains the definition of <tt>Model</tt> class. This class
  *  is used to load a the model structure stored on a .mat file.
  */
 
-
 /** \def INVALID
- *  Is used on struct <tt>symbols</tt>, field <tt>filter</tt>. When the value 
- *  read from the file is none or invalid, this value will be set 
+ *  Is used on struct <tt>symbols</tt>, field <tt>filter</tt>. When the value
+ *  read from the file is none or invalid, this value will be set
  */
 #define INVALID -9999
 
@@ -25,7 +22,7 @@ using namespace std;
 ///////////////////////////////
 
 /** \struct filters
- *  The struct contains the definition of <tt>_filters</tt> vector private 
+ *  The struct contains the definition of <tt>_filters</tt> vector private
  *  variable. Every field will be loaded from the file read.
  *  \sa _filters
  */
@@ -45,7 +42,7 @@ typedef struct filters
 /////////////////////////////
 
 /** \struct rules
- *  The struct contains the definition of <tt>_rules</tt> vector private 
+ *  The struct contains the definition of <tt>_rules</tt> vector private
  *  variable. The field <tt>n</tt> contains the number of objects <tt>Cell</tt>
  *  stored in the structure. The other field, <tt>structure</tt>, is the vector
  *  of <tt>n</tt> elements of the <tt>Cell</tt> class.
@@ -62,7 +59,7 @@ typedef struct rules
 ///////////////////////////////
 
 /** \struct symbols
- *  The struct contains the definition of <tt>_symbols</tt> vector private 
+ *  The struct contains the definition of <tt>_symbols</tt> vector private
  *  variable. Every field will be loaded from the file read.
  *  \sa _score
  */
@@ -80,7 +77,7 @@ typedef struct symbols
 ///////////////////////////////////
 
 /** \struct lowerbounds
- *  The struct contains the definition of <tt>_lowerbounds</tt> vector private 
+ *  The struct contains the definition of <tt>_lowerbounds</tt> vector private
  *  variable. Every field will be loaded from the file read.
  *  \sa _lowerbounds
  */
@@ -96,7 +93,7 @@ typedef struct lowerbounds
 ////////////////////////////////
 
 /** \struct bboxpred
- *  The struct contains the definition of <tt>_bboxpred</tt> vector private 
+ *  The struct contains the definition of <tt>_bboxpred</tt> vector private
  *  variable. Every field will be loaded from the file read.
  *  \sa _bboxpred
  */
@@ -112,8 +109,8 @@ typedef struct bboxpred
 
 /** \class Model
  *  The class implements methods and variables to load a model from a .mat
- *  file. The parametrized constructor reads field by field the file and 
- *  set each the value of each struct and variable 
+ *  file. The parametrized constructor reads field by field the file and
+ *  set each the value of each struct and variable
  */
 
 class Model
@@ -124,22 +121,22 @@ public:
 ///// CONSTRUCTORS & DESTRUCTORS /////
 //////////////////////////////////////
 
-/** Empty constructor. Sets the value of each private variable to an invalid 
- *  value or <tt>NULL</tt> in case of pointers. Calls the function 
+/** Empty constructor. Sets the value of each private variable to an invalid
+ *  value or <tt>NULL</tt> in case of pointers. Calls the function
  *  <tt>loadEmptyModel</tt> for that purpose.
  *  \sa loadEmptyModel
  */
   Model ();
 
-/** Parametrized constructor. Reads the file <tt>fileName</tt> and initialize 
+/** Parametrized constructor. Reads the file <tt>fileName</tt> and initialize
  *  the class private variables calling the function <tt>loadFile</tt>.
  *  \param fileName - it contains the name of the file to read
  *  \sa loadFile
  */
-  Model (string fileName);
+  Model (std::string fileName);
 
 /** Destructor. Releases all the allocated memory for each private variable of
- *  the class and set the values to invalid. Calls the function 
+ *  the class and set the values to invalid. Calls the function
  *  <tt>destroyModel</tt> which handles this.
  *  \sa destroyModel
  */
@@ -153,9 +150,9 @@ public:
 
 /** The function sets each field of the class to an invalid value
  */
-  void loadEmptyModel ();  
+  void loadEmptyModel ();
 
-/** The function loads each field of the file to each private variable of the 
+/** The function loads each field of the file to each private variable of the
  *  class. To do this, use several specific functions, one for each field
  *  variable.
  *  \param fileName - it contains the name of the file to read
@@ -181,7 +178,7 @@ public:
  *  \sa loadFusage
  *  \sa loadBboxpred
  */
-  void loadFile (string fileName);
+  void loadFile (std::string fileName);
 
 
 /** The function loads the field <tt>class</tt> from file into private
@@ -367,42 +364,42 @@ public:
  *  \return The string value of <tt>_class</tt>
  *  \note Inline function
  */
-  string getClass () const  {return _class;}
+  std::string getClass () const  {return _class;}
 
 
 /** Sets the value of private variable <tt>_class</tt> to <tt>str</tt>.
  *  \param str - new value for the variable <tt>_class</tt>
  *  \note Inline function
  */
-  void setClass (string str)  {_class = str;}
+  void setClass (std::string str)  {_class = str;}
 
 
 /** Returns the value of private variable <tt>_class</tt>.
  *  \return The string value of <tt>_class</tt>
  *  \note Inline function
  */
-  string getYear () const  {return _year;}
+  std::string getYear () const  {return _year;}
 
 
 /** Sets the value of private variable <tt>_year</tt> to <tt>str</tt>.
  *  \param str - new value for the variable <tt>_year</tt>
  *  \note Inline function
  */
-  void setYear (string str)  {_year = str;}
+  void setYear (std::string str)  {_year = str;}
 
 
 /** Returns the value of private variable <tt>_note</tt>.
  *  \return The string value of <tt>_note</tt>
  *  \note Inline function
  */
-  string getNote () const  {return _note;}
+  std::string getNote () const  {return _note;}
 
 
 /** Sets the value of private variable <tt>_note</tt> to <tt>str</tt>.
  *  \param str - new value for the variable <tt>_note</tt>
  *  \note Inline function
  */
-  void setNote (string str)  {_note = str;}
+  void setNote (std::string str)  {_note = str;}
 
 
 /** Returns the value of private variable <tt>_filters</tt>.
@@ -448,7 +445,7 @@ public:
 
 
 /** Returns the value of private variable <tt>_rulesDim</tt>
- *  \return The int value <tt>_rulesDim</tt>, which indicates <tt>_rules</tt> 
+ *  \return The int value <tt>_rulesDim</tt>, which indicates <tt>_rules</tt>
  *  array size.
  *  \sa _rules
  *  \sa _rulesDim
@@ -551,14 +548,14 @@ public:
  */
   int getBlockSizesDim () const  {return _blockSizesDim;}
 
-/** Sets the value of auxiliar private variable <tt>_blockSizesDim</tt> to 
+/** Sets the value of auxiliar private variable <tt>_blockSizesDim</tt> to
  *  <tt>dim</tt>.
  *  \param dim - the new value. It means the dimension of the array <tt>
  *  _blockSizes</tt>
  *  \note Inline function
  */
   void setBlockSizesDim (int dim)  {_blockSizesDim = dim;}
- 
+
 /** Returns the value of private variable <tt>_start</tt>.
  *  \return The integer value of <tt>_start</tt>
  *  \note Inline function
@@ -716,7 +713,7 @@ public:
   lowerbounds* getLowerbounds () const  {return _lowerbounds;}
 
 
-/** Sets the value of private struct variable <tt>_lowerbounds</tt> to 
+/** Sets the value of private struct variable <tt>_lowerbounds</tt> to
  *  <tt>l</tt>.
  *  \param l - new value for the struct variable <tt>_lowerbounds</tt>
  */
@@ -730,7 +727,7 @@ public:
   int getLowerboundsDim () const  {return _lowerboundsDim;}
 
 
-/** Sets the value of auxiliar private variable <tt>_lowerboundsDim</tt> to 
+/** Sets the value of auxiliar private variable <tt>_lowerboundsDim</tt> to
  *  <tt>dim</tt>.
  *  \param dim - the new value. It means the dimension of the array <tt>
  *  _lowerbounds</tt>
@@ -759,7 +756,7 @@ public:
   int getFusageDim () const  {return _fusageDim;}
 
 
-/** Sets the value of auxiliar private variable <tt>_fusageDim</tt> to 
+/** Sets the value of auxiliar private variable <tt>_fusageDim</tt> to
  *  <tt>dim</tt>.
  *  \param dim - the new value. It means the dimension of the array <tt>
  *  _fusage</tt>
@@ -774,7 +771,7 @@ public:
   bboxpred* getBboxpred () const  {return _bboxpred;}
 
 
-/** Sets the value of private struct variable <tt>_bboxpred</tt> to 
+/** Sets the value of private struct variable <tt>_bboxpred</tt> to
  *  <tt>b</tt>.
  *  \param b - new value for the struct variable <tt>_bboxpred</tt>
  */
@@ -795,7 +792,7 @@ public:
  *  \note Inline function
  */
   void setBboxpredDim (int dim)  {_bboxpredDim = dim;}
- 
+
 
 /** Returns the value of private variable <tt>_scoretpt</tt>.
  *  \return A CvMat vector, which is the value of <tt>_scoretpt</tt>
@@ -810,11 +807,11 @@ public:
  */
   void setScoretpt (CvMat **scoretpt);
 
-/** Sets the value of element <tt>idx</tt> of private struct variable 
+/** Sets the value of element <tt>idx</tt> of private struct variable
  *  <tt>_scoretpt</tt> to <tt>scoretpt</tt>.
- *  \param scoretpt - new value for the element <tt>idx</tt> of private 
+ *  \param scoretpt - new value for the element <tt>idx</tt> of private
  *  variable <tt>_scoretpt</tt>
- *  \param idx - indicates the index of the element in the vector 
+ *  \param idx - indicates the index of the element in the vector
  */
   void setScoretpt (CvMat *scoretpt, int idx);
 
@@ -826,7 +823,7 @@ public:
   int getScoretptDim () const   {return _scoretptDim;}
 
 
-/** Sets the value of auxiliar private variable <tt>_scoretptDim</tt> to 
+/** Sets the value of auxiliar private variable <tt>_scoretptDim</tt> to
  *  <tt>dim</tt>.
  *  \param dim - the new value. It means the dimension of the array <tt>
  *  _scoretpt</tt>
@@ -839,7 +836,7 @@ public:
 ///// INITIALIZERS /////
 ////////////////////////
 
-/** Sets each field of private struct variable <tt>_filters</tt> to it 
+/** Sets each field of private struct variable <tt>_filters</tt> to it
  *  corresponding value of <tt>filtersStructure</tt>
  *  \param filtersStructure - it contains a whole struct filters
  */
@@ -883,8 +880,8 @@ public:
  */
   void destroyModel ();
 
-/** Allocates dinamic memory for the private vector variable 
- *  <tt>_scoretpt</tt>. This function is necessary because the vector 
+/** Allocates dinamic memory for the private vector variable
+ *  <tt>_scoretpt</tt>. This function is necessary because the vector
  *  is initialized element by element, so the memory must be
  *  allocated
  *  \sa _scoretpt
@@ -893,12 +890,12 @@ public:
 
 
 /** Allocates dynamical memory for a 3-dimensional matrix. In order to do this,
- *  reads the parameter <tt>filtersStructure</tt> and catches it dimensions. 
+ *  reads the parameter <tt>filtersStructure</tt> and catches it dimensions.
  *  Once this is done, the memory can be allocated.
- *  \param filtersStructure - it contains a whole struct filters. The field 
+ *  \param filtersStructure - it contains a whole struct filters. The field
  *  <tt>w</tt> will be got.
  *  \param dimF - is a referenced parameter. Gets the width of the 3D matrix.
- *  \param dimC - is a referenced parameter. Gets the height dimension of the 3D 
+ *  \param dimC - is a referenced parameter. Gets the height dimension of the 3D
  *  matrix.
  *  \param dimA - is a referenced parameter. Gets the depth of the 3D matrix.
  *  \return A tripled pointer to the allocated memory for de 3D matrix.
@@ -906,9 +903,9 @@ public:
   CvMatND *allocateFiltersW (matvar_t *filtersStructure, int pos);
 
 
-/** Converts a given lineal three-dimensional matrix into a tripled pointer 
+/** Converts a given lineal three-dimensional matrix into a tripled pointer
  *  sorted by width, height and depth.
- *  \param vector - is the lineal array, which contains the data. The dimension 
+ *  \param vector - is the lineal array, which contains the data. The dimension
  *  of the vector is dimF * dimC * dimA
  *  \param array - is the place where 3D matrix will be stored neatly.
  *  \param dimF - is the width of the 3D matrix.
@@ -921,22 +918,22 @@ public:
 /** Checks y field <tt>var</tt> is content inside of <tt>matVar</tt> parameter
  *  \param matVar - it contains several structs of fields
  *  \param var - is the name of the field searched
- *  \return It returns <tt>true</tt> if the field <tt>var</tt> is contained in 
+ *  \return It returns <tt>true</tt> if the field <tt>var</tt> is contained in
  *  <tt>matVar</tt>, or <tt>false</tt> otherwise.
  */
   bool existField (matvar_t *matVar, char* var);
 
 /** Output operator overloaded.
  */
-  friend ostream & operator<<(ostream & o, const Model & m);
+  friend std::ostream & operator<<(std::ostream & o, const Model & m);
 
 private:
 
-  string _class;
+  std::string _class;
 
-  string _year;
+  std::string _year;
 
-  string _note;
+  std::string _note;
 
   filters* _filters;
 

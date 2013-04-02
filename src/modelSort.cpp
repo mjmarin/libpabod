@@ -20,7 +20,7 @@ LStructure *modelSort (const Model *m, LStructure* L, int i, int* V)
 
   // Check for cycle containing symbol i
   if (V[i] == 1)
-    cout << "ERROR >> Cycle detected in grammar!" << endl;
+    std::cout << "ERROR >> Cycle detected in grammar!" << std::endl;
 
   // Mark symbol i as pre-visit
   V[i] = 1;

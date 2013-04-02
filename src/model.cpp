@@ -12,7 +12,7 @@ Model::Model ()
   loadEmptyModel();
 }
 
-Model::Model (string fileName)
+Model::Model (std::string fileName)
   : _filters(0)
   , _scoretpt(0)
 {
@@ -21,7 +21,7 @@ Model::Model (string fileName)
 
 
 Model::~Model ()
-{  
+{
   destroyModel();
 }
 
@@ -91,9 +91,9 @@ void Model::destroyModel ()
 
       /*delete[] getSymbols()[i].score;
       getSymbols()[i].score = NULL;*/
-      if (getSymbols()[i].score != NULL) 
-      {  
-         delete [] getSymbols()[i].score;  
+      if (getSymbols()[i].score != NULL)
+      {
+         delete [] getSymbols()[i].score;
          getSymbols()[i].score = NULL;
       }
 
@@ -350,34 +350,33 @@ void Model::loadEmptyModel ()
 
 
 
-void Model::loadFile (string fileName)
+void Model::loadFile (std::string fileName)
 {
   mat_t *file = Mat_Open(fileName.c_str(), MAT_ACC_RDONLY);
   matvar_t *matVar;
-  int total=-1;
 
   // It there was any error to open the file
   if ( file == NULL )
   {
-    cout << "ERROR >> Model file <" << fileName << "> can not be opened" << endl;
+      std::cout << "ERROR >> Model file <" << fileName << "> can not be opened" << std::endl;
     exit(1);
   }
 
-  //cout << "Matfile version:" << file->version << endl;
+  //std::cout << "Matfile version:" << file->version << std::endl;
 
   // The first variable is read
   try {
      matVar = Mat_VarReadNext(file);
   } catch(...)
   {
-      cerr << "ERROR: invalid mat file. Version > 6?" << endl;
+      std::cerr << "ERROR: invalid mat file. Version > 6?" << std::endl;
       exit(1);
   }
 
   // If there was any error to read the variable
   if ( matVar == NULL )
   {
-    cout << "ERROR >> File's variables cannot be read" << endl;
+      std::cout << "ERROR >> File's variables cannot be read" << std::endl;
     exit(1);
   }
 
@@ -385,8 +384,8 @@ void Model::loadFile (string fileName)
   else
   {
     // The total number of fields of structure model is catch
-    total = Mat_VarGetNumberOfFields(matVar);
-  
+    Mat_VarGetNumberOfFields(matVar);
+
     ///////////////////
     // READS 'CLASS' //
     ///////////////////
@@ -534,7 +533,7 @@ void Model::loadClass (matvar_t *matVar)
   strcpy (variable, "class");
 
   if (existField (matVar, variable))
-    setClass (string (readString (matVar, variable)) );
+    setClass (std::string (readString (matVar, variable)) );
 
   else
     setClass ("-");
@@ -552,7 +551,7 @@ void Model::loadYear (matvar_t *matVar)
   strcpy (variable, "year");
 
   if (existField (matVar, variable))
-    setYear (string (readString (matVar, variable)) );
+    setYear (std::string (readString (matVar, variable)) );
 
   else
     setYear ("-");
@@ -569,7 +568,7 @@ void Model::loadNote (matvar_t *matVar )
   strcpy (variable, "note");
 
   if (existField (matVar, variable))
-    setNote (string (readString (matVar, variable)) );
+    setNote (std::string (readString (matVar, variable)) );
 
   else
     setNote ("");
@@ -1262,7 +1261,7 @@ void Model::initializeFilters (matvar_t *filtersStructure)
     f[i].symmetric =  readString (filtersStructure, variable, i)[0];
 
     strcpy (variable, "size");
-    readNumber (filtersStructure, variable, &(f[i].size), 
+    readNumber (filtersStructure, variable, &(f[i].size),
     &(f[i].sizeDim), i);
 
     strcpy (variable, "flip");
@@ -1304,7 +1303,7 @@ void Model::initializeRules (matvar_t *rulesStructure)
     // Type of field is a valid structure
     else
     {
-      /* Catch the number of fields. Is used to distinguish between type 
+      /* Catch the number of fields. Is used to distinguish between type
       of structure 1 or 2 */
       lengthField = vectorLength(field);
 
@@ -1360,7 +1359,7 @@ void Model::initializeSymbols (matvar_t *symbolsStructure)
     strcpy (variable, "type");
     s[j].type = readString (symbolsStructure, variable, j)[0];
 
-    /* The value of 'i' is decremented because it means an array index. 
+    /* The value of 'i' is decremented because it means an array index.
     MatLab indexes start on 1, and C indexes start on 0, so it must be
     decremented by 1 */
     strcpy (variable, "i");
@@ -1376,7 +1375,7 @@ void Model::initializeSymbols (matvar_t *symbolsStructure)
     else
       s[j].filter = auxI[0];
 
-    /* The number of scores is setted like -1, what it means empty 
+    /* The number of scores is setted like -1, what it means empty
     (invalid value) */
     s[j].dimScore = -1;
     s[j].score = NULL;
@@ -1461,7 +1460,7 @@ CvMatND *Model::allocateFiltersW (matvar_t *filtersStructure, int pos)
   assert (variable != NULL);
 
   strcpy (variable, "w");
-  field = Mat_VarGetStructField (filtersStructure, (char*) variable, 
+  field = Mat_VarGetStructField (filtersStructure, (char*) variable,
   BY_NAME, pos);
 
   if ( field != NULL )
@@ -1510,11 +1509,11 @@ bool Model::existField (matvar_t *matVar, char* var)
   return flag;
 }
 
-ostream & operator<<(ostream & co, const Model & m)
+std::ostream & operator<<(std::ostream & co, const Model & m)
 {
-   co << "Model: " << m.getClass() << endl;
-   co << "Note:  " << m.getNote() << endl;
-   co << "Year:  " << m.getYear() << endl;
+   co << "Model: " << m.getClass() << std::endl;
+   co << "Note:  " << m.getNote() << std::endl;
+   co << "Year:  " << m.getYear() << std::endl;
    return co;
 }
 

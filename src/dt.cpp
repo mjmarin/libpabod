@@ -1,17 +1,17 @@
 #include <dt.h>
 
 
-void dtHelper (double *src, double *dst, int *ptr, int step, int s1, int s2, 
-              int d1, int d2, double a, double b) 
+void dtHelper (double *src, double *dst, int *ptr, int step, int s1, int s2,
+              int d1, int d2, double a, double b)
 {
-  if (d2 >= d1) 
+  if (d2 >= d1)
   {
     int d = (d1+d2) >> 1;
     int s = s1;
 
     for (int p = s1+1; p <= s2; p++)
     {
-      if (src[s*step] - a*squared(d-s) - b*(d-s) < 
+      if (src[s*step] - a*squared(d-s) - b*(d-s) <
       src[p*step] - a*squared(d-p) - b*(d-p))
       {
         s = p;
@@ -27,16 +27,16 @@ void dtHelper (double *src, double *dst, int *ptr, int step, int s1, int s2,
 }
 
 
-void dt1d (double *src, double *dst, int *ptr, int step, int n, double a, 
-           double b) 
+void dt1d (double *src, double *dst, int *ptr, int step, int n, double a,
+           double b)
 {
   dtHelper (src, dst, ptr, step, 0, n-1, 0, n-1, a, b);
 }
 
 
-void dt (const CvMat* score, double d0, double d1, double d2, double d3, 
-         CvMat **scoreRet, CvMat** mIx, CvMat** mIy) 
-{ 
+void dt (const CvMat* score, double d0, double d1, double d2, double d3,
+         CvMat **scoreRet, CvMat** mIx, CvMat** mIy)
+{
   int dims[2];
   getDimensions (score, dims);
   double *vals = new double [score->rows * score->cols];
@@ -59,7 +59,7 @@ void dt (const CvMat* score, double d0, double d1, double d2, double d3,
   int *tmpIy = new int [dims[0]*dims[1]];
 
   for (int x = 0; x < dims[1]; x++)
-    dt1d (vals+x*dims[0], tmpM+x*dims[0], tmpIy+x*dims[0], 1, dims[0], 
+    dt1d (vals+x*dims[0], tmpM+x*dims[0], tmpIy+x*dims[0], 1, dims[0],
     ay, by);
 
   for (int y = 0; y < dims[0]; y++)
@@ -68,9 +68,9 @@ void dt (const CvMat* score, double d0, double d1, double d2, double d3,
   int p;
 
   // Get argmins and adjust for matlab indexing from 1
-  for (int x = 0; x < dims[1]; x++) 
+  for (int x = 0; x < dims[1]; x++)
   {
-    for (int y = 0; y < dims[0]; y++) 
+    for (int y = 0; y < dims[0]; y++)
     {
       p = x*dims[0]+y;
       Ix[p] = tmpIx[p];

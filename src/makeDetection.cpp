@@ -13,8 +13,6 @@ float makeDetection (CvMat **results, IplImage *img, Model * model, float thresh
 
   bool found = imgDetect (img, model, thresh, NULL, NEGATIVE_INF, &dets, &boxes, &info);
 
-  int detected = 0;
-
   if (found)
   {
     int *pick;
@@ -34,8 +32,6 @@ float makeDetection (CvMat **results, IplImage *img, Model * model, float thresh
       cvSetReal2D ((*results), i, 4, cvGetReal2D (dets, pick[i], 5));
       cvSetReal2D ((*results), i, 5, cvGetReal2D (dets, pick[i], 4));
     }
-
-    detected = pickDim;
 
     delete[] pick;
   }
@@ -59,10 +55,10 @@ float makeDetection (CvMat **results, IplImage *img, Model * model, float thresh
 		info = NULL;
 	}
 
-  return thresh;   
+  return thresh;
 }
 
-float makeDetection (CvMat **results, IplImage *img, string modelType, float thresh)
+float makeDetection (CvMat **results, IplImage *img, std::string modelType, float thresh)
 {
   float athresh;
   Model *model = new Model(modelType);
