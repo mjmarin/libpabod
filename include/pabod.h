@@ -8,13 +8,14 @@
 
 #include <limits.h>
 #include <highgui.h>
+#include "export.h"
 #include "model.h"
 
 /** \class Pabod
  *  This class implements a part-based object detector.
  */	
 	
-class Pabod{
+class PABOD_EXPORT Pabod{
 	
  public:
 	Pabod();
