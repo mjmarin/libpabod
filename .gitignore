@@ -36,3 +36,9 @@
 Icon?
 ehthumbs.db
 Thumbs.db
+
+# Others #
+##########
+*.aux
+*.bbl
+*.blg
