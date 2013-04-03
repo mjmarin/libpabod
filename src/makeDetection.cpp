@@ -18,7 +18,7 @@ float makeDetection (CvMat **results, IplImage *img, Model * model, float thresh
     int *pick;
     int pickDim;
 
-    nms (&pick, &pickDim, dets, 0.5);
+    nms (&pick, &pickDim, dets, 0.3);
 
     (*results) = cvCreateMat (pickDim, 6, CV_32FC1);
 
