@@ -661,25 +661,16 @@ void Model::loadSymbols (matvar_t *matVar )
 
 void Model::loadNumFilters (matvar_t *matVar )
 {
-  char *variable = new char [11];
-  int dim = 0;
-  int *el = NULL;
+  std::string variable = "numfilters";
 
-  assert (variable != NULL);
-
-  strcpy (variable, "numfilters");
-
-  if (existField (matVar, variable))
+  if (exist_field (matVar, variable))
   {
-    readNumber (matVar, variable, &el, &dim);
+    std::vector<int> el = read_number<int>(matVar, variable);
     setNumFilters (el[0]);
   }
 
   else
     setNumFilters (-1);
-
-  delete[] variable;
-  delete[] el;
 }
 
 void Model::loadNumBlocks (matvar_t *matVar )
@@ -1504,6 +1495,19 @@ bool Model::existField (matvar_t *matVar, char* var)
   bool flag = false;
 
   field = Mat_VarGetStructField (matVar, (char*) var, BY_NAME, 0);
+
+  if ( field != NULL )
+    flag = true;
+
+  return flag;
+}
+
+bool Model::exist_field (matvar_t *matVar, const std::string& var)
+{
+  matvar_t *field;
+  bool flag = false;
+
+  field = Mat_VarGetStructField (matVar, const_cast<char*>(var.c_str()), BY_NAME, 0);
 
   if ( field != NULL )
     flag = true;

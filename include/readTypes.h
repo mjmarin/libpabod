@@ -1,5 +1,7 @@
 #ifndef _READTYPES_H_
 #define _READTYPES_H_
+#include <vector>
+#include <string>
 #include <matio.h>
 #include <custom.h>
 #include <cassert>
@@ -114,6 +116,38 @@ void readNumber (matvar_t *matVar, char* var, Type **number, int* dim, int pos)
         (*number)[i] = (Type) auxNumb[i];
     }
   }
+}
+
+template <class Type>
+std::vector<Type> read_number(matvar_t *matVar, const std::string& var, int pos = 0)
+{
+  matvar_t *field;
+  double* auxNumb = NULL;
+
+  // If the variable is a Struct
+  if ( matVar->data_type == MAT_T_STRUCT )
+    field = Mat_VarGetStructField (matVar, const_cast<char*>(var.c_str()), BY_NAME, pos);
+
+  // If the variable is a Cell
+  else
+    field = Mat_VarGetCell (matVar, pos);
+
+  std::vector<Type> number;
+  if ( field != NULL )
+  {
+    if ( field->data_type == MAT_T_DOUBLE )
+    {
+      auxNumb = (double*) field->data;
+
+      size_t dim = field->nbytes / sizeof(double);
+      number.resize(dim);
+
+      for (size_t i = 0; i < number.size(); i++)
+        number[i] = static_cast<Type>(auxNumb[i]);
+      return number;
+    }
+  }
+  return std::move(number);
 }
 
 

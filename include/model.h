@@ -922,6 +922,7 @@ public:
  *  <tt>matVar</tt>, or <tt>false</tt> otherwise.
  */
   bool existField (matvar_t *matVar, char* var);
+  bool exist_field (matvar_t *matVar, const std::string& var);
 
 /** Output operator overloaded.
  */

@@ -19,7 +19,7 @@ PABOD_EXPORT float makeDetection (CvMat **results, IplImage *img, Model * model,
 
     (*results) = cvCreateMat (pick.size(), 6, CV_32FC1);
 
-    for (int i = 0; i < pick.size(); i++)
+    for (size_t i = 0; i < pick.size(); i++)
     {
       cvSetReal2D ((*results), i, 0, cvGetReal2D (dets, pick[i], 0));
       cvSetReal2D ((*results), i, 1, cvGetReal2D (dets, pick[i], 1));
