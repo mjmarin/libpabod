@@ -801,25 +801,16 @@ void Model::loadSbin (matvar_t *matVar )
 
 void Model::loadThresh (matvar_t *matVar )
 {
-  char *variable = new char [7];
-  int dim = -1;
-  double *el = NULL;
+  std::string variable = "thresh";
 
-  assert (variable != NULL);
-
-  strcpy (variable, "thresh");
-
-  if (existField (matVar, variable))
+  if (exist_field (matVar, variable))
   {
-    readNumber (matVar, variable, &el, &dim);
+    std::vector<double> el = read_number<double>(matVar, variable);
     setThresh (el[0]);
   }
 
   else
     setThresh (-1);
-
-  delete[] variable;
-  delete[] el;
 }
 
 void Model::loadRegmult (matvar_t *matVar )
