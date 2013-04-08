@@ -59,7 +59,6 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
 
   int *tmpX;
   int *tmpY;
-  int *tmpL;
   double *tmpS;
 
   for (int level = model->getInterval() + 1; level < pyra.getDim(); level++)
@@ -78,9 +77,9 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
     Y.insert(Y.end(), tmpY, tmpY + tmpsDim);
     I.insert(I.end(), tmpI, tmpI + tmpsDim);
 
-    createConstVector (level, tmpsDim, &tmpL);
+    std::vector<int> tmpL(tmpsDim, level);
 
-    Lvl.insert(Lvl.end(), tmpL, tmpL + tmpsDim);
+    Lvl.insert(Lvl.end(), tmpL.begin(), tmpL.end());
 
     getMatData <double> (score, ptrScore);
 
@@ -94,7 +93,6 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
     delete[] tmpX;
     delete[] tmpY;
     delete[] tmpI;
-    delete[] tmpL;
     delete[] tmpS;
   }
 
