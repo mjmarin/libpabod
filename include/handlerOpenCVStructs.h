@@ -570,6 +570,28 @@ void getMatData (const CvMat *mat, Type *v)
 
 
 template <class Type>
+std::vector<Type> getMatData (const CvMat *mat)
+{
+  int counter = 0;
+  unsigned int cols = mat->cols;
+  unsigned int rows = mat->rows;
+  unsigned int offset = mat->step/sizeof(uchar);
+
+  std::vector<Type> v(mat->cols * mat->rows);
+  for (unsigned int i = 0; i < cols; i++)
+  {
+    for (unsigned int j = 0; j < rows; j++)
+    {
+      v[counter] = ((Type*) (mat->data.ptr + (offset*j)))[i];
+
+      counter++;
+    }
+  }
+  return std::move(v);
+}
+
+
+template <class Type>
 void setMatData (CvMat *mat, const Type *v)
 {
   int counter = 0;

@@ -58,8 +58,7 @@ void nms (int** pick, int *pickDim,
     cvAddS (p2, cvScalar(1), p2);
     cvMul (p1, p2, area);
 
-    double *areaPtr = new double [area->rows * area->cols];
-    getMatData <double> (area, areaPtr);
+    std::vector<double> areaPtr = getMatData<double>(area);
 
     cvReleaseMat (&x1);
     cvReleaseMat (&y1);
@@ -76,24 +75,10 @@ void nms (int** pick, int *pickDim,
 
     shell_sort (sPtr, dets->rows, ASCEND, idx);
 
-    int last;
-    int i;
-
-    int j;
-
-    double xx1;
-    double yy1;
-    double xx2;
-    double yy2;
-    double w;
-    double h;
-
-    double o;
-
     while (idx.size() > 0)
     {
-      last = idx.size()-1;
-      i = idx[last];
+      int last = idx.size()-1;
+      int i = idx[last];
       appendArray (pick, (*pickDim), &i, 1);
       (*pickDim)++;
 
@@ -102,19 +87,19 @@ void nms (int** pick, int *pickDim,
 
       for (int pos = 0; pos < last; pos++)
       {
-        j = idx[pos];
+        int j = idx[pos];
 
-        xx1 = max (x1Ptr[i], x1Ptr[j]);
-        yy1 = max (y1Ptr[i], y1Ptr[j]);
-        xx2 = min (x2Ptr[i], x2Ptr[j]);
-        yy2 = min (y2Ptr[i], y2Ptr[j]);
-        w = xx2 - xx1 + 1;
-        h = yy2 - yy1 + 1;
+        int xx1 = max (x1Ptr[i], x1Ptr[j]);
+        int yy1 = max (y1Ptr[i], y1Ptr[j]);
+        int xx2 = min (x2Ptr[i], x2Ptr[j]);
+        int yy2 = min (y2Ptr[i], y2Ptr[j]);
+        int w = xx2 - xx1 + 1;
+        int h = yy2 - yy1 + 1;
 
         if (w > 0 && h > 0)
         {
           // Compute overlap
-          o = (w * h) / areaPtr[j];
+          double o = (w * h) / areaPtr[j];
 
           if (o > overlap)
           {
@@ -131,7 +116,6 @@ void nms (int** pick, int *pickDim,
     delete[] x2Ptr;
     delete[] y2Ptr;
     delete[] sPtr;
-    delete[] areaPtr;
   }
 }
 
