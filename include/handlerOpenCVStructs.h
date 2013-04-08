@@ -364,6 +364,9 @@ static inline int pow2(int p) { return (1<<p); }
   template <class Type>
   void shellSort (Type *v, int n, int mode, int **idx = NULL);
 
+  template <class Type>
+  void shell_sort (std::vector<Type>& v, int mode);
+
 
 /////////////////////////
 ///// MISCELLANEOUS /////
@@ -766,6 +769,54 @@ void removeIndexes (Type **original, int dimOr, const int *indexes, int dimIdx)
 
 
 template <class Type>
+void remove_indexes (Type **original, int dimOr, std::vector<size_t> idxes)
+{
+  Type *aux = (*original);
+  std::vector<size_t> sortedIdx = idxes;
+
+  if (dimOr - sortedIdx.size() > 0)
+  {
+    (*original) = new Type [dimOr - sortedIdx.size()];
+
+    shell_sort (sortedIdx, DESCEND);
+
+    for (int i = 0; i < sortedIdx.size(); i++)
+      for (int j = 0; j < dimOr - sortedIdx[i]; j++)
+        aux[sortedIdx[i] + j] = aux[sortedIdx[i] + j + 1];
+
+    for (int i = 0; i < dimOr - sortedIdx.size(); i++)
+      (*original)[i] = aux[i];
+  }
+
+  else
+    (*original) = NULL;
+}
+
+
+template <typename T>
+void remove_index(std::vector<T>& v, const std::vector<size_t>& indexes_to_remove) {
+    if(v.size() < indexes_to_remove.size()) {
+        v.clear();
+        return;
+    } else {
+        std::vector<size_t> u = indexes_to_remove;
+        std::sort(u.begin(), u.end());
+        int current_fill_idx = 0;
+        int current_r_idx = 0;
+        for(size_t i = 0; i < v.size(); ++i) {
+            if(i == u[current_r_idx]) {
+                ++current_r_idx;
+            } else {
+                v[current_fill_idx] = v[i];
+                ++current_fill_idx;
+            }
+        }
+        v.resize(v.size() - u.size());
+    }
+}
+
+
+template <class Type>
 void shellSort (Type *v, int n, int mode, int **idx)
 {
   int curIncr = 0;
@@ -863,6 +914,62 @@ void shellSort (Type *v, int n, int mode, int **idx)
   }
 }
 
+
+template <typename Type>
+void shell_sort(Type* v, const int n, const int mode, std::vector<size_t>& idx)
+{
+    if(mode == ASCEND) {
+        std::stable_sort(v, v + n);
+    } else {
+        std::stable_sort(v, v + n, std::greater<Type>());
+    }
+
+    idx.resize(n);
+    std::iota(idx.begin(), idx.end(), static_cast<size_t>(0));
+    if(mode == ASCEND) {
+        std::stable_sort(v, v + n, [&v](size_t i1, size_t i2) { return v[i1] < v[i2]; });
+    } else {
+        std::stable_sort(v, v + n, [&v](size_t i1, size_t i2) { return v[i1] > v[i2]; });
+    }
+}
+
+template <typename Type>
+void shell_sort(Type* v, const int n, const int mode)
+{
+    if(mode == ASCEND) {
+        std::stable_sort(v, v + n);
+    } else {
+        std::stable_sort(v, v + n, std::greater<Type>());
+    }
+}
+
+template <typename Type>
+void shell_sort(std::vector<Type>& v, const int mode, std::vector<size_t>& idx)
+{
+    if(mode == ASCEND) {
+        std::stable_sort(v.begin(), v.end());
+    } else {
+        std::stable_sort(v.begin(), v.end(), std::greater<Type>());
+    }
+
+    idx.resize(v.size());
+    std::iota(idx.begin(), idx.end(), static_cast<size_t>(0));
+    if(mode == ASCEND) {
+        std::stable_sort(v.begin(), v.end(), [&v](size_t i1, size_t i2) { return v[i1] < v[i2]; });
+    } else {
+        std::stable_sort(v.begin(), v.end(), [&v](size_t i1, size_t i2) { return v[i1] > v[i2]; });
+    }
+}
+
+template <typename Type>
+void shell_sort(std::vector<Type>& v, const int mode)
+{
+    if(mode == ASCEND) {
+        std::stable_sort(v.begin(), v.end());
+    } else {
+        std::stable_sort(v.begin(), v.end(), std::greater<Type>());
+    }
+}
 
 template <class Type>
 int countElementsWhich (int condition, int elem, Type **v, int dim,

@@ -74,13 +74,13 @@ void nms (int** pick, int *pickDim,
 
     int idxDim = dets->rows;
     int *idx = new int [idxDim];
+    //std::vector<size_t> idx;
 
     shellSort (sPtr, dets->rows, ASCEND, &idx);
+    //shell_sort (sPtr, dets->rows, ASCEND, idx);
 
     int last;
     int i;
-    int *suppress = NULL;
-    int suppressDim = 0;
 
     int j;
 
@@ -100,10 +100,8 @@ void nms (int** pick, int *pickDim,
       appendArray (pick, (*pickDim), &i, 1);
       (*pickDim)++;
 
-      suppress = NULL;
-      suppressDim = 0;
-      appendArray (&suppress, suppressDim, &last, 1);
-      suppressDim++;
+      std::vector<size_t> suppress;
+      suppress.push_back(last);
 
       for (int pos = 0; pos < last; pos++)
       {
@@ -123,16 +121,14 @@ void nms (int** pick, int *pickDim,
 
           if (o > overlap)
           {
-            appendArray (&suppress, suppressDim, &pos, 1);
-            suppressDim++;
+            suppress.push_back(pos);
           }
         }
       }
 
-      removeIndexes (&idx, idxDim, suppress, suppressDim);
-      idxDim -= suppressDim;
+      remove_indexes (&idx, idxDim, suppress);
+      idxDim -= suppress.size();
 
-      delete[] suppress;
     }
 
     delete[] x1Ptr;
