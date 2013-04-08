@@ -56,7 +56,7 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
 
   double* ptrScore;
 
-  int *tmpX;
+  std::vector<int> tmpX;
   std::vector<int> tmpY;
   double *tmpS;
 
@@ -70,9 +70,9 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
     // Returns all values of score which are greater or equal to thresh
     tmpI = find (ptrScore, score->rows * score->cols, [thresh](double score){return score > thresh;});
 
-    ind_to_sub (score->rows, score->cols, tmpI.data(), tmpI.size(), tmpY, &tmpX);
+    ind_to_sub (score->rows, score->cols, tmpI.data(), tmpI.size(), tmpY, tmpX);
 
-    X.insert(X.end(), tmpX, tmpX + tmpI.size());
+    X.insert(X.end(), tmpX.begin(), tmpX.end());
     Y.insert(Y.end(), tmpY.begin(), tmpY.end());
     I.insert(I.end(), tmpI.begin(), tmpI.end());
 
@@ -89,7 +89,6 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
     SDim += tmpI.size();
 
     delete[] ptrScore;
-    delete[] tmpX;
     delete[] tmpS;
   }
 
