@@ -43,11 +43,8 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
   delete[] L;
 
   // Find scores above threshold
-  //int *X = NULL;
-  //int XDim = 0;
   std::vector<int> X;
-  int *Y = NULL;
-  int YDim = 0;
+  std::vector<int> Y;
   int *I = NULL;
   int IDim = 0;
   int *Lvl = NULL;
@@ -79,14 +76,8 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
 
     ind2sub (score->rows, score->cols, tmpI, tmpsDim, &tmpY, &tmpX);
 
-    //appendArray (&X, XDim, tmpX, tmpsDim);
     X.insert(X.end(), tmpX, tmpX + tmpsDim);
-
-    //XDim += tmpsDim;
-
-    appendArray (&Y, YDim, tmpY, tmpsDim);
-
-    YDim += tmpsDim;
+    Y.insert(Y.end(), tmpY, tmpY + tmpsDim);
 
     appendArray (&I, IDim, tmpI, tmpsDim);
 
@@ -118,16 +109,15 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
 
   shellSort (S, SDim, DESCEND, (&idx));
 
-  //getElemOnIdx (X, XDim, idx, idxDim, &X);
   X = get_elem_on_idx(X, idx, idx + idxDim);
-  getElemOnIdx (Y, YDim, idx, idxDim, &Y);
+  Y = get_elem_on_idx(Y, idx, idx + idxDim);
   getElemOnIdx (I, IDim, idx, idxDim, &I);
   getElemOnIdx (Lvl, LvlDim, idx, idxDim, &Lvl);
 
   for (int m = 0; m < X.size(); m++)
     X[m]++;
 
-  for (int m = 0; m < YDim; m++)
+  for (int m = 0; m < Y.size(); m++)
     Y[m]++;
 
   for (int m = 0; m < IDim; m++)
@@ -138,11 +128,9 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
 
   // Compute detection bounding boxes and parse information
   getDetections (model, pyra.getPadX(), pyra.getPadY(), pyra.getScales(),
-                 X.data(), Y, Lvl, S, X.size(), dets, boxes, info);
+                 X.data(), Y.data(), Lvl, S, X.size(), dets, boxes, info);
 
   delete[] idx;
-  //delete[] X;
-  delete[] Y;
   delete[] I;
   delete[] Lvl;
   delete[] S;
