@@ -99,13 +99,13 @@ void ind2sub (const int nRows, const int nCols, const int *v, const int nV,
   }
 }
 
-void ind_to_sub (const int nRows, const int nCols, const size_t *v, const int nV,
+void ind_to_sub (const int nRows, const int nCols, const std::vector<size_t>& v,
               std::vector<int>& rowsIdx, std::vector<int>& colsIdx)
 {
-  rowsIdx.resize(nV);
-  colsIdx.resize(nV);
+  rowsIdx.resize(v.size());
+  colsIdx.resize(v.size());
 
-  for (int i = 0; i < nV; i++)
+  for (int i = 0; i < v.size(); i++)
   {
     rowsIdx[i] = v[i] % nRows;
 

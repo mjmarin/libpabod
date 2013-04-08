@@ -66,7 +66,7 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
     // Returns all values of score which are greater or equal to thresh
     tmpI = find (ptrScore, [thresh](double score){return score > thresh;});
 
-    ind_to_sub (score->rows, score->cols, tmpI.data(), tmpI.size(), tmpY, tmpX);
+    ind_to_sub (score->rows, score->cols, tmpI, tmpY, tmpX);
 
     X.insert(X.end(), tmpX.begin(), tmpX.end());
     Y.insert(Y.end(), tmpY.begin(), tmpY.end());

@@ -308,7 +308,7 @@ static inline int pow2(int p) { return (1<<p); }
   void ind2sub (const int nRows, const int nCols, const int *v, const int nV,
                 int **rowsIdx, int **colsIdx);
 
-  void ind_to_sub (const int nRows, const int nCols, const size_t *v, const int nV,
+  void ind_to_sub (const int nRows, const int nCols, const std::vector<size_t>& v,
                 std::vector<int>& rowsIdx, std::vector<int>& colsIdx);
 
 
