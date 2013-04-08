@@ -45,8 +45,7 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
   // Find scores above threshold
   std::vector<int> X;
   std::vector<int> Y;
-  int *I = NULL;
-  int IDim = 0;
+  std::vector<int> I;
   int *Lvl = NULL;
   int LvlDim = 0;
   double *S = NULL;
@@ -78,10 +77,7 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
 
     X.insert(X.end(), tmpX, tmpX + tmpsDim);
     Y.insert(Y.end(), tmpY, tmpY + tmpsDim);
-
-    appendArray (&I, IDim, tmpI, tmpsDim);
-
-    IDim += tmpsDim;
+    I.insert(I.end(), tmpI, tmpI + tmpsDim);
 
     createConstVector (level, tmpsDim, &tmpL);
 
@@ -111,7 +107,7 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
 
   X = get_elem_on_idx(X, idx, idx + idxDim);
   Y = get_elem_on_idx(Y, idx, idx + idxDim);
-  getElemOnIdx (I, IDim, idx, idxDim, &I);
+  I = get_elem_on_idx(I, idx, idx + idxDim);
   getElemOnIdx (Lvl, LvlDim, idx, idxDim, &Lvl);
 
   for (int m = 0; m < X.size(); m++)
@@ -120,7 +116,7 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
   for (int m = 0; m < Y.size(); m++)
     Y[m]++;
 
-  for (int m = 0; m < IDim; m++)
+  for (int m = 0; m < I.size(); m++)
     I[m]++;
 
   for (int m = 0; m < LvlDim; m++)
@@ -131,7 +127,6 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
                  X.data(), Y.data(), Lvl, S, X.size(), dets, boxes, info);
 
   delete[] idx;
-  delete[] I;
   delete[] Lvl;
   delete[] S;
 }
