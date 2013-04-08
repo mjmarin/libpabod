@@ -1212,6 +1212,17 @@ std::vector<Type> get_elem_on_idx(const std::vector<Type>& v, IdxIter idx_begin,
 }
 
 
+template <typename Type, typename IdxIter>
+std::vector<Type> get_elem_on_idx(Type* v_begin, IdxIter idx_begin, IdxIter idx_end)
+{
+  std::vector<Type> result;
+  for(IdxIter i = idx_begin; i < idx_end; ++i) {
+    result.push_back(*(v_begin + *i));
+  }
+  return std::move(result);
+}
+
+
 template <class Type>
 void createConstVector (Type value, int dim, Type **v)
 {

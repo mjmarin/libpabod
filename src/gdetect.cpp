@@ -58,7 +58,6 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
 
   std::vector<int> tmpX;
   std::vector<int> tmpY;
-  double *tmpS;
 
   for (int level = model->getInterval() + 1; level < pyra.getDim(); level++)
   {
@@ -75,21 +74,18 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
     X.insert(X.end(), tmpX.begin(), tmpX.end());
     Y.insert(Y.end(), tmpY.begin(), tmpY.end());
     I.insert(I.end(), tmpI.begin(), tmpI.end());
-
     std::vector<int> tmpL(tmpI.size(), level);
-
     Lvl.insert(Lvl.end(), tmpL.begin(), tmpL.end());
 
     getMatData <double> (score, ptrScore);
 
-    getElemOnIdx (ptrScore, score->rows * score->cols, tmpI.data(), tmpI.size(), &tmpS);
+    std::vector<double> tmpS = get_elem_on_idx<double, std::vector<size_t>::iterator>(ptrScore, tmpI.begin(), tmpI.end());
 
-    appendArray (&S, SDim, tmpS, tmpI.size());
+    appendArray (&S, SDim, tmpS.data(), tmpI.size());
 
     SDim += tmpI.size();
 
     delete[] ptrScore;
-    delete[] tmpS;
   }
 
   idxDim = SDim;
