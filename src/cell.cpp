@@ -223,6 +223,7 @@ void Cell::loadLhs (matvar_t *matVar, int i)
 
 void Cell::loadRhs (matvar_t *matVar, int i, bool scalar)
 {
+  (void)scalar;
   char *variable = new char [4];
   int *auxInt = NULL;
 

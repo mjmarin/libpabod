@@ -82,16 +82,16 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
   I   = get_elem_on_idx(I  , idx.begin(), idx.end());
   Lvl = get_elem_on_idx(Lvl, idx.begin(), idx.end());
 
-  for (int m = 0; m < X.size(); m++)
+  for (std::vector<int>::size_type m = 0; m < X.size(); m++)
     X[m]++;
 
-  for (int m = 0; m < Y.size(); m++)
+  for (std::vector<int>::size_type m = 0; m < Y.size(); m++)
     Y[m]++;
 
-  for (int m = 0; m < I.size(); m++)
+  for (std::vector<int>::size_type m = 0; m < I.size(); m++)
     I[m]++;
 
-  for (int m = 0; m < Lvl.size(); m++)
+  for (std::vector<int>::size_type m = 0; m < Lvl.size(); m++)
     Lvl[m]++;
 
   // Compute detection bounding boxes and parse information
@@ -104,6 +104,11 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
 void symbolScore (Model *model, int s, bool latent, const FeatPyramid &pyra,
                   double *bbox, double overlap)
 {
+  (void)latent;
+  (void)pyra;
+  (void)bbox;
+  (void)overlap;
+
   // Take pointwise max over scores for each rule with s as the lhs
   rules r = model->getRules()[s];
   CvMat **score = r.structure[0].getScore();
@@ -487,6 +492,9 @@ int* validateLevels (const Model *model, const FeatPyramid &pyra,
                      bool latent, double *bbox, double overlap,
                      int *dim)
 {
+  (void)model;
+  (void)bbox;
+  (void)overlap;
   int *levels = NULL;
 
   if (!latent)

@@ -64,7 +64,8 @@ CvMat* sub_mat (const CvMat* mat, const std::vector<int>& iy, const std::vector<
 {
   CvMat *aux;
 
-  if ( (iy.size() >= mat->rows && ix.size() >= mat->cols) ||
+  if ( (iy.size() >= static_cast<std::vector<int>::size_type>(mat->rows) &&
+        ix.size() >= static_cast<std::vector<int>::size_type>(mat->cols)) ||
         iy.size() <= 0 ||
         ix.size() <= 0)
     aux = cvCloneMat (mat);
@@ -73,8 +74,8 @@ CvMat* sub_mat (const CvMat* mat, const std::vector<int>& iy, const std::vector<
   {
     aux = cvCreateMat (iy.size(), ix.size(), mat->type);
 
-    for (int i = 0; i < iy.size(); i++)
-      for (int j = 0; j < ix.size(); j++)
+    for (size_t i = 0; i < iy.size(); i++)
+      for (size_t j = 0; j < ix.size(); j++)
         cvSetReal2D (aux, i, j, cvGetReal2D (mat, iy[i], ix[j]));
   }
 
@@ -84,6 +85,7 @@ CvMat* sub_mat (const CvMat* mat, const std::vector<int>& iy, const std::vector<
 void ind2sub (const int nRows, const int nCols, const int *v, const int nV,
               int **rowsIdx, int **colsIdx)
 {
+  (void)nCols;
   (*rowsIdx) = new int [nV];
   (*colsIdx) = new int [nV];
 
@@ -102,10 +104,11 @@ void ind2sub (const int nRows, const int nCols, const int *v, const int nV,
 void ind_to_sub (const int nRows, const int nCols, const std::vector<size_t>& v,
               std::vector<int>& rowsIdx, std::vector<int>& colsIdx)
 {
+  (void)nCols;
   rowsIdx.resize(v.size());
   colsIdx.resize(v.size());
 
-  for (int i = 0; i < v.size(); i++)
+  for (std::vector<size_t>::size_type i = 0; i < v.size(); i++)
   {
     rowsIdx[i] = v[i] % nRows;
 
