@@ -773,25 +773,16 @@ void Model::loadMinSize (matvar_t *matVar )
 
 void Model::loadInterval (matvar_t *matVar )
 {
-  char *variable = new char [9];
-  int dim = -1;
-  int *el = NULL;
+  std::string variable = "interval";
 
-  assert (variable != NULL);
-
-  strcpy (variable, "interval");
-
-  if (existField (matVar, variable))
+  if (exist_field (matVar, variable))
   {
-    readNumber (matVar, variable, &el, &dim);
+    std::vector<int> el = read_number<int>(matVar, variable);
     setInterval (el[0]-1);
   }
 
   else
     setInterval (-1);
-
-  delete[] variable;
-  delete[] el;
 }
 
 void Model::loadSbin (matvar_t *matVar )
