@@ -1164,6 +1164,28 @@ void getElemOnIdx (const Type *mat, int matDim, const int *idx, int idxDim,
 
 
 template <class Type>
+std::vector<Type> get_elem_on_idx(const std::vector<Type>& v, const std::vector<size_t>& idx)
+{
+  std::vector<Type> result(idx.size());
+  for(std::vector<size_t>::size_type i = 0; i < idx.size(); ++i) {
+    result[i] = v[idx[i]];
+  }
+  return std::move(result);
+}
+
+
+template <typename Type, typename IdxIter>
+std::vector<Type> get_elem_on_idx(const std::vector<Type>& v, IdxIter idx_begin, IdxIter idx_end)
+{
+  std::vector<Type> result;
+  for(IdxIter i = idx_begin; i < idx_end; ++i) {
+    result.push_back(v[*i]);
+  }
+  return std::move(result);
+}
+
+
+template <class Type>
 void createConstVector (Type value, int dim, Type **v)
 {
   (*v) = new Type [dim];

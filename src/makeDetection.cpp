@@ -15,10 +15,6 @@ PABOD_EXPORT float makeDetection (CvMat **results, IplImage *img, Model * model,
 
   if (found)
   {
-    //int *pick;
-    //int pickDim;
-
-    //nms (&pick, &pickDim, dets, 0.3);
     std::vector<int> pick = nms (dets, 0.3);
 
     (*results) = cvCreateMat (pick.size(), 6, CV_32FC1);
@@ -33,8 +29,6 @@ PABOD_EXPORT float makeDetection (CvMat **results, IplImage *img, Model * model,
       cvSetReal2D ((*results), i, 4, cvGetReal2D (dets, pick[i], 5));
       cvSetReal2D ((*results), i, 5, cvGetReal2D (dets, pick[i], 4));
     }
-
-    //delete[] pick;
   }
 
 	else
