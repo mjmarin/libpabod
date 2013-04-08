@@ -57,7 +57,7 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
   double* ptrScore;
 
   int *tmpX;
-  int *tmpY;
+  std::vector<int> tmpY;
   double *tmpS;
 
   for (int level = model->getInterval() + 1; level < pyra.getDim(); level++)
@@ -70,10 +70,10 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
     // Returns all values of score which are greater or equal to thresh
     tmpI = find (ptrScore, score->rows * score->cols, [thresh](double score){return score > thresh;});
 
-    ind_to_sub (score->rows, score->cols, tmpI.data(), tmpI.size(), &tmpY, &tmpX);
+    ind_to_sub (score->rows, score->cols, tmpI.data(), tmpI.size(), tmpY, &tmpX);
 
     X.insert(X.end(), tmpX, tmpX + tmpI.size());
-    Y.insert(Y.end(), tmpY, tmpY + tmpI.size());
+    Y.insert(Y.end(), tmpY.begin(), tmpY.end());
     I.insert(I.end(), tmpI.begin(), tmpI.end());
 
     std::vector<int> tmpL(tmpI.size(), level);
@@ -90,7 +90,6 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
 
     delete[] ptrScore;
     delete[] tmpX;
-    delete[] tmpY;
     delete[] tmpS;
   }
 

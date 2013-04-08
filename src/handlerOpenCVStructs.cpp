@@ -100,14 +100,14 @@ void ind2sub (const int nRows, const int nCols, const int *v, const int nV,
 }
 
 void ind_to_sub (const int nRows, const int nCols, const size_t *v, const int nV,
-              int **rowsIdx, int **colsIdx)
+              std::vector<int>& rowsIdx, int **colsIdx)
 {
-  (*rowsIdx) = new int [nV];
+  rowsIdx.resize(nV);
   (*colsIdx) = new int [nV];
 
   for (int i = 0; i < nV; i++)
   {
-    (*rowsIdx)[i] = v[i] % nRows;
+    rowsIdx[i] = v[i] % nRows;
 
     if (v[i] != 0)
       (*colsIdx)[i] = v[i] / nRows;

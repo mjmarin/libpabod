@@ -309,7 +309,7 @@ static inline int pow2(int p) { return (1<<p); }
                 int **rowsIdx, int **colsIdx);
 
   void ind_to_sub (const int nRows, const int nCols, const size_t *v, const int nV,
-                int **rowsIdx, int **colsIdx);
+                std::vector<int>& rowsIdx, int **colsIdx);
 
 
 /** Sets all the elements of matrix <tt>mat</tt> to value <tt>val</tt>
