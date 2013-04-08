@@ -286,6 +286,8 @@ static inline int pow2(int p) { return (1<<p); }
   CvMat* subMat (const CvMat* mat, int* iy, int iyDim, int* ix,
                  int ixDim);
 
+  CvMat* sub_mat (const CvMat* mat, const std::vector<int>& iy, const std::vector<int>& ix);
+
 
 /** The function converts values of vector <tt>v</tt> to matrix indexes.
  *  For this, treat each value of the vector like a position of the matrix
@@ -570,7 +572,7 @@ void getMatData (const CvMat *mat, Type *v)
 
 
 template <class Type>
-std::vector<Type> getMatData (const CvMat *mat)
+std::vector<Type> get_mat_data (const CvMat *mat)
 {
   int counter = 0;
   unsigned int cols = mat->cols;

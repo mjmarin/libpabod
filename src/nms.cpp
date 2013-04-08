@@ -15,30 +15,23 @@ void nms (int** pick, int *pickDim,
     *pick = NULL;
     *pickDim = 0;
 
-    int *rows = new int [dets->rows];
-    for (int i = 0; i < dets->rows; i++)
-      rows[i] = i;
+    std::vector<int> rows(dets->rows);
+    std::iota(rows.begin(), rows.end(), 0);
 
-    int col;
-    col = 0;
-    CvMat *x1 = subMat (dets, rows, dets->rows, &col, 1);
-    std::vector<double> x1Ptr = getMatData<double>(x1);
+    CvMat *x1 = sub_mat (dets, rows, {0});
+    std::vector<double> x1Ptr = get_mat_data<double>(x1);
 
-    col = 1;
-    CvMat *y1 = subMat (dets, rows, dets->rows, &col, 1);
-    std::vector<double> y1Ptr = getMatData<double>(y1);
+    CvMat *y1 = sub_mat (dets, rows, {1});
+    std::vector<double> y1Ptr = get_mat_data<double>(y1);
 
-    col = 2;
-    CvMat *x2 = subMat (dets, rows, dets->rows, &col, 1);
-    std::vector<double> x2Ptr = getMatData<double>(x2);
+    CvMat *x2 = sub_mat (dets, rows, {2});
+    std::vector<double> x2Ptr = get_mat_data<double>(x2);
 
-    col = 3;
-    CvMat *y2 = subMat (dets, rows, dets->rows, &col, 1);
-    std::vector<double> y2Ptr = getMatData<double>(y2);
+    CvMat *y2 = sub_mat (dets, rows, {3});
+    std::vector<double> y2Ptr = get_mat_data<double>(y2);
 
-    col = 5;
-    CvMat *s = subMat (dets, rows, dets->rows, &col, 1);
-    std::vector<double> sPtr = getMatData<double>(s);
+    CvMat *s = sub_mat (dets, rows, {5});
+    std::vector<double> sPtr = get_mat_data<double>(s);
 
     int areaDims[2] = {dets->rows, 1};
 
@@ -53,7 +46,7 @@ void nms (int** pick, int *pickDim,
     cvAddS (p2, cvScalar(1), p2);
     cvMul (p1, p2, area);
 
-    std::vector<double> areaPtr = getMatData<double>(area);
+    std::vector<double> areaPtr = get_mat_data<double>(area);
 
     cvReleaseMat (&x1);
     cvReleaseMat (&y1);
@@ -64,7 +57,6 @@ void nms (int** pick, int *pickDim,
     cvReleaseMat (&area);
     cvReleaseMat (&p1);
     cvReleaseMat (&p2);
-    delete[] rows;
 
     std::vector<size_t> idx;
 

@@ -60,6 +60,27 @@ CvMat* subMat (const CvMat* mat, int* iy, int iyDim, int* ix, int ixDim)
   return aux;
 }
 
+CvMat* sub_mat (const CvMat* mat, const std::vector<int>& iy, const std::vector<int>& ix)
+{
+  CvMat *aux;
+
+  if ( (iy.size() >= mat->rows && ix.size() >= mat->cols) ||
+        iy.size() <= 0 ||
+        ix.size() <= 0)
+    aux = cvCloneMat (mat);
+
+  else
+  {
+    aux = cvCreateMat (iy.size(), ix.size(), mat->type);
+
+    for (int i = 0; i < iy.size(); i++)
+      for (int j = 0; j < ix.size(); j++)
+        cvSetReal2D (aux, i, j, cvGetReal2D (mat, iy[i], ix[j]));
+  }
+
+  return aux;
+}
+
 void ind2sub (const int nRows, const int nCols, const int *v, const int nV,
               int **rowsIdx, int **colsIdx)
 {
