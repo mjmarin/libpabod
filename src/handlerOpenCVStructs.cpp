@@ -99,6 +99,24 @@ void ind2sub (const int nRows, const int nCols, const int *v, const int nV,
   }
 }
 
+void ind_to_sub (const int nRows, const int nCols, const size_t *v, const int nV,
+              int **rowsIdx, int **colsIdx)
+{
+  (*rowsIdx) = new int [nV];
+  (*colsIdx) = new int [nV];
+
+  for (int i = 0; i < nV; i++)
+  {
+    (*rowsIdx)[i] = v[i] % nRows;
+
+    if (v[i] != 0)
+      (*colsIdx)[i] = v[i] / nRows;
+
+    else
+      (*colsIdx)[i] = 0;
+  }
+}
+
 bool matToFile(const CvMat * mat, const char * filename)
 {
     std::ofstream fid;

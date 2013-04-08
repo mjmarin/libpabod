@@ -52,8 +52,7 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
   int *idx = NULL;
   int idxDim = 0;
 
-  int tmpsDim;
-  int *tmpI;
+  std::vector<size_t> tmpI;
 
   double* ptrScore;
 
@@ -69,30 +68,29 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
     getMatData <double> (score, ptrScore);
 
     // Returns all values of score which are greater or equal to thresh
-    tmpsDim = find (HIGHER, ptrScore, score->rows * score->cols, thresh, &tmpI);
+    tmpI = find (ptrScore, score->rows * score->cols, [thresh](double score){return score > thresh;});
 
-    ind2sub (score->rows, score->cols, tmpI, tmpsDim, &tmpY, &tmpX);
+    ind_to_sub (score->rows, score->cols, tmpI.data(), tmpI.size(), &tmpY, &tmpX);
 
-    X.insert(X.end(), tmpX, tmpX + tmpsDim);
-    Y.insert(Y.end(), tmpY, tmpY + tmpsDim);
-    I.insert(I.end(), tmpI, tmpI + tmpsDim);
+    X.insert(X.end(), tmpX, tmpX + tmpI.size());
+    Y.insert(Y.end(), tmpY, tmpY + tmpI.size());
+    I.insert(I.end(), tmpI.begin(), tmpI.end());
 
-    std::vector<int> tmpL(tmpsDim, level);
+    std::vector<int> tmpL(tmpI.size(), level);
 
     Lvl.insert(Lvl.end(), tmpL.begin(), tmpL.end());
 
     getMatData <double> (score, ptrScore);
 
-    getElemOnIdx (ptrScore, score->rows * score->cols, tmpI, tmpsDim, &tmpS);
+    getElemOnIdx (ptrScore, score->rows * score->cols, tmpI.data(), tmpI.size(), &tmpS);
 
-    appendArray (&S, SDim, tmpS, tmpsDim);
+    appendArray (&S, SDim, tmpS, tmpI.size());
 
-    SDim += tmpsDim;
+    SDim += tmpI.size();
 
     delete[] ptrScore;
     delete[] tmpX;
     delete[] tmpY;
-    delete[] tmpI;
     delete[] tmpS;
   }
 

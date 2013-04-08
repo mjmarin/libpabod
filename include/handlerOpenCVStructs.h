@@ -308,6 +308,9 @@ static inline int pow2(int p) { return (1<<p); }
   void ind2sub (const int nRows, const int nCols, const int *v, const int nV,
                 int **rowsIdx, int **colsIdx);
 
+  void ind_to_sub (const int nRows, const int nCols, const size_t *v, const int nV,
+                int **rowsIdx, int **colsIdx);
+
 
 /** Sets all the elements of matrix <tt>mat</tt> to value <tt>val</tt>
  *  \param mat - matrix whose elements will be setted
@@ -1093,6 +1096,18 @@ int countElementsWhich (int condition, int elem, Type **v, int dim,
 }
 
 
+template <typename Type, typename Func>
+std::vector<size_t> find(const Type* mat, int dim, Func f)
+{
+  std::vector<size_t> result;
+  for(size_t i = 0; i < dim; ++i) {
+    if(f(mat[i])) {
+      result.push_back(i);
+    }
+  }
+  return std::move(result);
+}
+
 template <class Type>
 int find (int condition, const Type *mat, int dim, Type elem,
           int **found)
@@ -1152,6 +1167,18 @@ int find (int condition, const Type *mat, int dim, Type elem,
 
 template <class Type>
 void getElemOnIdx (const Type *mat, int matDim, const int *idx, int idxDim,
+                   Type **elems)
+{
+  assert (matDim >= idxDim);
+
+  (*elems) = new Type [idxDim];
+
+  for (int i = 0; i < idxDim; i++)
+    (*elems)[i] = mat[idx[i]];
+}
+
+template <class Type>
+void getElemOnIdx (const Type *mat, int matDim, const size_t *idx, int idxDim,
                    Type **elems)
 {
   assert (matDim >= idxDim);
