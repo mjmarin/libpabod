@@ -794,7 +794,7 @@ void remove_indexes (Type **original, int dimOr, std::vector<size_t> idxes)
 
 
 template <typename T>
-void remove_index(std::vector<T>& v, const std::vector<size_t>& indexes_to_remove) {
+void remove_indexes(std::vector<T>& v, const std::vector<size_t>& indexes_to_remove) {
     if(v.size() < indexes_to_remove.size()) {
         v.clear();
         return;
@@ -918,18 +918,18 @@ void shellSort (Type *v, int n, int mode, int **idx)
 template <typename Type>
 void shell_sort(Type* v, const int n, const int mode, std::vector<size_t>& idx)
 {
+    idx.resize(n);
+    std::iota(idx.begin(), idx.end(), static_cast<size_t>(0));
+    if(mode == ASCEND) {
+        std::stable_sort(idx.begin(), idx.end(), [&v](size_t i1, size_t i2) { return v[i1] < v[i2]; });
+    } else {
+        std::stable_sort(idx.begin(), idx.end(), [&v](size_t i1, size_t i2) { return v[i1] > v[i2]; });
+    }
+
     if(mode == ASCEND) {
         std::stable_sort(v, v + n);
     } else {
         std::stable_sort(v, v + n, std::greater<Type>());
-    }
-
-    idx.resize(n);
-    std::iota(idx.begin(), idx.end(), static_cast<size_t>(0));
-    if(mode == ASCEND) {
-        std::stable_sort(v, v + n, [&v](size_t i1, size_t i2) { return v[i1] < v[i2]; });
-    } else {
-        std::stable_sort(v, v + n, [&v](size_t i1, size_t i2) { return v[i1] > v[i2]; });
     }
 }
 
@@ -946,18 +946,18 @@ void shell_sort(Type* v, const int n, const int mode)
 template <typename Type>
 void shell_sort(std::vector<Type>& v, const int mode, std::vector<size_t>& idx)
 {
+    idx.resize(v.size());
+    std::iota(idx.begin(), idx.end(), static_cast<size_t>(0));
+    if(mode == ASCEND) {
+        std::stable_sort(idx.begin(), idx.end(), [&v](size_t i1, size_t i2) { return v[i1] < v[i2]; });
+    } else {
+        std::stable_sort(idx.begin(), idx.end(), [&v](size_t i1, size_t i2) { return v[i1] > v[i2]; });
+    }
+
     if(mode == ASCEND) {
         std::stable_sort(v.begin(), v.end());
     } else {
         std::stable_sort(v.begin(), v.end(), std::greater<Type>());
-    }
-
-    idx.resize(v.size());
-    std::iota(idx.begin(), idx.end(), static_cast<size_t>(0));
-    if(mode == ASCEND) {
-        std::stable_sort(v.begin(), v.end(), [&v](size_t i1, size_t i2) { return v[i1] < v[i2]; });
-    } else {
-        std::stable_sort(v.begin(), v.end(), [&v](size_t i1, size_t i2) { return v[i1] > v[i2]; });
     }
 }
 

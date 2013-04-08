@@ -72,12 +72,9 @@ void nms (int** pick, int *pickDim,
     cvReleaseMat (&p2);
     delete[] rows;
 
-    int idxDim = dets->rows;
-    int *idx = new int [idxDim];
-    //std::vector<size_t> idx;
+    std::vector<size_t> idx;
 
-    shellSort (sPtr, dets->rows, ASCEND, &idx);
-    //shell_sort (sPtr, dets->rows, ASCEND, idx);
+    shell_sort (sPtr, dets->rows, ASCEND, idx);
 
     int last;
     int i;
@@ -93,9 +90,9 @@ void nms (int** pick, int *pickDim,
 
     double o;
 
-    while (idxDim > 0)
+    while (idx.size() > 0)
     {
-      last = idxDim-1;
+      last = idx.size()-1;
       i = idx[last];
       appendArray (pick, (*pickDim), &i, 1);
       (*pickDim)++;
@@ -126,9 +123,7 @@ void nms (int** pick, int *pickDim,
         }
       }
 
-      remove_indexes (&idx, idxDim, suppress);
-      idxDim -= suppress.size();
-
+      remove_indexes (idx, suppress);
     }
 
     delete[] x1Ptr;
@@ -137,7 +132,6 @@ void nms (int** pick, int *pickDim,
     delete[] y2Ptr;
     delete[] sPtr;
     delete[] areaPtr;
-    delete[] idx;
   }
 }
 
