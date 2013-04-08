@@ -54,8 +54,6 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
 
   std::vector<size_t> tmpI;
 
-  double* ptrScore;
-
   std::vector<int> tmpX;
   std::vector<int> tmpY;
 
@@ -63,11 +61,10 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
   {
     CvMat* score = model->getSymbols()[(int) model->getStart()].score[level];
 
-    ptrScore = new double [score->rows * score->cols];
-    getMatData <double> (score, ptrScore);
+    std::vector<double> ptrScore = get_mat_data<double>(score);
 
     // Returns all values of score which are greater or equal to thresh
-    tmpI = find (ptrScore, score->rows * score->cols, [thresh](double score){return score > thresh;});
+    tmpI = find (ptrScore, [thresh](double score){return score > thresh;});
 
     ind_to_sub (score->rows, score->cols, tmpI.data(), tmpI.size(), tmpY, tmpX);
 
@@ -77,15 +74,12 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
     std::vector<int> tmpL(tmpI.size(), level);
     Lvl.insert(Lvl.end(), tmpL.begin(), tmpL.end());
 
-    getMatData <double> (score, ptrScore);
-
-    std::vector<double> tmpS = get_elem_on_idx<double, std::vector<size_t>::iterator>(ptrScore, tmpI.begin(), tmpI.end());
+    std::vector<double> tmpS = get_elem_on_idx(ptrScore, tmpI.begin(), tmpI.end());
 
     appendArray (&S, SDim, tmpS.data(), tmpI.size());
 
     SDim += tmpI.size();
 
-    delete[] ptrScore;
   }
 
   idxDim = SDim;

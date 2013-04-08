@@ -1097,10 +1097,10 @@ int countElementsWhich (int condition, int elem, Type **v, int dim,
 
 
 template <typename Type, typename Func>
-std::vector<size_t> find(const Type* mat, int dim, Func f)
+std::vector<size_t> find(const std::vector<Type>& mat, Func f)
 {
   std::vector<size_t> result;
-  for(size_t i = 0; i < dim; ++i) {
+  for(size_t i = 0; i < mat.size(); ++i) {
     if(f(mat[i])) {
       result.push_back(i);
     }
