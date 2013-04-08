@@ -1181,18 +1181,20 @@ void Model::initializeFilters (matvar_t *filtersStructure)
 
   for (int i = 0; i < length; i++ )
   {
-    double *auxD = NULL;
-    int *auxI = NULL;
+    //double *auxD = NULL;
+    //int *auxI = NULL;
+    std::vector<double> auxD;
+    std::vector<int> auxI;
 
     strcpy (variable, "w");
-    readNumber (filtersStructure, variable, &auxD, &dim, i);
+    auxD = read_number<double>(filtersStructure, variable, i);
 
     f[i].w = allocateFiltersW (filtersStructure, i);
 
-    convertVectorTo3DArray (auxD, f[i].w);
+    convertVectorTo3DArray (auxD.data(), f[i].w);
 
     strcpy (variable, "blocklabel");
-    readNumber (filtersStructure, variable, &auxI, &dim, i);
+    auxI = read_number<int>(filtersStructure, variable, i);
     f[i].blocklabel = auxI[0];
 
     strcpy (variable, "symmetric");
@@ -1206,11 +1208,8 @@ void Model::initializeFilters (matvar_t *filtersStructure)
     f[i].flip =  readLogical (filtersStructure, variable, i);
 
     strcpy (variable, "symbol");
-    readNumber (filtersStructure, variable, &auxI, &dim, i);
+    auxI = read_number<int>(filtersStructure, variable, i);
     f[i].symbol = auxI[0];
-
-    delete[] auxD;
-    delete[] auxI;
   }
 
   setFilters (f);
