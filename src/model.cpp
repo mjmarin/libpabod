@@ -1236,8 +1236,6 @@ void Model::initializeFilters (matvar_t *filtersStructure)
   filters *f = new filters [length];
   char *variable = new char [12];
   int dim = -1;
-  double *auxD = NULL;
-  int *auxI = NULL;
 
   assert (f != NULL);
   assert (variable != NULL);
@@ -1246,6 +1244,9 @@ void Model::initializeFilters (matvar_t *filtersStructure)
 
   for (int i = 0; i < length; i++ )
   {
+    double *auxD = NULL;
+    int *auxI = NULL;
+
     strcpy (variable, "w");
     readNumber (filtersStructure, variable, &auxD, &dim, i);
 
@@ -1270,14 +1271,15 @@ void Model::initializeFilters (matvar_t *filtersStructure)
     strcpy (variable, "symbol");
     readNumber (filtersStructure, variable, &auxI, &dim, i);
     f[i].symbol = auxI[0];
+
+    delete[] auxD;
+    delete[] auxI;
   }
 
   setFilters (f);
 
   delete[] variable;
   delete[] f;
-  delete[] auxD;
-  delete[] auxI;
 }
 
 
