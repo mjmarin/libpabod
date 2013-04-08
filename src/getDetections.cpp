@@ -312,7 +312,7 @@ static void trace(int padX, int padY, const float *scales, int sx, int sy,
 
 
 
-void getDetections (Model *m, const int padX, const int padY,
+PABOD_EXPORT void getDetections (Model *m, const int padX, const int padY,
        const float *scales, const int *X, const int *Y,
        const int *L, const double *S, int dims,
        CvMat **dets, CvMat **boxes, CvMatND **info)

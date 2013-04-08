@@ -8,6 +8,6 @@
 
 #define PABOD_MINOR_VERSION 2
 
-#define PABOD_PATCH_VERSION 5
+#define PABOD_PATCH_VERSION 6
 
 #endif

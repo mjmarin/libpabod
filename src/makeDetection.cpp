@@ -1,7 +1,7 @@
 #include <makeDetection.h>
 
 
-float makeDetection (CvMat **results, IplImage *img, Model * model, float thresh)
+PABOD_EXPORT float makeDetection (CvMat **results, IplImage *img, Model * model, float thresh)
 {
 
   CvMat *dets = NULL;

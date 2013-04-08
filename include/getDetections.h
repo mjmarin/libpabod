@@ -2,7 +2,7 @@
 #define _GETDETECTIONS_H_
 
 #include <model.h>
-
+#include <export.h>
 
 
 /** \file
@@ -111,8 +111,8 @@ static inline int virtpadding(int padding, int ds)
  *  informatin about each detection required for extracted feature vector
  *  during learning part.
  */
-void getDetections (Model *m, const int padX, const int padY,
-                   const float *scales, const int *X, const int *Y,
+PABOD_EXPORT void getDetections (Model *m, const int padX, const int padY, 
+                   const float *scales, const int *X, const int *Y, 
                    const int *L, const double *S, int dims,
                    CvMat **dets, CvMat **boxes, CvMatND **info);
 

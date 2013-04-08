@@ -3,6 +3,7 @@
 
 #include <imgdetect.h>
 #include <nms.h>
+#include <export.h>
 
 
 /** \file
@@ -35,7 +36,7 @@ float makeDetection (CvMat **results, IplImage *img, std::string modelType,
 
 /** To be documented
 */
-float makeDetection (CvMat **results, IplImage *img, Model * model, float thresh = POSITIVE_INF);
+PABOD_EXPORT float makeDetection (CvMat **results, IplImage *img, Model * model, float thresh = POSITIVE_INF);
 
 #endif // MAKEDETECTION_H
 
