@@ -689,25 +689,16 @@ void Model::loadNumBlocks (matvar_t *matVar )
 
 void Model::loadNumSymbols (matvar_t *matVar )
 {
-  char *variable = new char [11];
-  int dim = -1;
-  int *el = NULL;
+  std::string variable = "numsymbols";
 
-  assert (variable != NULL);
-
-  strcpy (variable, "numsymbols");
-
-  if (existField (matVar, variable))
+  if (exist_field (matVar, variable))
   {
-    readNumber (matVar, variable, &el, &dim);
+    std::vector<int> el = read_number<int>(matVar, variable);
     setNumSymbols (el[0]);
   }
 
   else
     setNumSymbols (-1);
-
-  delete[] variable;
-  delete[] el;
 }
 
 void Model::loadBlockSizes (matvar_t *matVar )
