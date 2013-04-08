@@ -46,8 +46,7 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
   std::vector<int> X;
   std::vector<int> Y;
   std::vector<int> I;
-  int *Lvl = NULL;
-  int LvlDim = 0;
+  std::vector<int> Lvl;
   double *S = NULL;
   int SDim = 0;
   int *idx = NULL;
@@ -81,9 +80,7 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
 
     createConstVector (level, tmpsDim, &tmpL);
 
-    appendArray (&Lvl, LvlDim, tmpL, tmpsDim);
-
-    LvlDim += tmpsDim;
+    Lvl.insert(Lvl.end(), tmpL, tmpL + tmpsDim);
 
     getMatData <double> (score, ptrScore);
 
@@ -108,7 +105,7 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
   X = get_elem_on_idx(X, idx, idx + idxDim);
   Y = get_elem_on_idx(Y, idx, idx + idxDim);
   I = get_elem_on_idx(I, idx, idx + idxDim);
-  getElemOnIdx (Lvl, LvlDim, idx, idxDim, &Lvl);
+  Lvl = get_elem_on_idx(Lvl, idx, idx + idxDim);
 
   for (int m = 0; m < X.size(); m++)
     X[m]++;
@@ -119,15 +116,14 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
   for (int m = 0; m < I.size(); m++)
     I[m]++;
 
-  for (int m = 0; m < LvlDim; m++)
+  for (int m = 0; m < Lvl.size(); m++)
     Lvl[m]++;
 
   // Compute detection bounding boxes and parse information
   getDetections (model, pyra.getPadX(), pyra.getPadY(), pyra.getScales(),
-                 X.data(), Y.data(), Lvl, S, X.size(), dets, boxes, info);
+                 X.data(), Y.data(), Lvl.data(), S, X.size(), dets, boxes, info);
 
   delete[] idx;
-  delete[] Lvl;
   delete[] S;
 }
 
