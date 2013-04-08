@@ -476,6 +476,7 @@ void filterResponses (Model *model, const FeatPyramid  &pyra, bool latent,
     assert (scoretpt != NULL);
 
     model->getScoretpt()[j] = scoretpt;
+    delete[] r;
   }
 
   delete[] filters;
