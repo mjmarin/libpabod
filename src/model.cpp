@@ -787,25 +787,16 @@ void Model::loadInterval (matvar_t *matVar )
 
 void Model::loadSbin (matvar_t *matVar )
 {
-  char *variable = new char [6];
-  int dim = -1;
-  int *el = NULL;
+  std::string variable = "sbin";
 
-  assert (variable != NULL);
-
-  strcpy (variable, "sbin");
-
-  if (existField (matVar, variable))
+  if (exist_field (matVar, variable))
   {
-    readNumber (matVar, variable, &el, &dim);
+    std::vector<int> el = read_number<int>(matVar, variable);
     setSbin (el[0]);
   }
 
   else
     setSbin (-1);
-
-  delete[] variable;
-  delete[] el;
 }
 
 void Model::loadThresh (matvar_t *matVar )
