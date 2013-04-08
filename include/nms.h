@@ -1,6 +1,8 @@
 #ifndef _NMS_H_
 #define _NMS_H_
 
+#include <vector>
+
 #include <handlerOpenCVStructs.h>
 
 
@@ -25,5 +27,7 @@
  */
 void nms (int** pick, int *pickDim,
           CvMat *dets = NULL, double overlap = POSITIVE_INF);
+
+std::vector<int> nms (CvMat *dets, double overlap = POSITIVE_INF);
 
 #endif

@@ -1,19 +1,12 @@
+#include <vector>
 #include <nms.h>
 
-
-void nms (int** pick, int *pickDim,
-          CvMat *dets, double overlap)
+std::vector<int> nms (CvMat *dets, double overlap)
 {
-  if (dets == NULL)
-  {
-    *pick = NULL;
-    *pickDim = 0;
-  }
-
-  else
-  {
-    *pick = NULL;
-    *pickDim = 0;
+    std::vector<int> pick;
+    if (dets == NULL) {
+        return std::move(pick);
+    }
 
     std::vector<int> rows(dets->rows);
     std::iota(rows.begin(), rows.end(), 0);
@@ -64,39 +57,38 @@ void nms (int** pick, int *pickDim,
 
     while (idx.size() > 0)
     {
-      int last = idx.size()-1;
-      int i = idx[last];
-      appendArray (pick, (*pickDim), &i, 1);
-      (*pickDim)++;
+        int last = idx.size()-1;
+        int i = idx[last];
+        pick.push_back(i);
 
-      std::vector<size_t> suppress;
-      suppress.push_back(last);
+        std::vector<size_t> suppress;
+        suppress.push_back(last);
 
-      for (int pos = 0; pos < last; pos++)
-      {
-        int j = idx[pos];
-
-        int xx1 = max (x1Ptr[i], x1Ptr[j]);
-        int yy1 = max (y1Ptr[i], y1Ptr[j]);
-        int xx2 = min (x2Ptr[i], x2Ptr[j]);
-        int yy2 = min (y2Ptr[i], y2Ptr[j]);
-        int w = xx2 - xx1 + 1;
-        int h = yy2 - yy1 + 1;
-
-        if (w > 0 && h > 0)
+        for (int pos = 0; pos < last; pos++)
         {
-          // Compute overlap
-          double o = (w * h) / areaPtr[j];
+            int j = idx[pos];
 
-          if (o > overlap)
-          {
-            suppress.push_back(pos);
-          }
+            int xx1 = max (x1Ptr[i], x1Ptr[j]);
+            int yy1 = max (y1Ptr[i], y1Ptr[j]);
+            int xx2 = min (x2Ptr[i], x2Ptr[j]);
+            int yy2 = min (y2Ptr[i], y2Ptr[j]);
+            int w = xx2 - xx1 + 1;
+            int h = yy2 - yy1 + 1;
+
+            if (w > 0 && h > 0)
+            {
+                // Compute overlap
+                double o = (w * h) / areaPtr[j];
+
+                if (o > overlap)
+                {
+                    suppress.push_back(pos);
+                }
+            }
         }
-      }
 
-      remove_indexes (idx, suppress);
+        remove_indexes (idx, suppress);
     }
-  }
+    return std::move(pick);
 }
 
