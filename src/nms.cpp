@@ -22,28 +22,23 @@ void nms (int** pick, int *pickDim,
     int col;
     col = 0;
     CvMat *x1 = subMat (dets, rows, dets->rows, &col, 1);
-    double *x1Ptr = new double [x1->rows * x1->cols];
-    getMatData <double> (x1, x1Ptr);
+    std::vector<double> x1Ptr = getMatData<double>(x1);
 
     col = 1;
     CvMat *y1 = subMat (dets, rows, dets->rows, &col, 1);
-    double *y1Ptr = new double [y1->rows * y1->cols];
-    getMatData <double> (y1, y1Ptr);
+    std::vector<double> y1Ptr = getMatData<double>(y1);
 
     col = 2;
     CvMat *x2 = subMat (dets, rows, dets->rows, &col, 1);
-    double *x2Ptr = new double [x2->rows * x2->cols];
-    getMatData <double> (x2, x2Ptr);
+    std::vector<double> x2Ptr = getMatData<double>(x2);
 
     col = 3;
     CvMat *y2 = subMat (dets, rows, dets->rows, &col, 1);
-    double *y2Ptr = new double [y2->rows * y2->cols];
-    getMatData <double> (y2, y2Ptr);
+    std::vector<double> y2Ptr = getMatData<double>(y2);
 
     col = 5;
     CvMat *s = subMat (dets, rows, dets->rows, &col, 1);
-    double *sPtr = new double [s->rows * s->cols];
-    getMatData <double> (s, sPtr);
+    std::vector<double> sPtr = getMatData<double>(s);
 
     int areaDims[2] = {dets->rows, 1};
 
@@ -73,7 +68,7 @@ void nms (int** pick, int *pickDim,
 
     std::vector<size_t> idx;
 
-    shell_sort (sPtr, dets->rows, ASCEND, idx);
+    shell_sort (sPtr, ASCEND, idx);
 
     while (idx.size() > 0)
     {
@@ -110,12 +105,6 @@ void nms (int** pick, int *pickDim,
 
       remove_indexes (idx, suppress);
     }
-
-    delete[] x1Ptr;
-    delete[] y1Ptr;
-    delete[] x2Ptr;
-    delete[] y2Ptr;
-    delete[] sPtr;
   }
 }
 
