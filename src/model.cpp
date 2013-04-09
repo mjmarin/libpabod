@@ -547,19 +547,13 @@ void Model::loadYear (matvar_t *matVar)
 
 void Model::loadNote (matvar_t *matVar )
 {
-  char *variable = new char [5];
+  std::string variable = "note";
 
-  assert (variable != NULL);
-
-  strcpy (variable, "note");
-
-  if (existField (matVar, variable))
-    setNote (std::string (readString (matVar, variable)) );
+  if (exist_field (matVar, variable))
+    setNote(read_string(matVar, variable));
 
   else
     setNote ("");
-
-  delete[] variable;
 }
 
 void Model::loadFilters (matvar_t *matVar )
