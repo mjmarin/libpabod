@@ -445,6 +445,7 @@ void filterResponses (Model *model, const FeatPyramid  &pyra, bool latent,
       cvReleaseMat(&r[i]); // Release old memory
       r[i] = newArray;
 
+      cvReleaseMat(&model->getSymbols()[filter_to_symbol[i]].score[levels[j]]);
       model->getSymbols()[filter_to_symbol[i]].score[levels[j]] = r[i];
     }
 

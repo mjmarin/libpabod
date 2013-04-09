@@ -212,18 +212,30 @@ void Cell::setAnchor (anchor *a)
 
 void Cell::setScore (const std::vector<CvMat*>& score)
 {
+  for(std::vector<CvMat*>::size_type i = 0; i < _score.size(); ++i)
+  {
+    cvReleaseMat(&_score[i]);
+  }
   _score = score;
 }
 
 
 void Cell::setIx (const std::vector<CvMat*>& Ix)
 {
+  for(std::vector<CvMat*>::size_type i = 0; i < _Ix.size(); ++i)
+  {
+    cvReleaseMat(&_Ix[i]);
+  }
   _Ix = Ix;
 }
 
 
 void Cell::setIy (const std::vector<CvMat*>& Iy)
 {
+  for(std::vector<CvMat*>::size_type i = 0; i < _Iy.size(); ++i)
+  {
+    cvReleaseMat(&_Iy[i]);
+  }
   _Iy = Iy;
 }
 
