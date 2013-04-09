@@ -661,29 +661,21 @@ public:
  *  \return The float value of <tt>_learnmult</tt>
  *  \note Inline function
  */
-  float* getLearnmult () const  {return _learnmult;}
+  std::vector<float> getLearnmult () const  {return _learnmult;}
 
 
 /** Sets the value of private variable <tt>_learnmult</tt> to <tt>d</tt>.
  *  \param d - new value for the variable <tt>_learnmult</tt>
  */
-  void setLearnmult (float *d);
+  void setLearnmult (const std::vector<float>& d);
 
 
 /** Returns the value of private variable <tt>_learnmult</tt>.
  *  \return The dimension of <tt>_learnmult</tt>
  *  \note Inline function
  */
-  int getLearnmultDim () const  {return _learnmultDim;}
+  int getLearnmultDim () const  {return _learnmult.size();}
 
-
-/** Sets the value of auxiliar private variable <tt>_learnmultDim</tt> to <tt>
- *  dim</tt>.
- *  \param dim - the new value. It means the dimension of the array <tt>
- *  _learnmult</tt>
- *  \note Inline function
- */
-  void setLearnmultDim (int dim)  {_learnmultDim = dim;}
 
 /** Returns the value of private variable <tt>_lowerbounds</tt>.
  *  \return A lowerbounds structure, which is the value of <tt>_lowerbounds</tt>
@@ -951,7 +943,7 @@ private:
 
   int _regmultDim;
 
-  float* _learnmult;
+  std::vector<float> _learnmult;
 
   int _learnmultDim;
 

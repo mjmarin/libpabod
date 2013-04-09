@@ -102,12 +102,6 @@ void Model::destroyModel ()
     _symbols = NULL;
   }
 
-  if (_learnmult != NULL)
-  {
-    delete[] _learnmult;
-    _learnmult = NULL;
-  }
-
   if (_lowerbounds != NULL)
   {
     for (int i = 0; i < getLowerboundsDim(); i++)
@@ -293,8 +287,8 @@ void Model::loadEmptyModel ()
   // READS 'LEARNMULT' //
   ///////////////////////
 
-  setLearnmultDim(-1);
-  setLearnmult (NULL);
+  //setLearnmultDim(-1);
+  //setLearnmult (NULL);
 
   /////////////////////////
   // READS 'LOWERBOUNDS' //
@@ -760,22 +754,15 @@ void Model::loadRegmult (matvar_t *matVar )
 
 void Model::loadLearnmult (matvar_t *matVar )
 {
-  char *variable = new char [10];
+  std::string variable = "learnmult";
 
-  assert (variable != NULL);
-
-  strcpy (variable, "learnmult");
-
-  if (existField (matVar, variable))
-    readNumber (matVar, variable, &_learnmult, &_learnmultDim);
+  if (exist_field (matVar, variable))
+    _learnmult = read_number<float>(matVar, variable);
 
   else
   {
-    setLearnmultDim (-1);
-    setLearnmult (NULL);
+    setLearnmult (std::vector<float>());
   }
-
-  delete[] variable;
 }
 
 void Model::loadLowerbounds (matvar_t *matVar )
@@ -934,22 +921,9 @@ void Model::setRegmult (const std::vector<int>& d)
   _regmult = d;
 }
 
-void Model::setLearnmult (float *d)
+void Model::setLearnmult (const std::vector<float>& d)
 {
-  if (d != NULL)
-  {
-    assert (getLearnmultDim() > 0);
-
-    _learnmult = new float [getLearnmultDim()];
-
-    assert (_learnmult != NULL);
-
-    for (int i = 0; i < getLearnmultDim(); i++)
-      _learnmult[i] = d[i];
-  }
-
-  else
-    _learnmult = NULL;
+  _learnmult = d;
 }
 
 void Model::setLowerbounds (lowerbounds *l)
