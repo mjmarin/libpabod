@@ -100,11 +100,6 @@ void Model::destroyModel ()
   {
     for (int i = 0; i < getLowerboundsDim(); i++)
     {
-      if (getLowerbounds()[i].v != NULL)
-      {
-        delete [] getLowerbounds()[i].v;
-        getLowerbounds()[i].v = NULL;
-      }
     }
     delete[] _lowerbounds;
     _lowerbounds = NULL;
@@ -1134,7 +1129,7 @@ void Model::initializeLowerBounds (matvar_t *lowerboundsStructure)
 
   for (int j = 0; j < length; j++ )
   {
-    readNumber (lowerboundsStructure, NULL, &(l[j].v), &(l[j].c), j);
+    l[j].v = read_number<float>(lowerboundsStructure, "", j);
     l[j].f = 1;
   }
 

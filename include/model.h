@@ -82,9 +82,8 @@ typedef struct symbols
  */
 typedef struct lowerbounds
 {
-  float *v;
+  std::vector<float> v;
   int f;
-  int c;
 } lowerbounds;
 
 ////////////////////////////////
