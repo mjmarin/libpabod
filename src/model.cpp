@@ -102,12 +102,6 @@ void Model::destroyModel ()
     _symbols = NULL;
   }
 
-  if (_minSize != NULL)
-  {
-    delete[] _minSize;
-    _minSize = NULL;
-  }
-
   if (_regmult != NULL)
   {
     delete[] _regmult;
@@ -274,7 +268,7 @@ void Model::loadEmptyModel ()
   // READS 'MINSIZE' //
   /////////////////////
 
-  setMinSize (NULL);
+  //setMinSize (NULL);
 
   //////////////////////
   // READS 'INTERVAL' //
@@ -709,20 +703,13 @@ void Model::loadMaxSize (matvar_t *matVar )
 
 void Model::loadMinSize (matvar_t *matVar )
 {
-  char *variable = new char [8];
-  int dim = -1;
+  std::string variable = "minsize";
 
-  assert (variable != NULL);
-
-  strcpy (variable, "minsize");
-
-  if (existField (matVar, variable))
-    readNumber (matVar, variable, &_minSize, &dim);
+  if (exist_field (matVar, variable))
+    _minSize = read_number<int>(matVar, variable);
 
   else
-    setMinSize (NULL);
-
-  delete[] variable;
+    setMinSize (std::vector<int>());
 }
 
 void Model::loadInterval (matvar_t *matVar )
@@ -952,22 +939,10 @@ void Model::setMaxSize (const std::vector<int>& d)
   _maxSize = d;
 }
 
-void Model::setMinSize (int *d)
+void Model::setMinSize (const std::vector<int>& d)
 {
-  if (d != NULL)
-  {
-    assert (getMinSizeDim() > 0);
-
-    _minSize = new int [getMinSizeDim()];
-
-    assert (_minSize != NULL);
-
-    for (int i = 0; i < getMinSizeDim(); i++)
-      _minSize[i] = d[i];
-  }
-
-  else
-    _minSize = NULL;
+  assert(d.size() == 2);
+  _minSize = d;
 }
 
 void Model::setRegmult (int *d)

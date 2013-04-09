@@ -580,20 +580,20 @@ public:
  *  \return The integer value of <tt>_minSize</tt>
  *  \note Inline function
  */
-  int* getMinSize () const  {return _minSize;}
+  std::vector<int> getMinSize () const {return _minSize;}
 
 
 /** Sets the value of private variable <tt>_minSize</tt> to <tt>d</tt>.
  *  \param d - new value for the variable <tt>_minSize</tt>
  */
-  void setMinSize (int *d);
+  void setMinSize (const std::vector<int>& d);
 
 
 /** Returns the value of private variable <tt>_minSize</tt>.
  *  \return The dimension of <tt>_minSize</tt>
  *  \note Inline function
  */
-  int getMinSizeDim () const  {return PAIR;}
+  int getMinSizeDim () const  {return _minSize.size();}
 
 
 /** Returns the value of private variable <tt>_interval</tt>.
@@ -946,7 +946,7 @@ private:
 
   std::vector<int> _maxSize;
 
-  int* _minSize;
+  std::vector<int> _minSize;
 
   int _interval;
 
