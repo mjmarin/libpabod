@@ -321,7 +321,7 @@ class Cell
          *  \sa _rhs
          *  \sa _rhsDim
          */
-        int* getRhs () const  {return _rhs;}
+        std::vector<int> getRhs () const  {return _rhs;}
 
 
         /** Set the value of private variable <tt>_rhs</tt> to <tt>rhs</tt>.
@@ -329,7 +329,7 @@ class Cell
          *  \sa _rhs
          *  \sa _rhsDim
          */
-        void setRhs (int *rhs);
+        void setRhs (const std::vector<int>& rhs);
 
 
         /** Returns the value of private variable <tt>_rhsDim</tt>
@@ -338,19 +338,7 @@ class Cell
          *  \sa _rhs
          *  \sa _rhsDim
          */
-        int getRhsDim () const  {return _rhsDim;}
-
-
-        /** Set the value of private variable <tt>_rhsDim</tt> to <tt>dim</tt>.
-         *  \param dim - new value for the variable <tt>_rhsDim</tt>
-         *  \sa _rhs
-         *  \sa _rhsDim
-         */
-        void setRhsDim (int dim)
-        {
-            assert (dim > 0);
-            _rhsDim = dim;
-        }
+        int getRhsDim () const  {return _rhs.size();}
 
 
         /** Returns the value of private variable <tt>_detwindow</tt>.
@@ -635,14 +623,7 @@ class Cell
          *  than 1 (value contained in <tt>_rhsDim</tt>).
          *  \sa _rhsDim
          */
-        int* _rhs;
-
-
-        /** Is an int private variable. Indicates the size of <tt>_rhs</tt>
-         *  array.
-         *  \sa _rhs
-         */
-        int _rhsDim;
+        std::vector<int> _rhs;
 
 
         /** Is an int array private variable

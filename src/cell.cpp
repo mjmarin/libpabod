@@ -26,25 +26,10 @@ void Cell::destroyCell ()
 {
   if (getFlagStr() != INVALID_STR)
   {
-    if (_rhs != NULL)
-    {
-      if (getRhsDim() > 1)
-        delete[] _rhs;
-
-      else
-        delete _rhs;
-
-      _rhs = NULL;
-    }
-
     if (getFlagStr() == STR_ANCHOR)
     {
       if (_anchor != NULL)
       {
-        for (int i = 0; i < getAnchorDim(); i++)
-        {
-        }
-
         delete[] _anchor;
         _anchor = NULL;
       }
@@ -111,9 +96,6 @@ void Cell::loadEmptyCell ()
   setType (0);
 
   setLhs (-1);
-
-  _rhsDim = -1;
-  _rhs = NULL;
 
   setI(-1);
 
@@ -192,19 +174,8 @@ void Cell::loadLhs (matvar_t *matVar, int i)
 void Cell::loadRhs (matvar_t *matVar, int i, bool scalar)
 {
   (void)scalar;
-  char *variable = new char [4];
-  int *auxInt = NULL;
-
-  assert (variable != NULL);
-
-  strcpy (variable, "rhs");
-
-  readNumber (matVar, variable, &auxInt, &_rhsDim, i);
-
+  std::vector<int> auxInt = read_number<int>(matVar, "rhs", i);
   setRhs (auxInt);
-
-  delete[] variable;
-  delete[] auxInt;
 }
 
 
@@ -277,16 +248,11 @@ void Cell::loadDef (matvar_t *matVar, int i)
 ///// SETTERS & GETTERS /////
 /////////////////////////////
 
-void Cell::setRhs (int *rhs)
+void Cell::setRhs (const std::vector<int>& rhs)
 {
-  assert (getRhsDim() > 0);
-
-  _rhs = new int [getRhsDim()];
-
-  assert (_rhs != NULL);
-
-  for (int i = 0; i < getRhsDim(); i++)
-    _rhs[i] = rhs[i]-1;
+  _rhs = rhs;
+  for (std::vector<int>::size_type i = 0; i < rhs.size(); i++)
+    --_rhs[i];
 }
 
 

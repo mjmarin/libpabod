@@ -105,7 +105,6 @@ static void trace(int padX, int padY, const float *scales, int sx, int sy,
   double *score;
   int sz[2];
 
-  int *rhs;
   int rhsDim;
 
   anchor anch;
@@ -234,7 +233,7 @@ static void trace(int padX, int padY, const float *scales, int sx, int sy,
 
     // Push rhs symbols from the selected rule
     type = symRules.structure[r].getType();
-    rhs = symRules.structure[r].getRhs();
+    std::vector<int> rhs = symRules.structure[r].getRhs();
     rhsDim = symRules.structure[r].getRhsDim();
 
     if (type == 'S')
@@ -256,7 +255,7 @@ static void trace(int padX, int padY, const float *scales, int sx, int sy,
         // Remove virtual padding for to compute the probe location in the
         // score table
         probeY = py - virtpadding(padY, n.ds+ds);
-        push(n, cur, probeX, probeY, px, py, pl, ds, rhs, j);
+        push(n, cur, probeX, probeY, px, py, pl, ds, rhs.data(), j);
       }
     }
 
@@ -293,7 +292,7 @@ static void trace(int padX, int padY, const float *scales, int sx, int sy,
       probeX2 = Ix[probeX*isz[0] + probeY];
       probeY2 = Iy[probeX*isz[0] + probeY];
 
-      push(n, cur, probeX2, probeY2, px, py, n.l, 0, rhs, 0);
+      push(n, cur, probeX2, probeY2, px, py, n.l, 0, rhs.data(), 0);
 
       // save detection information
       info[DET_X] = px + 1;     // actual location (x)
