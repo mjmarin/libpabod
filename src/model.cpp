@@ -1177,8 +1177,7 @@ void Model::initializeFilters (matvar_t *filtersStructure)
     auxI = read_number<int>(filtersStructure, variable, i);
     f[i].blocklabel = auxI[0];
 
-    strcpy (variable, "symmetric");
-    f[i].symmetric =  readString (filtersStructure, variable, i)[0];
+    f[i].symmetric =  read_string(filtersStructure, "symmetric", i)[0];
 
     strcpy (variable, "size");
     readNumber (filtersStructure, variable, &(f[i].size),
