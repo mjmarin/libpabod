@@ -414,7 +414,6 @@ void Cell::initializeDef (matvar_t *defStructure)
   def d;
   char *variable = new char [11];
   double *auxD = NULL;
-  int *el = NULL;
 
   assert (variable != NULL);
 
@@ -426,10 +425,8 @@ void Cell::initializeDef (matvar_t *defStructure)
   delete[] auxD;
 
   strcpy (variable, "blocklabel");
-  readNumber (defStructure, variable, &el, &dim);
+  std::vector<int> el = read_number<int>(defStructure, "blocklabel");
   d.blocklabel = el[0];
-
-  delete[] el;
 
   strcpy (variable, "flip");
   d.flip = readLogical (defStructure, variable);
