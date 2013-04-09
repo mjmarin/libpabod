@@ -37,12 +37,6 @@ void Cell::destroyCell ()
       _rhs = NULL;
     }
 
-    if (_detwindow != NULL)
-    {
-      delete[] _detwindow;
-      _detwindow = NULL;
-    }
-
     if (getFlagStr() == STR_ANCHOR)
     {
       if (_anchor != NULL)
@@ -125,8 +119,6 @@ void Cell::loadEmptyCell ()
 
   _rhsDim = -1;
   _rhs = NULL;
-
-  _detwindow = NULL;
 
   setI(-1);
 
@@ -223,16 +215,7 @@ void Cell::loadRhs (matvar_t *matVar, int i, bool scalar)
 
 void Cell::loadDetwindow (matvar_t *matVar, int i)
 {
-  char *variable = new char [10];
-  int dim = -1;
-
-  assert (variable != NULL);
-
-  strcpy (variable, "detwindow");
-
-  readNumber (matVar, variable, &_detwindow, &dim, i);
-
-  delete[] variable;
+  _detwindow = read_number<int>(matVar, "detwindow", i);
 }
 
 
@@ -312,16 +295,9 @@ void Cell::setRhs (int *rhs)
 }
 
 
-void Cell::setDetwindow (double *d)
+void Cell::setDetwindow (const std::vector<int>& d)
 {
-  assert (getDetwindowDim() > 0);
-
-  _detwindow = new int [getDetwindowDim()];
-
-  assert (_detwindow != NULL);
-
-  for (int i = 0; i < getDetwindowDim(); i++)
-    _detwindow[i] = (int)d[i];
+  _detwindow = d;
 }
 
 

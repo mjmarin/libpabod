@@ -106,8 +106,6 @@ static void trace(int padX, int padY, const float *scales, int sx, int sy,
   double *score;
   int sz[2];
 
-  int *detwin;
-
   int *rhs;
   int rhsDim;
 
@@ -207,7 +205,7 @@ static void trace(int padX, int padY, const float *scales, int sx, int sy,
     if (n.symbol == startSymbol)
     {
       // Get detection window for startSymbol and rule r
-      detwin = symRules.structure[r].getDetwindow();
+      const std::vector<int>& detwin = symRules.structure[r].getDetwindow();
 
       // Detection scale
       scale = model->getSbin()/scales[n.l];

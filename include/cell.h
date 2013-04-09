@@ -359,7 +359,7 @@ class Cell
          *  \sa _detwindow
          *  \sa PAIR
          */
-        int* getDetwindow () const  {return _detwindow;}
+        std::vector<int> getDetwindow () const  {return _detwindow;}
 
 
         /** Set the value of private variable <tt>_detwindow</tt> to <tt>d</tt>.
@@ -367,7 +367,7 @@ class Cell
          *  \sa _detwindow
          *  \sa PAIR
          */
-        void setDetwindow (double *d);
+        void setDetwindow (const std::vector<int>& d);
 
 
         /** Returns the constant value of define <tt>PAIR</tt>
@@ -648,7 +648,7 @@ class Cell
 
         /** Is an int array private variable
         */
-        int* _detwindow;
+        std::vector<int> _detwindow;
 
 
         /** Is an int private variable
