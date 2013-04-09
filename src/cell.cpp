@@ -197,19 +197,8 @@ void Cell::loadType (matvar_t *matVar, int i)
 
 void Cell::loadLhs (matvar_t *matVar, int i)
 {
-  char *variable = new char [4];
-  int dim = -1;
-  int *el = NULL;
-
-  assert (variable != NULL);
-
-  strcpy (variable, "lhs");
-
-  readNumber (matVar, variable, &el, &dim, i);
+  std::vector<int> el = read_number<int>(matVar, "lhs", i);
   setLhs(el[0]-1);
-
-  delete[] variable;
-  delete[] el;
 }
 
 
