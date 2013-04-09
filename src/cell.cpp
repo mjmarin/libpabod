@@ -383,29 +383,10 @@ void Cell::setIy (CvMat **Iy)
 
 void Cell::initializeOffset (matvar_t *offsetStructure)
 {
-  int dim = -1;
-  offset of;
-  char *variable = new char [11];
-  int *auxI = NULL;
-  float *auxF = NULL;
-
-  assert (variable != NULL);
-
-  strcpy (variable, "w");
-  readNumber (offsetStructure, variable, &auxF, &dim);
-  of.w = auxF[0];
-
-  delete[] auxF;
-
-  strcpy (variable, "blocklabel");
-  readNumber (offsetStructure, variable, &auxI, &dim);
-  of.blocklabel = auxI[0];
-
-  delete[] auxI;
-
+  std::vector<float> auxF = read_number<float>(offsetStructure, "w");
+  std::vector<int>   auxI = read_number<int>(offsetStructure, "blocklabel");
+  offset of = { auxF[0], auxI[0] };
   setOffset (of);
-
-  delete[] variable;
 }
 
 
