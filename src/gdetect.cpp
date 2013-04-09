@@ -31,16 +31,16 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
   assert (L != NULL);
   L = modelSort (model, L); // mjmarin: uses def params --> i=-1, V=NULL
 
-  for (int s = 0; s < L->LDim; s++)
+  for (std::vector<int>::size_type s = 0; s < L->v.size(); s++)
   {
-    for (int r = 0; r < model->getRules()[L->L[s]].n; r++)
-      applyRule (model, model->getRules()[L->L[s]].structure[r],
+    for (int r = 0; r < model->getRules()[L->v[s]].n; r++)
+      applyRule (model, model->getRules()[L->v[s]].structure[r],
                  pyra.getPadY(), pyra.getPadX());
 
-    symbolScore (model, L->L[s], latent, pyra, bbox, overlap);
+    symbolScore (model, L->v[s], latent, pyra, bbox, overlap);
   }
 
-  delete[] L;
+  delete L;
 
   // Find scores above threshold
   std::vector<int> X;

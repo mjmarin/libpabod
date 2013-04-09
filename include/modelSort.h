@@ -1,6 +1,7 @@
 #ifndef _MODELSORT_H_
 #define _MODELSORT_H_
 
+#include <vector>
 #include <model.h>
 
 /** \file
@@ -21,8 +22,9 @@
  */
 typedef struct LStructure
 {
-  int *L;
-  int LDim;
+  //int *L;
+  //int LDim;
+  std::vector<int> v;
 } LStructure;
 
 
