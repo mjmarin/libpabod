@@ -475,8 +475,7 @@ void Cell::initializeDef (matvar_t *defStructure)
   strcpy (variable, "flip");
   d.flip = readLogical (defStructure, variable);
 
-  strcpy (variable, "symmetric");
-  d.symmetric = readString (defStructure, variable)[0];
+  d.symmetric = read_string(defStructure, "symmetric")[0];
 
   setDef (d);
 
