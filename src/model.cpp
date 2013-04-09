@@ -36,12 +36,6 @@ void Model::destroyModel ()
         cvReleaseMatND(&(_filters[i].w));
         _filters[i].w = NULL;
       }
-
-      if (_filters[i].size != NULL)
-      {
-        delete[] _filters[i].size;
-        _filters[i].size = NULL;
-      }
     }
     delete[] _filters;
     _filters = NULL;
@@ -1018,19 +1012,10 @@ void Model::initializeFilters (matvar_t *filtersStructure)
     strcpy (variable, "blocklabel");
     auxI = read_number<int>(filtersStructure, variable, i);
     f[i].blocklabel = auxI[0];
-
     f[i].symmetric =  read_string(filtersStructure, "symmetric", i)[0];
-
-    strcpy (variable, "size");
-    readNumber (filtersStructure, variable, &(f[i].size),
-    &(f[i].sizeDim), i);
-
-    strcpy (variable, "flip");
-    f[i].flip =  readLogical (filtersStructure, variable, i);
-
-    strcpy (variable, "symbol");
-    auxI = read_number<int>(filtersStructure, variable, i);
-    f[i].symbol = auxI[0];
+    f[i].size = read_number<int>(filtersStructure, "size", i);
+    f[i].flip = read_logical (filtersStructure, "flip", i);
+    f[i].symbol = read_number<int>(filtersStructure, "symbol", i)[0];
   }
 
   setFilters (f);

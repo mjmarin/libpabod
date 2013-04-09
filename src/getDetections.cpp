@@ -87,7 +87,6 @@ static void trace(int padX, int padY, const float *scales, int sx, int sy,
   double *info;
   char type;
   int fi;
-  int *fsz;
   double scale;
   int x1;
   int y1;
@@ -152,7 +151,7 @@ static void trace(int padX, int padY, const float *scales, int sx, int sy,
       fi = model->getSymbols()[n.symbol].filter-1;
 
       // Filter size
-      fsz = model->getFilters()[fi].size;
+      const std::vector<int>& fsz = model->getFilters()[fi].size;
 
       // Detection scale
       scale = model->getSbin()/scales[n.l];

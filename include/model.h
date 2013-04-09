@@ -31,8 +31,7 @@ typedef struct filters
   CvMatND *w;
   int blocklabel;
   char symmetric;
-  int *size;
-  int sizeDim;
+  std::vector<int> size;
   bool flip;
   int symbol;
 } filters;
