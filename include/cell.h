@@ -68,8 +68,7 @@ typedef struct offset
  */
 typedef struct anchor
 {
-    int* array;
-    int dim;
+  std::vector<int> array;
 } anchor;
 
 

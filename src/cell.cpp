@@ -43,11 +43,6 @@ void Cell::destroyCell ()
       {
         for (int i = 0; i < getAnchorDim(); i++)
         {
-          if (getAnchor()[i].array != NULL)
-          {
-            delete[] getAnchor()[i].array;
-            getAnchor()[i].array = NULL;
-          }
         }
 
         delete[] _anchor;
@@ -376,7 +371,7 @@ void Cell::initializeAnchor (matvar_t *anchorStructure)
   setAnchorDim (length);
 
   for (int i = 0; i < length; i++)
-    readNumber (anchorStructure, NULL, &(a[i].array), &(a[i].dim), i);
+    a[i].array = read_number<int>(anchorStructure, "", i);
 
   setAnchor (a);
 
