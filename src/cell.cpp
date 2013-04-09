@@ -191,15 +191,7 @@ void Cell::loadCell (matvar_t *matVar, int i)
 
 void Cell::loadType (matvar_t *matVar, int i)
 {
-  char *variable = new char [5];
-
-  assert (variable != NULL);
-
-  strcpy (variable, "type");
-
-  setType(readString (matVar, variable, i)[0]);
-
-  delete[] variable;
+  setType(read_string(matVar, "type", i)[0]);
 }
 
 
