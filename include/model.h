@@ -533,28 +533,14 @@ public:
  *  \return The integer value of <tt>_blockSizes</tt>
  *  \note Inline function
  */
-  int* getBlockSizes () const  {return _blockSizes;}
+  std::vector<int> getBlockSizes() const  {return _blockSizes;}
 
 
 /** Sets the value of private variable <tt>_blockSizes</tt> to <tt>d</tt>.
  *  \param d - new value for the variable <tt>_blockSizes</tt>
  */
-  void setBlockSizes (int *d);
+  void setBlockSizes (const std::vector<int>& d);
 
-
-/** Returns the value of private variable <tt>_blockSize</tt>.
- *  \return The dimension of <tt>_blockSize</tt>
- *  \note Inline function
- */
-  int getBlockSizesDim () const  {return _blockSizesDim;}
-
-/** Sets the value of auxiliar private variable <tt>_blockSizesDim</tt> to
- *  <tt>dim</tt>.
- *  \param dim - the new value. It means the dimension of the array <tt>
- *  _blockSizes</tt>
- *  \note Inline function
- */
-  void setBlockSizesDim (int dim)  {_blockSizesDim = dim;}
 
 /** Returns the value of private variable <tt>_start</tt>.
  *  \return The integer value of <tt>_start</tt>
@@ -954,9 +940,7 @@ private:
 
   int _numSymbols;
 
-  int* _blockSizes;
-
-  int _blockSizesDim;
+  std::vector<int> _blockSizes;
 
   int _start;
 

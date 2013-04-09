@@ -102,12 +102,6 @@ void Model::destroyModel ()
     _symbols = NULL;
   }
 
-  if (_blockSizes != NULL)
-  {
-    delete[] _blockSizes;
-    _blockSizes = NULL;
-  }
-
   if (_maxSize != NULL)
   {
     delete[] _maxSize;
@@ -267,8 +261,8 @@ void Model::loadEmptyModel ()
   // READS 'BLOCKSIZES' //
   ////////////////////////
 
-  setBlockSizesDim(-1);
-  setBlockSizes(NULL);
+  //setBlockSizesDim(-1);
+  //setBlockSizes(NULL);
 
   ///////////////////
   // READS 'START' //
@@ -683,22 +677,15 @@ void Model::loadNumSymbols (matvar_t *matVar )
 
 void Model::loadBlockSizes (matvar_t *matVar )
 {
-  char *variable = new char [11];
+  std::string variable = "blocksizes";
 
-  assert (variable != NULL);
-
-  strcpy (variable, "blocksizes");
-
-  if (existField (matVar, variable))
-    readNumber (matVar, variable, &_blockSizes, &_blockSizesDim);
+  if (exist_field (matVar, variable))
+    _blockSizes = read_number<int>(matVar, variable);
 
   else
   {
-    setBlockSizesDim (-1);
-    setBlockSizes (NULL);
+    setBlockSizes(std::vector<int>());
   }
-
-  delete[] variable;
 }
 
 void Model::loadStart (matvar_t *matVar )
@@ -967,22 +954,9 @@ void Model::setSymbols (symbols *s)
 }
 
 
-void Model::setBlockSizes (int *d)
+void Model::setBlockSizes (const std::vector<int>& d)
 {
-  if (d != NULL)
-  {
-    assert (getBlockSizesDim() > 0);
-
-    _blockSizes = new int [getBlockSizesDim()];
-
-    assert (_blockSizes != NULL);
-
-    for (int i = 0; i < getBlockSizesDim(); i++)
-      _blockSizes[i] = d[i];
-  }
-
-  else
-    _blockSizes = NULL;
+  _blockSizes = d;
 }
 
 void Model::setMaxSize (int *d)
@@ -1152,7 +1126,6 @@ void Model::initializeFilters (matvar_t *filtersStructure)
   int length = vectorLength(filtersStructure);
   filters *f = new filters [length];
   char *variable = new char [12];
-  int dim = -1;
 
   assert (f != NULL);
   assert (variable != NULL);
