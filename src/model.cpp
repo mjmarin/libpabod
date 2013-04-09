@@ -102,12 +102,6 @@ void Model::destroyModel ()
     _symbols = NULL;
   }
 
-  if (_maxSize != NULL)
-  {
-    delete[] _maxSize;
-    _maxSize = NULL;
-  }
-
   if (_minSize != NULL)
   {
     delete[] _minSize;
@@ -274,7 +268,7 @@ void Model::loadEmptyModel ()
   // READS 'MAXSIZE' //
   /////////////////////
 
-  setMaxSize (NULL);
+  //setMaxSize (NULL);
 
   /////////////////////
   // READS 'MINSIZE' //
@@ -704,20 +698,13 @@ void Model::loadStart (matvar_t *matVar )
 
 void Model::loadMaxSize (matvar_t *matVar )
 {
-  char *variable = new char [8];
-  int dim = -1;
+  std::string variable = "maxsize";
 
-  assert (variable != NULL);
-
-  strcpy (variable, "maxsize");
-
-  if (existField (matVar, variable))
-    readNumber (matVar, variable, &_maxSize, &dim);
+  if (exist_field (matVar, variable))
+    _maxSize = read_number<int>(matVar, variable);
 
   else
-    setMaxSize (NULL);
-
-  delete[] variable;
+    setMaxSize(std::vector<int>());
 }
 
 void Model::loadMinSize (matvar_t *matVar )
@@ -959,22 +946,10 @@ void Model::setBlockSizes (const std::vector<int>& d)
   _blockSizes = d;
 }
 
-void Model::setMaxSize (int *d)
+void Model::setMaxSize (const std::vector<int>& d)
 {
-  if (d != NULL)
-  {
-    assert (getMaxSizeDim() > 0);
-
-    _maxSize = new int [getMaxSizeDim()];
-
-    assert (_maxSize != NULL);
-
-    for (int i = 0; i < getMaxSizeDim(); i++)
-      _maxSize[i] = d[i];
-  }
-
-  else
-    _maxSize = NULL;
+  assert(d.size() == 2);
+  _maxSize = d;
 }
 
 void Model::setMinSize (int *d)

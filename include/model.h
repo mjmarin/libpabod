@@ -560,20 +560,20 @@ public:
  *  \return The integer value of <tt>_maxSize</tt>
  *  \note Inline function
  */
-  int* getMaxSize () const  {return _maxSize;}
+  std::vector<int> getMaxSize() const {return _maxSize;}
 
 
 /** Sets the value of private variable <tt>_maxSize</tt> to <tt>d</tt>.
  *  \param d - new value for the variable <tt>_maxSize</tt>
  */
-  void setMaxSize (int *d);
+  void setMaxSize (const std::vector<int>& d);
 
 
 /** Returns the value of private variable <tt>_maxSize</tt>.
  *  \return The dimension of <tt>_maxSize</tt>
  *  \note Inline function
  */
-  int getMaxSizeDim () const  {return PAIR;}
+  int getMaxSizeDim () const  {return _maxSize.size();}
 
 
 /** Returns the value of private variable <tt>_minSize</tt>.
@@ -944,7 +944,7 @@ private:
 
   int _start;
 
-  int* _maxSize;
+  std::vector<int> _maxSize;
 
   int* _minSize;
 
