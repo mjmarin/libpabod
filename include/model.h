@@ -97,11 +97,10 @@ typedef struct lowerbounds
  */
 typedef struct bboxpred
 {
-  float *x1;
-  float *y1;
-  float *x2;
-  float *y2;
-  int dim;
+  std::vector<float> x1;
+  std::vector<float> y1;
+  std::vector<float> x2;
+  std::vector<float> y2;
 } bboxpred;
 
 

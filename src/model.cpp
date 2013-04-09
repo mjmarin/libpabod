@@ -107,33 +107,6 @@ void Model::destroyModel ()
 
   if (_bboxpred != NULL)
   {
-    for (int i = 0; i < getBboxpredDim(); i++)
-    {
-      if (getBboxpred()[i].x1 != NULL)
-      {
-        delete[] getBboxpred()[i].x1;
-        getBboxpred()[i].x1 = NULL;
-      }
-
-      if (getBboxpred()[i].y1 != NULL)
-      {
-        delete[] getBboxpred()[i].y1;
-        getBboxpred()[i].y1 = NULL;
-      }
-
-      if (getBboxpred()[i].x2 != NULL)
-      {
-        delete[] getBboxpred()[i].x2;
-        getBboxpred()[i].x2 = NULL;
-      }
-
-      if (getBboxpred()[i].y2 != NULL)
-      {
-        delete[] getBboxpred()[i].y2;
-        getBboxpred()[i].y2 = NULL;
-      }
-    }
-
     delete[] _bboxpred;
     _bboxpred = NULL;
   }
@@ -1154,18 +1127,10 @@ void Model::initializeBboxpred (matvar_t *bboxpredStructure)
   for (int i = 0; i < length; i++ )
   {
     field = Mat_VarGetCell (bboxpredStructure, i);
-
-    strcpy (variable, "x1");
-    readNumber (field, variable, &(b[i].x1), &(b[i].dim), 0);
-
-    strcpy (variable, "y1");
-    readNumber (field, variable, &(b[i].y1), &(b[i].dim), 0);
-
-    strcpy (variable, "x2");
-    readNumber (field, variable, &(b[i].x2), &(b[i].dim), 0);
-
-    strcpy (variable, "y2");
-    readNumber (field, variable, &(b[i].y2), &(b[i].dim), 0);
+    b[i].x1 = read_number<float>(field, "x1", 0);
+    b[i].y1 = read_number<float>(field, "y1", 0);
+    b[i].x2 = read_number<float>(field, "x2", 0);
+    b[i].y2 = read_number<float>(field, "y2", 0);
   }
 
   setBboxpred (b);
