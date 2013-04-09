@@ -1273,8 +1273,7 @@ void Model::initializeSymbols (matvar_t *symbolsStructure)
 
   for (int j = 0; j < length; j++ )
   {
-    strcpy (variable, "type");
-    s[j].type = readString (symbolsStructure, variable, j)[0];
+    s[j].type = read_string(symbolsStructure, "type", j)[0];
 
     /* The value of 'i' is decremented because it means an array index.
     MatLab indexes start on 1, and C indexes start on 0, so it must be
