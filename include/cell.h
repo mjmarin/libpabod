@@ -511,7 +511,7 @@ class Cell
          *  \sa _Iy
          *  \sa _IyDim
          */
-        CvMat** getIy () const  {return _Iy;}
+        std::vector<CvMat*> getIy () const  {return _Iy;}
 
 
         /** Set the value of private variable <tt>_Iy</tt> to <tt>Iy</tt>.
@@ -519,7 +519,7 @@ class Cell
          *  \sa _Iy
          *  \sa _IyDim
          */
-        void setIy (CvMat **Iy);
+        void setIy (const std::vector<CvMat*>& Iy);
 
 
         /** Returns the value of private variable <tt>_IyDim</tt>
@@ -528,19 +528,7 @@ class Cell
          *  \sa _Iy
          *  \sa _IyDim
          */
-        int getIyDim () const  {return _IyDim;}
-
-
-        /** Set the value of private variable <tt>_IyDim</tt> to <tt>dim</tt>.
-         *  \param dim - new value for the variable <tt>_IyDim</tt>
-         *  \sa _Iy
-         *  \sa _IyDim
-         */
-        void setIyDim (int dim)
-        {
-            assert (dim > 0);
-            _IyDim = dim;
-        }
+        int getIyDim () const  {return _Iy.size();}
 
 
         ////////////////////////
@@ -655,7 +643,7 @@ class Cell
         /** Is a CvMat* array private variable.
          *  \sa _IyDim
          */
-        CvMat** _Iy;
+        std::vector<CvMat*> _Iy;
 
 
         /** Is an int private variable. Indicates the size of

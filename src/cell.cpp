@@ -54,19 +54,13 @@ void Cell::destroyCell ()
       }
     }
 
-    if (_Iy != NULL)
+    for (int i = 0; i < getIyDim(); i++)
     {
-      for (int i = 0; i < getIyDim(); i++)
+      if (_Iy[i] != NULL)
       {
-        if (_Iy[i] != NULL)
-        {
-          cvReleaseMat (&_Iy[i]);
-          _Iy[i] = NULL;
-        }
+        cvReleaseMat (&_Iy[i]);
+        _Iy[i] = NULL;
       }
-
-      delete[]_Iy;
-      _Iy = NULL;
     }
   }
 
@@ -100,9 +94,6 @@ void Cell::loadEmptyCell ()
   getDef().blocklabel = -1;
   getDef().flip = false;
   getDef().symmetric = 0;
-
-  _IyDim = -1;
-  _Iy = NULL;
 }
 
 
@@ -129,9 +120,6 @@ void Cell::loadCell (matvar_t *matVar, int i)
     loadRhs (matVar, i, false);
     loadAnchor (matVar, i);
   }
-
-  _IyDim = -1;
-  _Iy = NULL;
 }
 
 
@@ -234,16 +222,9 @@ void Cell::setIx (const std::vector<CvMat*>& Ix)
 }
 
 
-void Cell::setIy (CvMat **Iy)
+void Cell::setIy (const std::vector<CvMat*>& Iy)
 {
-  assert (getIyDim() > 0);
-
-  _Iy = new CvMat* [getIyDim()];
-
-  assert (_Iy != NULL);
-
-  for (int i = 0; i < getIyDim(); i++)
-    _Iy[i] = Iy[i];
+  _Iy = Iy;
 }
 
 
