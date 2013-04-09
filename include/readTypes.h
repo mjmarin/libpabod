@@ -30,6 +30,7 @@
  */
 char* readString (matvar_t *matVar, char* var, int pos = 0);
 
+std::string read_string (matvar_t *matVar, const std::string& var, int pos = 0);
 
 /** Reads the numerical variable <tt>var</tt> placed on the structure
  *  <tt>matVar</tt> in position <tt>pos</tt>. It can be an array of

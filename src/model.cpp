@@ -526,19 +526,12 @@ void Model::loadFile (std::string fileName)
 
 void Model::loadClass (matvar_t *matVar)
 {
-  char *variable = new char [6];
+  std::string variable = "class";
 
-  assert (variable != NULL);
-
-  strcpy (variable, "class");
-
-  if (existField (matVar, variable))
-    setClass (std::string (readString (matVar, variable)) );
-
+  if (exist_field(matVar, variable))
+    setClass(read_string(matVar, variable));
   else
     setClass ("-");
-
-  delete[] variable;
 }
 
 
