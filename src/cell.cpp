@@ -45,19 +45,13 @@ void Cell::destroyCell ()
 
     }
 
-    if (_Ix != NULL)
+    for (int i = 0; i < getIxDim(); i++)
     {
-      for (int i = 0; i < getIxDim(); i++)
+      if (_Ix[i] != NULL)
       {
-        if (_Ix[i] != NULL)
-        {
-          cvReleaseMat (&_Ix[i]);
-          _Ix[i] = NULL;
-        }
+        cvReleaseMat (&_Ix[i]);
+        _Ix[i] = NULL;
       }
-
-      delete[] _Ix;
-      _Ix = NULL;
     }
 
     if (_Iy != NULL)
@@ -107,9 +101,6 @@ void Cell::loadEmptyCell ()
   getDef().flip = false;
   getDef().symmetric = 0;
 
-  _IxDim = -1;
-  _Ix = NULL;
-
   _IyDim = -1;
   _Iy = NULL;
 }
@@ -138,9 +129,6 @@ void Cell::loadCell (matvar_t *matVar, int i)
     loadRhs (matVar, i, false);
     loadAnchor (matVar, i);
   }
-
-  _IxDim = -1;
-  _Ix = NULL;
 
   _IyDim = -1;
   _Iy = NULL;
@@ -240,16 +228,9 @@ void Cell::setScore (const std::vector<CvMat*>& score)
 }
 
 
-void Cell::setIx (CvMat **Ix)
+void Cell::setIx (const std::vector<CvMat*>& Ix)
 {
-  assert (getIxDim() > 0);
-
-  _Ix = new CvMat* [getIxDim()];
-
-  assert (_Ix != NULL);
-
-  for (int i = 0; i < getIxDim(); i++)
-    _Ix[i] = Ix[i];
+  _Ix = Ix;
 }
 
 

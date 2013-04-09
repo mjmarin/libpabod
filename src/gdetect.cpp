@@ -315,8 +315,7 @@ void applyDeformationRule (Model *model, const Cell &r)
   int dim = model->getSymbols()[(int) r.getRhs()[0]].score.size();
   std::vector<CvMat*> score = model->getSymbols()[(int) r.getRhs()[0]].score;
 
-  CvMat **Ix = new CvMat* [dim];
-  assert (Ix != NULL);
+  std::vector<CvMat*> Ix(dim);
 
   CvMat **Iy = new CvMat* [dim];
   assert (Iy != NULL);
@@ -331,8 +330,6 @@ void applyDeformationRule (Model *model, const Cell &r)
   model->getRules()[(int) r.getLhs()].structure[(int) r.getI()]
                                      .setScore(score);
 
-  model->getRules()[(int) r.getLhs()].structure[(int) r.getI()]
-                                     .setIxDim(dim);
   model->getRules()[(int) r.getLhs()].structure[(int) r.getI()]
                                      .setIx(Ix);
 
