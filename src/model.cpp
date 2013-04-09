@@ -1156,12 +1156,8 @@ void Model::initializeSymbols (matvar_t *symbolsStructure)
 {
   int length = vectorLength(symbolsStructure);
   symbols *s = new symbols [length];
-  char *variable = new char [12];
-  int dim = -1;
-  int *auxI = NULL;
 
   assert (s != NULL);
-  assert (variable != NULL);
 
   setSymbolsDim (length);
 
@@ -1172,16 +1168,13 @@ void Model::initializeSymbols (matvar_t *symbolsStructure)
     /* The value of 'i' is decremented because it means an array index.
     MatLab indexes start on 1, and C indexes start on 0, so it must be
     decremented by 1 */
-    strcpy (variable, "i");
-    readNumber (symbolsStructure, variable, &auxI, &dim, j);
+    std::vector<int> auxI = read_number<int>(symbolsStructure, "i", j);
     s[j].i = auxI[0]-1;
 
-    strcpy (variable, "filter");
-    readNumber (symbolsStructure, variable, &auxI, &dim, j);
+    auxI = read_number<int>(symbolsStructure, "filter", j);
 
-    if ( auxI == NULL )
+    if ( auxI.empty() )
       s[j].filter = INVALID;
-
     else
       s[j].filter = auxI[0];
 
@@ -1193,9 +1186,7 @@ void Model::initializeSymbols (matvar_t *symbolsStructure)
 
   setSymbols (s);
 
-  delete[] variable;
   delete[] s;
-  delete[] auxI;
 }
 
 
