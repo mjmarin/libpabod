@@ -641,28 +641,21 @@ public:
  *  \return The integer value of <tt>_regmult</tt>
  *  \note Inline function
  */
-  int* getRegmult () const  {return _regmult;}
+  std::vector<int> getRegmult () const  {return _regmult;}
 
 
 /** Sets the value of private variable <tt>_regmult</tt> to <tt>d</tt>.
  *  \param d - new value for the variable <tt>_regmult</tt>
  */
-  void setRegmult (int *d);
+  void setRegmult (const std::vector<int>& d);
 
 
 /** Returns the value of private variable <tt>_regmult</tt>.
  *  \return The dimension of <tt>_regmult</tt>
  *  \note Inline function
  */
-  int getRegmultDim () const  {return _regmultDim;}
+  int getRegmultDim () const  {return _regmult.size();}
 
-/** Sets the value of auxiliar private variable <tt>_regmultDim</tt> to <tt>
- *  dim</tt>.
- *  \param dim - the new value. It means the dimension of the array <tt>
- *  _regmult</tt>
- *  \note Inline function
- */
-  void setRegmultDim (int dim)  {_regmultDim = dim;}
 
 /** Returns the value of private variable <tt>_learnmult</tt>.
  *  \return The float value of <tt>_learnmult</tt>
@@ -954,7 +947,7 @@ private:
 
   float _thresh;
 
-  int* _regmult;
+  std::vector<int> _regmult;
 
   int _regmultDim;
 

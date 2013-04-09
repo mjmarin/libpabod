@@ -102,12 +102,6 @@ void Model::destroyModel ()
     _symbols = NULL;
   }
 
-  if (_regmult != NULL)
-  {
-    delete[] _regmult;
-    _regmult = NULL;
-  }
-
   if (_learnmult != NULL)
   {
     delete[] _learnmult;
@@ -292,8 +286,8 @@ void Model::loadEmptyModel ()
   // READS 'REGMULT' //
   /////////////////////
 
-  setRegmultDim(-1);
-  setRegmult (NULL);
+  //setRegmultDim(-1);
+  //setRegmult (NULL);
 
   ///////////////////////
   // READS 'LEARNMULT' //
@@ -756,22 +750,12 @@ void Model::loadThresh (matvar_t *matVar )
 
 void Model::loadRegmult (matvar_t *matVar )
 {
-  char *variable = new char [8];
+  std::string variable = "regmult";
 
-  assert (variable != NULL);
-
-  strcpy (variable, "regmult");
-
-  if (existField (matVar, variable))
-    readNumber (matVar, variable, &_regmult, &_regmultDim);
-
+  if (exist_field (matVar, variable))
+    _regmult = read_number<int>(matVar, variable);
   else
-  {
-    setRegmultDim (-1);
-    setRegmult (NULL);
-  }
-
-  delete[] variable;
+    setRegmult (std::vector<int>());
 }
 
 void Model::loadLearnmult (matvar_t *matVar )
@@ -945,22 +929,9 @@ void Model::setMinSize (const std::vector<int>& d)
   _minSize = d;
 }
 
-void Model::setRegmult (int *d)
+void Model::setRegmult (const std::vector<int>& d)
 {
-  if (d != NULL)
-  {
-    assert (getRegmultDim() > 0);
-
-    _regmult = new int [getRegmultDim()];
-
-    assert (_regmult != NULL);
-
-    for (int i = 0; i < getRegmultDim(); i++)
-      _regmult[i] = d[i];
-  }
-
-  else
-    _regmult = NULL;
+  _regmult = d;
 }
 
 void Model::setLearnmult (float *d)
