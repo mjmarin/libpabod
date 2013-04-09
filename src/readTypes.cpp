@@ -18,10 +18,7 @@ char* readString (matvar_t *matVar, char* var, int pos)
 
 std::string read_string (matvar_t *matVar, const std::string& var, int pos)
 {
-  matvar_t *field;
-  char* auxString = NULL;
-
-  field = Mat_VarGetStructField (matVar, const_cast<char*>(var.c_str()), BY_NAME, pos);
+  matvar_t *field = Mat_VarGetStructField (matVar, const_cast<char*>(var.c_str()), BY_NAME, pos);
 
   std::string result;
   if ( field != NULL )
@@ -39,6 +36,29 @@ bool readLogical (matvar_t *matVar, char* var, int pos)
   bool flag = false;
 
   field = Mat_VarGetStructField (matVar, (char*) var, BY_NAME, pos);
+
+  if ( field != NULL )
+  {
+    if ( field->data_type == MAT_T_UINT8 )
+    {
+    auxInt = (int*) field->data;
+
+    if (*auxInt == 1)
+      flag = true;
+    }
+  }
+
+  return flag;
+}
+
+
+bool read_logical (matvar_t *matVar, const std::string& var, int pos)
+{
+  matvar_t *field;
+  int *auxInt = NULL;
+  bool flag = false;
+
+  field = Mat_VarGetStructField (matVar, const_cast<char*>(var.c_str()), BY_NAME, pos);
 
   if ( field != NULL )
   {

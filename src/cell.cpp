@@ -411,25 +411,16 @@ void Cell::initializeAnchor (matvar_t *anchorStructure)
 void Cell::initializeDef (matvar_t *defStructure)
 {
   def d;
-  char *variable = new char [11];
-
-  assert (variable != NULL);
 
   std::vector<double> auxD = read_number<double>(defStructure, "w");
-  for (int i = 0; i < auxD.size(); i++)
+  for (std::vector<double>::size_type i = 0; i < auxD.size(); i++)
     d.w[i] = auxD[i];
 
-  std::vector<int> el = read_number<int>(defStructure, "blocklabel");
-  d.blocklabel = el[0];
-
-  strcpy (variable, "flip");
-  d.flip = readLogical (defStructure, variable);
-
-  d.symmetric = read_string(defStructure, "symmetric")[0];
+  d.blocklabel = read_number<int>(defStructure, "blocklabel")[0];
+  d.flip       = read_logical(defStructure, "flip");
+  d.symmetric  = read_string(defStructure, "symmetric")[0];
 
   setDef (d);
-
-  delete[] variable;
 }
 
 

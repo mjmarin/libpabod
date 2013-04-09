@@ -69,6 +69,8 @@ void readNumber (matvar_t *matVar, char* var, Type **number, int* dim,
  */
 bool readLogical (matvar_t *matVar, char* var, int pos = 0);
 
+bool read_logical (matvar_t *matVar, const std::string& var, int pos = 0);
+
 
 /** Get the dimension of the parameter. This is necessary because the
  *  <tt>matVar</tt> struct can be a horizontal or a vertical vector, and is
