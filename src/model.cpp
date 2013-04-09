@@ -116,12 +116,6 @@ void Model::destroyModel ()
     _lowerbounds = NULL;
   }
 
-  if (_fusage != NULL)
-  {
-    delete[] _fusage;
-    _fusage = NULL;
-  }
-
   if (_bboxpred != NULL)
   {
     for (int i = 0; i < getBboxpredDim(); i++)
@@ -301,8 +295,8 @@ void Model::loadEmptyModel ()
   // READS 'FUSAGE' //
   ////////////////////
 
-  setFusageDim(-1);
-  setFusage (NULL);
+  //setFusageDim(-1);
+  //setFusage (NULL);
 
   //////////////////////
   // READS 'BBOXPRED' //
@@ -794,22 +788,15 @@ void Model::loadLowerbounds (matvar_t *matVar )
 
 void Model::loadFusage (matvar_t *matVar )
 {
-  char *variable = new char [7];
+  std::string variable = "fusage";
 
-  assert (variable != NULL);
-
-  strcpy (variable, "fusage");
-
-  if (existField (matVar, variable))
-    readNumber (matVar, variable, &_fusage, &_fusageDim);
+  if (exist_field (matVar, variable))
+    _fusage = read_number<int>(matVar, variable);
 
   else
   {
-    setFusageDim (-1);
-    setFusage (NULL);
+    setFusage(std::vector<int>());
   }
-
-  delete[] variable;
 }
 
 void Model::loadBboxpred (matvar_t *matVar )
@@ -944,22 +931,9 @@ void Model::setLowerbounds (lowerbounds *l)
     _lowerbounds = l;
 }
 
-void Model::setFusage (int *d)
+void Model::setFusage (const std::vector<int>& d)
 {
-  if (d != NULL)
-  {
-    assert (getFusageDim() > 0);
-
-    _fusage = new int [getFusageDim()];
-
-    assert (_fusage != NULL);
-
-    for (int i = 0; i < getFusageDim(); i++)
-      _fusage[i] = d[i];
-  }
-
-  else
-    _fusage = NULL;
+  _fusage = d;
 }
 
 void Model::setBboxpred (bboxpred *b)

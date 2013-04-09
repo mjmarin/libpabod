@@ -710,30 +710,22 @@ public:
  *  \return The integer value of <tt>_fusage</tt>
  *  \note Inline function
  */
-  int* getFusage () const  {return _fusage;}
+  std::vector<int> getFusage () const  {return _fusage;}
 
 
 /** Sets the value of private variable <tt>_fusage</tt> to <tt>d</tt>.
  *  \param d - new value for the variable <tt>_fusage</tt>
  *  \note Inline function
  */
-  void setFusage (int *d);
+  void setFusage (const std::vector<int>& d);
 
 
 /** Returns the value of private variable <tt>_fusage</tt>.
  *  \return The dimension of <tt>_fusage</tt>
  *  \note Inline function
  */
-  int getFusageDim () const  {return _fusageDim;}
+  int getFusageDim () const  {return _fusage.size();}
 
-
-/** Sets the value of auxiliar private variable <tt>_fusageDim</tt> to
- *  <tt>dim</tt>.
- *  \param dim - the new value. It means the dimension of the array <tt>
- *  _fusage</tt>
- *  \note Inline function
- */
-  void setFusageDim (int dim)  {_fusageDim = dim;}
 
 /** Returns the value of private variable <tt>_bboxpred</tt>.
  *  \return A bboxpred structure, which is the value of <tt>_bboxpred</tt>
@@ -951,7 +943,7 @@ private:
 
   int _lowerboundsDim;
 
-  int* _fusage;
+  std::vector<int> _fusage;
 
   int _fusageDim;
 
