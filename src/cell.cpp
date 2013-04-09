@@ -34,20 +34,15 @@ void Cell::destroyCell ()
         _anchor = NULL;
       }
 
-      if (_score != NULL)
+      for (int i = 0; i < getScoreDim(); i++)
       {
-        for (int i = 0; i < getScoreDim(); i++)
+        if (_score[i] != NULL)
         {
-          if (_score[i] != NULL)
-          {
-            cvReleaseMat (&_score[i]);
-            _score[i] = NULL;
-          }
+          cvReleaseMat (&_score[i]);
+          _score[i] = NULL;
         }
-
-        delete[] _score;
-        _score = NULL;
       }
+
     }
 
     if (_Ix != NULL)
@@ -112,9 +107,6 @@ void Cell::loadEmptyCell ()
   getDef().flip = false;
   getDef().symmetric = 0;
 
-  _scoreDim = -1;
-  _score = NULL;
-
   _IxDim = -1;
   _Ix = NULL;
 
@@ -152,9 +144,6 @@ void Cell::loadCell (matvar_t *matVar, int i)
 
   _IyDim = -1;
   _Iy = NULL;
-
-  _scoreDim = -1;
-  _score = NULL;
 }
 
 
@@ -194,52 +183,22 @@ void Cell::loadI (matvar_t *matVar, int i)
 
 void Cell::loadOffset (matvar_t *matVar, int i)
 {
-  char *variable = new char [7];
-  matvar_t *field;
-
-  assert (variable != NULL);
-
-  strcpy (variable, "offset");
-
-  field = Mat_VarGetStructField (matVar, (char*) variable, BY_NAME, i);
-
+  matvar_t* field = Mat_VarGetStructField (matVar, const_cast<char*>("offset"), BY_NAME, i);
   initializeOffset (field);
-
-  delete[] variable;
 }
 
 
 void Cell::loadAnchor (matvar_t *matVar, int i)
 {
-  char *variable = new char [7];
-  matvar_t *field;
-
-  assert (variable != NULL);
-
-  strcpy (variable, "anchor");
-
-  field = Mat_VarGetStructField (matVar, (char*) variable, BY_NAME, i);
-
+  matvar_t* field = Mat_VarGetStructField (matVar, const_cast<char*>("anchor"), BY_NAME, i);
   initializeAnchor (field);
-
-  delete[] variable;
 }
 
 
 void Cell::loadDef (matvar_t *matVar, int i)
 {
-  char *variable = new char [7];
-  matvar_t *field;
-
-  assert (variable != NULL);
-
-  strcpy (variable, "def");
-
-  field = Mat_VarGetStructField (matVar, (char*) variable, BY_NAME, i);
-
+  matvar_t* field = Mat_VarGetStructField (matVar, const_cast<char*>("def"), BY_NAME, i);
   initializeDef (field);
-
-  delete[] variable;
 }
 
 
@@ -275,16 +234,9 @@ void Cell::setAnchor (anchor *a)
 }
 
 
-void Cell::setScore (CvMat **score)
+void Cell::setScore (const std::vector<CvMat*>& score)
 {
-  assert (getScoreDim() > 0);
-
-  _score = new CvMat* [getScoreDim()];
-
-  assert (_score != NULL);
-
-  for (int i = 0; i < getScoreDim(); i++)
-    _score[i] = score[i];
+  _score = score;
 }
 
 

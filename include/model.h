@@ -67,8 +67,7 @@ typedef struct symbols
   char type;
   int i;
   int filter;
-  CvMat **score;
-  int dimScore;
+  std::vector<CvMat*> score;
 } symbols;
 
 ///////////////////////////////////

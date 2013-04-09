@@ -111,21 +111,17 @@ void symbolScore (Model *model, int s, bool latent, const FeatPyramid &pyra,
 
   // Take pointwise max over scores for each rule with s as the lhs
   rules r = model->getRules()[s];
-  CvMat **score = r.structure[0].getScore();
+  const std::vector<CvMat*>& score = r.structure[0].getScore();
 
-  CvMat **sc = new CvMat* [r.structure[0].getScoreDim()];
-
-  assert (sc != NULL);
+  std::vector<CvMat*> sc(r.structure[0].getScoreDim());
 
   for (int i = 0; i < r.structure[0].getScoreDim(); i++)
-
     sc[i] = cvCloneMat (score[i]);
 
   for (int j = 1; j < r.n; j++)
     for (int i = 0; i < r.structure[j].getScoreDim(); i++)
       cvMax (sc[i], r.structure[j].getScore()[i], sc[i]);
 
-  model->getSymbols()[s].dimScore = r.structure[0].getScoreDim();
   model->getSymbols()[s].score = sc;
 }
 
@@ -146,8 +142,7 @@ void applyStructuralRule (Model *model, const Cell &r, int padY, int padX)
 {
   // Structural rule -> shift and sum scores from rhs symbols
   // Prepare score for this rule
-  CvMat** score = new CvMat* [model->getScoretptDim()];
-  assert (score != NULL);
+  std::vector<CvMat*> score(model->getScoretptDim());
 
   int scoreDims[2];
 
@@ -220,11 +215,10 @@ void applyStructuralRule (Model *model, const Cell &r, int padY, int padX)
     startLevel = int( (model->getInterval() + 1) * ds);
 
     // Score table to shift and down sample
-    CvMat** s = model->getSymbols()[(int) r.getRhs()[j]].score;
-    assert (s != NULL);
+    const std::vector<CvMat*>& s = model->getSymbols()[(int) r.getRhs()[j]].score;
 
     for (int i = startLevel;
-         i < (int) (model->getSymbols()[(int)r.getRhs()[j]].dimScore);
+         i < (int) (model->getSymbols()[(int)r.getRhs()[j]].score.size());
          i++)
     {
       level = i - int( (model->getInterval() + 1) * ds);
@@ -309,8 +303,6 @@ void applyStructuralRule (Model *model, const Cell &r, int padY, int padX)
   }
 
   model->getRules()[(int) r.getLhs()].structure
-                   [(int) r.getI()].setScoreDim(model->getScoretptDim());
-  model->getRules()[(int) r.getLhs()].structure
                    [(int) r.getI()].setScore(score);
 }
 
@@ -320,8 +312,8 @@ void applyDeformationRule (Model *model, const Cell &r)
 {
   // Deformation rule -> apply distance transform
   double *d = r.getDef().w;
-  int dim = model->getSymbols()[(int) r.getRhs()[0]].dimScore;
-  CvMat** score = model->getSymbols()[(int) r.getRhs()[0]].score;
+  int dim = model->getSymbols()[(int) r.getRhs()[0]].score.size();
+  std::vector<CvMat*> score = model->getSymbols()[(int) r.getRhs()[0]].score;
 
   CvMat **Ix = new CvMat* [dim];
   assert (Ix != NULL);
@@ -336,8 +328,6 @@ void applyDeformationRule (Model *model, const Cell &r)
     cvAddS (score[i], cvRealScalar(r.getOffset().w), score[i]);
   }
 
-  model->getRules()[(int) r.getLhs()].structure[(int) r.getI()]
-                                     .setScoreDim(dim);
   model->getRules()[(int) r.getLhs()].structure[(int) r.getI()]
                                      .setScore(score);
 
@@ -421,8 +411,7 @@ void filterResponses (Model *model, const FeatPyramid  &pyra, bool latent,
 
   for (int i = 0; i < rDim; i++)
   {
-    model->getSymbols()[filter_to_symbol[i]].dimScore = dim;
-    model->getSymbols()[filter_to_symbol[i]].score = new CvMat* [dim];
+    model->getSymbols()[filter_to_symbol[i]].score = std::vector<CvMat*>(dim);
   }
 
   int s[2];

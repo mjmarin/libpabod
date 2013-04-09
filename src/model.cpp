@@ -74,7 +74,7 @@ void Model::destroyModel ()
   {
     for (int i = 0; i < getSymbolsDim(); i++)
     {
-      for (int j = 0; j < getSymbols()[i].dimScore; j++)
+      for (size_t j = 0; j < getSymbols()[i].score.size(); j++)
       {
         if (getSymbols()[i].score[j] != NULL)
         {
@@ -82,15 +82,6 @@ void Model::destroyModel ()
           getSymbols()[i].score[j] = NULL;
         }
       }
-
-      /*delete[] getSymbols()[i].score;
-      getSymbols()[i].score = NULL;*/
-      if (getSymbols()[i].score != NULL)
-      {
-         delete [] getSymbols()[i].score;
-         getSymbols()[i].score = NULL;
-      }
-
     }
     delete[] _symbols;
     _symbols = NULL;
@@ -1081,8 +1072,7 @@ void Model::initializeSymbols (matvar_t *symbolsStructure)
 
     /* The number of scores is setted like -1, what it means empty
     (invalid value) */
-    s[j].dimScore = -1;
-    s[j].score = NULL;
+    s[j].score.clear();
   }
 
   setSymbols (s);

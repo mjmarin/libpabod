@@ -461,7 +461,7 @@ class Cell
          *  \sa _score
          *  \sa _scoreDim
          */
-        CvMat** getScore () const  {return _score;}
+        std::vector<CvMat*> getScore () const  {return _score;}
 
 
         /** Set the value of private variable <tt>_score</tt> to <tt>score</tt>.
@@ -469,7 +469,7 @@ class Cell
          *  \sa _score
          *  \sa _scoreDim
          */
-        void setScore (CvMat **score);
+        void setScore (const std::vector<CvMat*>& score);
 
 
         /** Returns the value of private variable <tt>_scoreDim</tt>
@@ -478,19 +478,8 @@ class Cell
          *  \sa _score
          *  \sa _scoreDim
          */
-        int getScoreDim () const  {return _scoreDim;}
+        int getScoreDim () const  {return _score.size();}
 
-
-        /** Set the value of private variable <tt>_scoreDim</tt> to <tt>dim</tt>.
-         *  \param dim - new value for the variable <tt>_scoreDim</tt>
-         *  \sa _score
-         *  \sa _scoreDim
-         */
-        void setScoreDim (int dim)
-        {
-            assert (dim > 0);
-            _scoreDim = dim;
-        }
 
         /** Returns the value of private variable <tt>_Ix</tt>.
          *  \return The CvMat array <tt>_Ix</tt>
@@ -666,14 +655,7 @@ class Cell
         /** Is a CvMat* array private variable.
          *  \sa _scoreDim
          */
-        CvMat** _score;
-
-
-        /** Is an int private variable. Indicates the size of
-         *  <tt>_score</tt> array.
-         *  \sa _score
-         */
-        int _scoreDim;
+        std::vector<CvMat*> _score;
 
 
         /** Is a CvMat* array private variable.
