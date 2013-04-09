@@ -238,19 +238,8 @@ void Cell::loadDetwindow (matvar_t *matVar, int i)
 
 void Cell::loadI (matvar_t *matVar, int i)
 {
-  char *variable = new char [2];
-  int dim = -1;
-  int *el = NULL;
-
-  assert (variable != NULL);
-
-  strcpy (variable, "i");
-
-  readNumber (matVar, variable, &el, &dim, i);
+  std::vector<int> el = read_number<int>(matVar, "i", i);
   setI(el[0]-1);
-
-  delete[] variable;
-  delete[] el;
 }
 
 
