@@ -1,8 +1,13 @@
 #include <dt.h>
 
 
-void dtHelper (double *src, double *dst, int *ptr, int step, int s1, int s2,
-              int d1, int d2, double a, double b)
+void dtHelper (std::vector<double>& src, int src_offset,
+               std::vector<double>& dst, int dst_offset,
+               std::vector<int>&    ptr, int ptr_offset,
+               int step,
+               int s1, int s2,
+               int d1, int d2,
+               double a, double b)
 {
   if (d2 >= d1)
   {
@@ -11,26 +16,29 @@ void dtHelper (double *src, double *dst, int *ptr, int step, int s1, int s2,
 
     for (int p = s1+1; p <= s2; p++)
     {
-      if (src[s*step] - a*squared(d-s) - b*(d-s) <
-      src[p*step] - a*squared(d-p) - b*(d-p))
+      if (src[src_offset + s*step] - a*squared(d-s) - b*(d-s) <
+          src[src_offset + p*step] - a*squared(d-p) - b*(d-p))
       {
         s = p;
       }
     }
 
-    dst[d*step] = src[s*step] - a*squared(d-s) - b*(d-s);
-    ptr[d*step] = s;
+    dst[dst_offset + d*step] = src[src_offset + s*step] - a*squared(d-s) - b*(d-s);
+    ptr[ptr_offset + d*step] = s;
 
-    dtHelper (src, dst, ptr, step, s1, s, d1, d-1, a, b);
-    dtHelper (src, dst, ptr, step, s, s2, d+1, d2, a, b);
+    dtHelper (src, src_offset, dst, dst_offset, ptr, ptr_offset, step, s1, s, d1, d-1, a, b);
+    dtHelper (src, src_offset, dst, dst_offset, ptr, ptr_offset, step, s, s2, d+1, d2, a, b);
   }
 }
 
 
-void dt1d (double *src, double *dst, int *ptr, int step, int n, double a,
-           double b)
+void dt1d (std::vector<double>& src, int src_offset,
+           std::vector<double>& dst, int dst_offset,
+           std::vector<int>&    ptr, int ptr_offset,
+           int step, int n,
+           double a, double b)
 {
-  dtHelper (src, dst, ptr, step, 0, n-1, 0, n-1, a, b);
+  dtHelper (src, src_offset, dst, dst_offset, ptr, ptr_offset, step, 0, n-1, 0, n-1, a, b);
 }
 
 
@@ -39,8 +47,7 @@ void dt (const CvMat* score, double d0, double d1, double d2, double d3,
 {
   int dims[2];
   getDimensions (score, dims);
-  double *vals = new double [score->rows * score->cols];
-  getMatData <double> (score, vals);
+  std::vector<double> vals = get_mat_data<double>(score);
   double ax = d0;
   double bx = d1;
   double ay = d2;
@@ -50,20 +57,31 @@ void dt (const CvMat* score, double d0, double d1, double d2, double d3,
   createMatrix (2, dims, CV_32SC1, mIx);
   createMatrix (2, dims, CV_32SC1, mIy);
 
-  double *M = new double [dims[0]*dims[1]];
-  int *Ix = new int [dims[0]*dims[1]];
-  int *Iy = new int [dims[0]*dims[1]];
-
-  double *tmpM = new double [dims[0]*dims[1]];
-  int *tmpIx = new int [dims[0]*dims[1]];
-  int *tmpIy = new int [dims[0]*dims[1]];
+  const int z = dims[0] * dims[1];
+  std::vector<double> M (z);
+  std::vector<int>    Ix(z);
+  std::vector<int>    Iy(z);
+  std::vector<double> tmpM (z);
+  std::vector<int>    tmpIx(z);
+  std::vector<int>    tmpIy(z);
 
   for (int x = 0; x < dims[1]; x++)
-    dt1d (vals+x*dims[0], tmpM+x*dims[0], tmpIy+x*dims[0], 1, dims[0],
-    ay, by);
+    dt1d (vals ,x*dims[0],
+          tmpM ,x*dims[0],
+          tmpIy,x*dims[0],
+          1,
+          dims[0],
+          ay,
+          by);
 
   for (int y = 0; y < dims[0]; y++)
-    dt1d (tmpM+y, M+y, tmpIx+y, dims[0], dims[1], ax, bx);
+    dt1d (tmpM ,y,
+          M    ,y,
+          tmpIx,y,
+          dims[0],
+          dims[1],
+          ax,
+          bx);
 
   int p;
 
@@ -74,21 +92,13 @@ void dt (const CvMat* score, double d0, double d1, double d2, double d3,
     {
       p = x*dims[0]+y;
       Ix[p] = tmpIx[p];
-      Iy[p] = tmpIy[tmpIx[p]*dims[0]+y];
+      const int tmpixp = tmpIx[p];
+      Iy[p] = tmpIy[tmpixp*dims[0]+y];
     }
   }
 
-  delete[] tmpM;
-  delete[] tmpIx;
-  delete[] tmpIy;
-
-  setMatData (*scoreRet, M);
-  setMatData (*mIx, Ix);
-  setMatData (*mIy, Iy);
-
-  delete[] M;
-  delete[] Ix;
-  delete[] Iy;
-  delete[] vals;
+  setMatData (*scoreRet, M.data());
+  setMatData (*mIx, Ix.data());
+  setMatData (*mIy, Iy.data());
 }
 
