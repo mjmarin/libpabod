@@ -55,7 +55,7 @@ bool readLogical (matvar_t *matVar, char* var, int pos)
 bool read_logical (matvar_t *matVar, const std::string& var, int pos)
 {
   matvar_t *field;
-  int *auxInt = NULL;
+  char *auxChar = NULL;
   bool flag = false;
 
   field = Mat_VarGetStructField (matVar, const_cast<char*>(var.c_str()), BY_NAME, pos);
@@ -64,9 +64,9 @@ bool read_logical (matvar_t *matVar, const std::string& var, int pos)
   {
     if ( field->data_type == MAT_T_UINT8 )
     {
-    auxInt = (int*) field->data;
+    auxChar = (char*) field->data;
 
-    if (*auxInt == 1)
+    if (*auxChar == 1)
       flag = true;
     }
   }
