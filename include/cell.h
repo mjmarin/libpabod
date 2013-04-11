@@ -83,7 +83,7 @@ typedef struct anchor
  */
 typedef struct def
 {
-    double w[4];
+    double w[4] = {0.0, 0.0, 0.0, 0.0};
     int blocklabel;
     bool flip;
     char symmetric;
@@ -445,7 +445,7 @@ class Cell
          *  \sa _def
          *  \sa _flagStr
          */
-        def getDef () const  {return _def;}
+        const def& getDef () const  {return _def;}
         def& getDef () {return _def;}
 
 

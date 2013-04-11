@@ -311,7 +311,7 @@ void applyStructuralRule (Model *model, const Cell &r, int padY, int padX)
 void applyDeformationRule (Model *model, const Cell &r)
 {
   // Deformation rule -> apply distance transform
-  double *d = r.getDef().w;
+  const double* d = r.getDef().w;
   int dim = model->getSymbols()[(int) r.getRhs()[0]].score.size();
   std::vector<CvMat*> score = model->getSymbols()[(int) r.getRhs()[0]].score;
   std::vector<CvMat*> Ix(dim);
