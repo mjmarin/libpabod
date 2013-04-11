@@ -1,13 +1,13 @@
 #include <dt.h>
 
 
-void dtHelper (std::vector<double>& src, int src_offset,
-               std::vector<double>& dst, int dst_offset,
-               std::vector<int>&    ptr, int ptr_offset,
-               int step,
-               int s1, int s2,
-               int d1, int d2,
-               double a, double b)
+static void dtHelper (const std::vector<double>& src, int src_offset,
+                      std::vector<double>& dst, int dst_offset,
+                      std::vector<int>&    ptr, int ptr_offset,
+                      int step,
+                      int s1, int s2,
+                      int d1, int d2,
+                      double a, double b)
 {
   if (d2 >= d1)
   {
@@ -32,13 +32,23 @@ void dtHelper (std::vector<double>& src, int src_offset,
 }
 
 
-void dt1d (std::vector<double>& src, int src_offset,
-           std::vector<double>& dst, int dst_offset,
-           std::vector<int>&    ptr, int ptr_offset,
-           int step, int n,
-           double a, double b)
+static void dt1d (std::vector<double>& src, int src_offset,
+                  std::vector<double>& dst, int dst_offset,
+                  std::vector<int>&    ptr, int ptr_offset,
+                  int step, int n,
+                  double a, double b)
 {
   dtHelper (src, src_offset, dst, dst_offset, ptr, ptr_offset, step, 0, n-1, 0, n-1, a, b);
+}
+
+
+template <typename T>
+static void print_vec(const std::vector<T>& v) {
+  for(const auto& a : v) {
+    std::cout << "  " << a << std::endl;
+  }
+  std::cout << std::endl;
+  std::cout << std::endl;
 }
 
 
