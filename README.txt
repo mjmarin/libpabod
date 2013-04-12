@@ -8,7 +8,7 @@ Contents of the package:
 ========================
 - bin - the executable file will be created here
 - data:
-  - models - contains all the object model files 
+  - models - contains all the object model files
   - testimages - a set of images to test the software
 - doc - folder where the documentation will be generated
 - include - contains all the software header files
@@ -35,7 +35,7 @@ Quick start:
 A) Classic installation (obsolete --> CMake is highly recommended):
   1. Unpack in <libpabod_directory>
   2. cd <libpabod_directory>
-  3.1. Generating the library  
+  3.1. Generating the library
     > make
   3.2. Creating the test programs
     > make alltests
@@ -43,7 +43,7 @@ A) Classic installation (obsolete --> CMake is highly recommended):
     > make docum
   3.4. Recompiling all
     > make cleanobj
-    > make   
+    > make
 
 Tip: use 'make all' to generate both the library and the test programs.
 
@@ -52,7 +52,7 @@ B) Installing with CMake:
 
 C) Testing the library:
   (assuming test program has been already generated)
-  1. cd <libpabod_directory> 
+  1. cd <libpabod_directory>
   2.  ./bin/detectobj -m <model_path> -i <image_path> [-t <threshold>] [-o <detections_path>] [-d <0/1>]
   Example:
     > ./bin/detectobj -m data/models/person_v6.mat -i data/testimages/2008_007537.jpg -t -0.3 -o detections.txt
@@ -98,9 +98,9 @@ Version history:
  - v0.1.7: fixed bugs (i.e. memory leaks) reported by <anonymous>.
  - v0.1.6: fixed documentation option for CMake (thanks to eichnerm). Use 'cmake .. -DINSTALL_DOC=ON" to generate the library documentation.
  - v0.1.5: CMake is supported (thanks to rmsalinas@uco.es). By default, the library is built in shared mode (non-static).
- - v0.1.4: added an alternative 'makeDetection' function. Updated makefile. Now 'make all' builds both the library and the test programs. 
- - v0.1.3: added 'detectvid' program. It performs detection on video sequences (e.g. avi). Use 'make test3' to generate it. Use 'make alltests' to generate all test programs. 
+ - v0.1.4: added an alternative 'makeDetection' function. Updated makefile. Now 'make all' builds both the library and the test programs.
+ - v0.1.3: added 'detectvid' program. It performs detection on video sequences (e.g. avi). Use 'make test3' to generate it. Use 'make alltests' to generate all test programs.
  - v0.1.2: small fixes in code.
- - v0.1.1: added 'detectobj' program. It can save detections to disk. Use 'make test2' to generate it. 
+ - v0.1.1: added 'detectobj' program. It can save detections to disk. Use 'make test2' to generate it.
  - v0.1: first release.
 

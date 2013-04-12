@@ -1,8 +1,7 @@
 #ifndef _CUSTOM_H_ 
  #define _CUSTOM_H_ 1
 
-#undef USE_OPENMP
-
+#define USE_OPENMP 1 
 #undef USE_PTHREADS
 
 #define PABOD_MAJOR_VERSION 0

@@ -1,5 +1,5 @@
 #if defined _WIN32
-  #include <windows.h> 
+  #include <windows.h>
   #include <ctime>
   typedef time_t TIMER;
   #define GET_TIME(var) time(var)

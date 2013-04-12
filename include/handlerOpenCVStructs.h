@@ -286,6 +286,8 @@ static inline int pow2(int p) { return (1<<p); }
   CvMat* subMat (const CvMat* mat, int* iy, int iyDim, int* ix,
                  int ixDim);
 
+  CvMat* sub_mat (const CvMat* mat, const std::vector<int>& iy, const std::vector<int>& ix);
+
 
 /** The function converts values of vector <tt>v</tt> to matrix indexes.
  *  For this, treat each value of the vector like a position of the matrix
@@ -305,6 +307,9 @@ static inline int pow2(int p) { return (1<<p); }
  */
   void ind2sub (const int nRows, const int nCols, const int *v, const int nV,
                 int **rowsIdx, int **colsIdx);
+
+  void ind_to_sub (const int nRows, const int nCols, const std::vector<size_t>& v,
+                std::vector<int>& rowsIdx, std::vector<int>& colsIdx);
 
 
 /** Sets all the elements of matrix <tt>mat</tt> to value <tt>val</tt>
@@ -363,6 +368,9 @@ static inline int pow2(int p) { return (1<<p); }
  */
   template <class Type>
   void shellSort (Type *v, int n, int mode, int **idx = NULL);
+
+  template <class Type>
+  void shell_sort (std::vector<Type>& v, int mode);
 
 
 /////////////////////////
@@ -567,6 +575,28 @@ void getMatData (const CvMat *mat, Type *v)
 
 
 template <class Type>
+std::vector<Type> get_mat_data (const CvMat *mat)
+{
+  int counter = 0;
+  unsigned int cols = mat->cols;
+  unsigned int rows = mat->rows;
+  unsigned int offset = mat->step/sizeof(uchar);
+
+  std::vector<Type> v(mat->cols * mat->rows);
+  for (unsigned int i = 0; i < cols; i++)
+  {
+    for (unsigned int j = 0; j < rows; j++)
+    {
+      v[counter] = ((Type*) (mat->data.ptr + (offset*j)))[i];
+
+      counter++;
+    }
+  }
+  return v;
+}
+
+
+template <class Type>
 void setMatData (CvMat *mat, const Type *v)
 {
   int counter = 0;
@@ -766,6 +796,54 @@ void removeIndexes (Type **original, int dimOr, const int *indexes, int dimIdx)
 
 
 template <class Type>
+void remove_indexes (Type **original, int dimOr, std::vector<size_t> idxes)
+{
+  Type *aux = (*original);
+  std::vector<size_t> sortedIdx = idxes;
+
+  if (dimOr - sortedIdx.size() > 0)
+  {
+    (*original) = new Type [dimOr - sortedIdx.size()];
+
+    shell_sort (sortedIdx, DESCEND);
+
+    for (int i = 0; i < sortedIdx.size(); i++)
+      for (int j = 0; j < dimOr - sortedIdx[i]; j++)
+        aux[sortedIdx[i] + j] = aux[sortedIdx[i] + j + 1];
+
+    for (int i = 0; i < dimOr - sortedIdx.size(); i++)
+      (*original)[i] = aux[i];
+  }
+
+  else
+    (*original) = NULL;
+}
+
+
+template <typename T>
+void remove_indexes(std::vector<T>& v, const std::vector<size_t>& indexes_to_remove) {
+    if(v.size() < indexes_to_remove.size()) {
+        v.clear();
+        return;
+    } else {
+        std::vector<size_t> u = indexes_to_remove;
+        std::sort(u.begin(), u.end());
+        int current_fill_idx = 0;
+        int current_r_idx = 0;
+        for(size_t i = 0; i < v.size(); ++i) {
+            if(i == u[current_r_idx]) {
+                ++current_r_idx;
+            } else {
+                v[current_fill_idx] = v[i];
+                ++current_fill_idx;
+            }
+        }
+        v.resize(v.size() - u.size());
+    }
+}
+
+
+template <class Type>
 void shellSort (Type *v, int n, int mode, int **idx)
 {
   int curIncr = 0;
@@ -863,6 +941,80 @@ void shellSort (Type *v, int n, int mode, int **idx)
   }
 }
 
+template <typename Type>
+struct less_by_index {
+  less_by_index(const std::vector<Type>& v) : _v(v) {}
+  bool operator()(size_t i1, size_t i2) const { return _v[i1] < _v[i2]; }
+  const std::vector<Type>& _v;
+} ;
+
+template <typename Type>
+struct greater_by_index {
+  greater_by_index(const std::vector<Type>& v) : _v(v) {}
+  bool operator()(size_t i1, size_t i2) const { return _v[i1] > _v[i2]; }
+  const std::vector<Type>& _v;
+} ;
+
+
+template <typename Type>
+void shell_sort(Type* v, const int n, const int mode, std::vector<size_t>& idx)
+{
+    idx.resize(n);
+    for(size_t i = 0; i < idx.size(); ++i) {
+        idx[i] = i;
+    }
+    if(mode == ASCEND) {
+        std::stable_sort(idx.begin(), idx.end(), less_by_index<Type>(v));
+    } else {
+        std::stable_sort(idx.begin(), idx.end(), greater_by_index<Type>(v));
+    }
+
+    if(mode == ASCEND) {
+        std::stable_sort(v, v + n);
+    } else {
+        std::stable_sort(v, v + n, std::greater<Type>());
+    }
+}
+
+template <typename Type>
+void shell_sort(Type* v, const int n, const int mode)
+{
+    if(mode == ASCEND) {
+        std::stable_sort(v, v + n);
+    } else {
+        std::stable_sort(v, v + n, std::greater<Type>());
+    }
+}
+
+template <typename Type>
+void shell_sort(std::vector<Type>& v, const int mode, std::vector<size_t>& idx)
+{
+    idx.resize(v.size());
+    for(size_t i = 0; i < idx.size(); ++i) {
+        idx[i] = i;
+    }
+    if(mode == ASCEND) {
+        std::stable_sort(idx.begin(), idx.end(), less_by_index<Type>(v));
+    } else {
+        std::stable_sort(idx.begin(), idx.end(), greater_by_index<Type>(v));
+    }
+
+    if(mode == ASCEND) {
+        std::stable_sort(v.begin(), v.end());
+    } else {
+        std::stable_sort(v.begin(), v.end(), std::greater<Type>());
+    }
+}
+
+template <typename Type>
+void shell_sort(std::vector<Type>& v, const int mode)
+{
+    if(mode == ASCEND) {
+        std::stable_sort(v.begin(), v.end());
+    } else {
+        std::stable_sort(v.begin(), v.end(), std::greater<Type>());
+    }
+}
 
 template <class Type>
 int countElementsWhich (int condition, int elem, Type **v, int dim,
@@ -962,6 +1114,18 @@ int countElementsWhich (int condition, int elem, Type **v, int dim,
 }
 
 
+template <typename Type, typename Func>
+std::vector<size_t> find(const std::vector<Type>& mat, Func f)
+{
+  std::vector<size_t> result;
+  for(size_t i = 0; i < mat.size(); ++i) {
+    if(f(mat[i])) {
+      result.push_back(i);
+    }
+  }
+  return result;
+}
+
 template <class Type>
 int find (int condition, const Type *mat, int dim, Type elem,
           int **found)
@@ -1029,6 +1193,51 @@ void getElemOnIdx (const Type *mat, int matDim, const int *idx, int idxDim,
 
   for (int i = 0; i < idxDim; i++)
     (*elems)[i] = mat[idx[i]];
+}
+
+template <class Type>
+void getElemOnIdx (const Type *mat, int matDim, const size_t *idx, int idxDim,
+                   Type **elems)
+{
+  assert (matDim >= idxDim);
+
+  (*elems) = new Type [idxDim];
+
+  for (int i = 0; i < idxDim; i++)
+    (*elems)[i] = mat[idx[i]];
+}
+
+
+template <class Type>
+std::vector<Type> get_elem_on_idx(const std::vector<Type>& v, const std::vector<size_t>& idx)
+{
+  std::vector<Type> result(idx.size());
+  for(std::vector<size_t>::size_type i = 0; i < idx.size(); ++i) {
+    result[i] = v[idx[i]];
+  }
+  return result;
+}
+
+
+template <typename Type, typename IdxIter>
+std::vector<Type> get_elem_on_idx(const std::vector<Type>& v, IdxIter idx_begin, IdxIter idx_end)
+{
+  std::vector<Type> result;
+  for(IdxIter i = idx_begin; i < idx_end; ++i) {
+    result.push_back(v[*i]);
+  }
+  return result;
+}
+
+
+template <typename Type, typename IdxIter>
+std::vector<Type> get_elem_on_idx(Type* v_begin, IdxIter idx_begin, IdxIter idx_end)
+{
+  std::vector<Type> result;
+  for(IdxIter i = idx_begin; i < idx_end; ++i) {
+    result.push_back(*(v_begin + *i));
+  }
+  return result;
 }
 
 

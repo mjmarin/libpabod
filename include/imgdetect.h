@@ -30,7 +30,7 @@
  *  objects found in the operation
  *  \return Returns true if any object has been found, or false otherwise.
  */
-bool imgDetect (IplImage *input, Model *model, double thresh, double *bbox, 
+bool imgDetect (IplImage *input, Model *model, double thresh, double *bbox,
                 double overlap, CvMat **dets, CvMat **boxes, CvMatND **info);
 
 #endif

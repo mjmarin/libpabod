@@ -1,3 +1,4 @@
+#include <string>
 #include <readTypes.h>
 
 char* readString (matvar_t *matVar, char* var, int pos)
@@ -12,6 +13,19 @@ char* readString (matvar_t *matVar, char* var, int pos)
       auxString = (char*) field->data;
 
   return auxString;
+}
+
+
+std::string read_string (matvar_t *matVar, const std::string& var, int pos)
+{
+  matvar_t *field = Mat_VarGetStructField (matVar, const_cast<char*>(var.c_str()), BY_NAME, pos);
+
+  std::string result;
+  if ( field != NULL )
+    if ( field->data_type == MAT_T_UINT8 )
+      result = static_cast<char*>(field->data);
+
+  return result;
 }
 
 
@@ -30,6 +44,29 @@ bool readLogical (matvar_t *matVar, char* var, int pos)
     auxInt = (int*) field->data;
 
     if (*auxInt == 1)
+      flag = true;
+    }
+  }
+
+  return flag;
+}
+
+
+bool read_logical (matvar_t *matVar, const std::string& var, int pos)
+{
+  matvar_t *field;
+  char *auxChar = NULL;
+  bool flag = false;
+
+  field = Mat_VarGetStructField (matVar, const_cast<char*>(var.c_str()), BY_NAME, pos);
+
+  if ( field != NULL )
+  {
+    if ( field->data_type == MAT_T_UINT8 )
+    {
+    auxChar = (char*) field->data;
+
+    if (*auxChar == 1)
       flag = true;
     }
   }

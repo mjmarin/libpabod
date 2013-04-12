@@ -26,84 +26,41 @@ void Cell::destroyCell ()
 {
   if (getFlagStr() != INVALID_STR)
   {
-    if (_rhs != NULL)
-    {
-      if (getRhsDim() > 1)
-        delete[] _rhs;
-
-      else
-        delete _rhs;
-
-      _rhs = NULL;
-    }
-
-    if (_detwindow != NULL)
-    {
-      delete[] _detwindow;
-      _detwindow = NULL;
-    }
-
     if (getFlagStr() == STR_ANCHOR)
     {
       if (_anchor != NULL)
       {
-        for (int i = 0; i < getAnchorDim(); i++)
-        {
-          if (getAnchor()[i].array != NULL)
-          {
-            delete[] getAnchor()[i].array;
-            getAnchor()[i].array = NULL;
-          }
-        }
-
         delete[] _anchor;
         _anchor = NULL;
-      } 
+      }
 
-      if (_score != NULL)
+      for (int i = 0; i < getScoreDim(); i++)
       {
-        for (int i = 0; i < getScoreDim(); i++)
+        if (_score[i] != NULL)
         {
-          if (_score[i] != NULL)
-          {
-            cvReleaseMat (&_score[i]);
-            _score[i] = NULL;
-          }
+          cvReleaseMat (&_score[i]);
+          _score[i] = NULL;
         }
-      
-        delete[] _score;
-        _score = NULL;
+      }
+
+    }
+
+    for (int i = 0; i < getIxDim(); i++)
+    {
+      if (_Ix[i] != NULL)
+      {
+        cvReleaseMat (&_Ix[i]);
+        _Ix[i] = NULL;
       }
     }
 
-    if (_Ix != NULL)
+    for (int i = 0; i < getIyDim(); i++)
     {
-      for (int i = 0; i < getIxDim(); i++)
+      if (_Iy[i] != NULL)
       {
-        if (_Ix[i] != NULL)
-        {
-          cvReleaseMat (&_Ix[i]);
-          _Ix[i] = NULL;
-        }
+        cvReleaseMat (&_Iy[i]);
+        _Iy[i] = NULL;
       }
-
-      delete[] _Ix;
-      _Ix = NULL;
-    }
-
-    if (_Iy != NULL)
-    {
-      for (int i = 0; i < getIyDim(); i++)
-      {
-        if (_Iy[i] != NULL)
-        {
-          cvReleaseMat (&_Iy[i]);
-          _Iy[i] = NULL;
-        }
-      }
-
-      delete[]_Iy;
-      _Iy = NULL;
     }
   }
 
@@ -123,11 +80,6 @@ void Cell::loadEmptyCell ()
 
   setLhs (-1);
 
-  _rhsDim = -1;
-  _rhs = NULL;
-
-  _detwindow = NULL;
-
   setI(-1);
 
   getOffset().w = -1;
@@ -142,15 +94,6 @@ void Cell::loadEmptyCell ()
   getDef().blocklabel = -1;
   getDef().flip = false;
   getDef().symmetric = 0;
-
-  _scoreDim = -1;
-  _score = NULL;
-
-  _IxDim = -1;
-  _Ix = NULL;
-
-  _IyDim = -1;
-  _Iy = NULL;
 }
 
 
@@ -177,149 +120,61 @@ void Cell::loadCell (matvar_t *matVar, int i)
     loadRhs (matVar, i, false);
     loadAnchor (matVar, i);
   }
-
-  _IxDim = -1;
-  _Ix = NULL;
-
-  _IyDim = -1;
-  _Iy = NULL;
-
-  _scoreDim = -1;
-  _score = NULL;
 }
 
 
 void Cell::loadType (matvar_t *matVar, int i)
 {
-  char *variable = new char [5];
-
-  assert (variable != NULL);
-
-  strcpy (variable, "type");
-
-  setType(readString (matVar, variable, i)[0]);
-
-  delete[] variable;
+  setType(read_string(matVar, "type", i)[0]);
 }
 
 
 void Cell::loadLhs (matvar_t *matVar, int i)
 {
-  char *variable = new char [4];
-  int dim = -1;
-  int *el = NULL;
-
-  assert (variable != NULL);
-
-  strcpy (variable, "lhs");
-
-  readNumber (matVar, variable, &el, &dim, i);
+  std::vector<int> el = read_number<int>(matVar, "lhs", i);
   setLhs(el[0]-1);
-
-  delete[] variable;
-  delete[] el;
 }
 
 
 void Cell::loadRhs (matvar_t *matVar, int i, bool scalar)
 {
-  char *variable = new char [4];
-  int *auxInt = NULL;
-
-  assert (variable != NULL);
-
-  strcpy (variable, "rhs");
-
-  readNumber (matVar, variable, &auxInt, &_rhsDim, i);
-
+  (void)scalar;
+  std::vector<int> auxInt = read_number<int>(matVar, "rhs", i);
   setRhs (auxInt);
-
-  delete[] variable;
-  delete[] auxInt;
 }
 
 
 void Cell::loadDetwindow (matvar_t *matVar, int i)
 {
-  char *variable = new char [10];
-  int dim = -1;
-
-  assert (variable != NULL);
-
-  strcpy (variable, "detwindow");
-
-  readNumber (matVar, variable, &_detwindow, &dim, i);
-
-  delete[] variable;
+  _detwindow = read_number<int>(matVar, "detwindow", i);
 }
 
 
 void Cell::loadI (matvar_t *matVar, int i)
 {
-  char *variable = new char [2];
-  int dim = -1;
-  int *el = NULL;
-
-  assert (variable != NULL);
-
-  strcpy (variable, "i");
-
-  readNumber (matVar, variable, &el, &dim, i);
+  std::vector<int> el = read_number<int>(matVar, "i", i);
   setI(el[0]-1);
-
-  delete[] variable;
-  delete[] el;
 }
 
 
 void Cell::loadOffset (matvar_t *matVar, int i)
 {
-  char *variable = new char [7];
-  matvar_t *field;
-
-  assert (variable != NULL);
-
-  strcpy (variable, "offset");
-
-  field = Mat_VarGetStructField (matVar, (char*) variable, BY_NAME, i);
-
+  matvar_t* field = Mat_VarGetStructField (matVar, const_cast<char*>("offset"), BY_NAME, i);
   initializeOffset (field);
-
-  delete[] variable;
 }
 
 
 void Cell::loadAnchor (matvar_t *matVar, int i)
 {
-  char *variable = new char [7];
-  matvar_t *field;
-
-  assert (variable != NULL);
-
-  strcpy (variable, "anchor");
-
-  field = Mat_VarGetStructField (matVar, (char*) variable, BY_NAME, i);
-
+  matvar_t* field = Mat_VarGetStructField (matVar, const_cast<char*>("anchor"), BY_NAME, i);
   initializeAnchor (field);
-
-  delete[] variable;
 }
 
 
 void Cell::loadDef (matvar_t *matVar, int i)
 {
-  char *variable = new char [7];
-  matvar_t *field;
-
-  assert (variable != NULL);
-
-  strcpy (variable, "def");
-
-  field = Mat_VarGetStructField (matVar, (char*) variable, BY_NAME, i);
-
+  matvar_t* field = Mat_VarGetStructField (matVar, const_cast<char*>("def"), BY_NAME, i);
   initializeDef (field);
-
-  delete[] variable;
 }
 
 
@@ -328,29 +183,17 @@ void Cell::loadDef (matvar_t *matVar, int i)
 ///// SETTERS & GETTERS /////
 /////////////////////////////
 
-void Cell::setRhs (int *rhs)
+void Cell::setRhs (const std::vector<int>& rhs)
 {
-  assert (getRhsDim() > 0);
-
-  _rhs = new int [getRhsDim()];
-
-  assert (_rhs != NULL);
-
-  for (int i = 0; i < getRhsDim(); i++)
-    _rhs[i] = rhs[i]-1;
+  _rhs = rhs;
+  for (std::vector<int>::size_type i = 0; i < rhs.size(); i++)
+    --_rhs[i];
 }
 
 
-void Cell::setDetwindow (double *d)
+void Cell::setDetwindow (const std::vector<int>& d)
 {
-  assert (getDetwindowDim() > 0);
-
-  _detwindow = new int [getDetwindowDim()];
-
-  assert (_detwindow != NULL);
-
-  for (int i = 0; i < getDetwindowDim(); i++)
-    _detwindow[i] = (int)d[i];
+  _detwindow = d;
 }
 
 
@@ -367,42 +210,33 @@ void Cell::setAnchor (anchor *a)
 }
 
 
-void Cell::setScore (CvMat **score)
-{  
-  assert (getScoreDim() > 0);
-
-  _score = new CvMat* [getScoreDim()];
-
-  assert (_score != NULL);
-
-  for (int i = 0; i < getScoreDim(); i++)
-    _score[i] = score[i];
+void Cell::setScore (const std::vector<CvMat*>& score)
+{
+  for(std::vector<CvMat*>::size_type i = 0; i < _score.size(); ++i)
+  {
+    cvReleaseMat(&_score[i]);
+  }
+  _score = score;
 }
 
 
-void Cell::setIx (CvMat **Ix)
+void Cell::setIx (const std::vector<CvMat*>& Ix)
 {
-  assert (getIxDim() > 0);
-
-  _Ix = new CvMat* [getIxDim()];
-
-  assert (_Ix != NULL);
-
-  for (int i = 0; i < getIxDim(); i++)
-    _Ix[i] = Ix[i];
+  for(std::vector<CvMat*>::size_type i = 0; i < _Ix.size(); ++i)
+  {
+    cvReleaseMat(&_Ix[i]);
+  }
+  _Ix = Ix;
 }
 
 
-void Cell::setIy (CvMat **Iy)
+void Cell::setIy (const std::vector<CvMat*>& Iy)
 {
-  assert (getIyDim() > 0);
-
-  _Iy = new CvMat* [getIyDim()];
-
-  assert (_Iy != NULL);
-
-  for (int i = 0; i < getIyDim(); i++)
-    _Iy[i] = Iy[i];
+  for(std::vector<CvMat*>::size_type i = 0; i < _Iy.size(); ++i)
+  {
+    cvReleaseMat(&_Iy[i]);
+  }
+  _Iy = Iy;
 }
 
 
@@ -412,29 +246,10 @@ void Cell::setIy (CvMat **Iy)
 
 void Cell::initializeOffset (matvar_t *offsetStructure)
 {
-  int dim = -1;
-  offset of;
-  char *variable = new char [11];
-  int *auxI = NULL;
-  float *auxF = NULL;
-
-  assert (variable != NULL);
-
-  strcpy (variable, "w");
-  readNumber (offsetStructure, variable, &auxF, &dim);
-  of.w = auxF[0];
-
-  delete[] auxF;
-
-  strcpy (variable, "blocklabel");
-  readNumber (offsetStructure, variable, &auxI, &dim);
-  of.blocklabel = auxI[0];
-
-  delete[] auxI;
-
+  std::vector<float> auxF = read_number<float>(offsetStructure, "w");
+  std::vector<int>   auxI = read_number<int>(offsetStructure, "blocklabel");
+  offset of = { auxF[0], auxI[0] };
   setOffset (of);
-
-  delete[] variable;
 }
 
 
@@ -448,7 +263,7 @@ void Cell::initializeAnchor (matvar_t *anchorStructure)
   setAnchorDim (length);
 
   for (int i = 0; i < length; i++)
-    readNumber (anchorStructure, NULL, &(a[i].array), &(a[i].dim), i);
+    a[i].array = read_number<int>(anchorStructure, "", i);
 
   setAnchor (a);
 
@@ -458,36 +273,17 @@ void Cell::initializeAnchor (matvar_t *anchorStructure)
 
 void Cell::initializeDef (matvar_t *defStructure)
 {
-  int dim = -1;
   def d;
-  char *variable = new char [11];
-  double *auxD = NULL;
-  int *el = NULL;
 
-  assert (variable != NULL);
-
-  strcpy (variable, "w");
-  readNumber (defStructure, variable, &auxD, &dim);
-  for (int i = 0; i < dim; i++)
+  std::vector<double> auxD = read_number<double>(defStructure, "w");
+  for (std::vector<double>::size_type i = 0; i < auxD.size(); i++)
     d.w[i] = auxD[i];
 
-  delete[] auxD;
-
-  strcpy (variable, "blocklabel");
-  readNumber (defStructure, variable, &el, &dim);
-  d.blocklabel = el[0];
-
-  delete[] el;
-
-  strcpy (variable, "flip");
-  d.flip = readLogical (defStructure, variable);
-
-  strcpy (variable, "symmetric");
-  d.symmetric = readString (defStructure, variable)[0];
+  d.blocklabel = read_number<int>(defStructure, "blocklabel")[0];
+  d.flip       = read_logical(defStructure, "flip");
+  d.symmetric  = read_string(defStructure, "symmetric")[0];
 
   setDef (d);
-
-  delete[] variable;
 }
 
 

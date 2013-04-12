@@ -11,3 +11,4 @@ INSTALL(TARGETS detectobj2  RUNTIME DESTINATION bin)
 
 ADD_EXECUTABLE(detectvid detectvid.cpp)
 INSTALL(TARGETS detectvid  RUNTIME DESTINATION bin)
+

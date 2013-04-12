@@ -15,20 +15,20 @@
 
 
 /** The function detects objects on the feature pyramid <tt>pyra</tt> using
- *  the model <tt>model</tt> and the score threshold <tt>thresh</tt>. All 
+ *  the model <tt>model</tt> and the score threshold <tt>thresh</tt>. All
  *  the parts with scores higher to <tt>thresh</tt> will be considered.
  *  \param dets - is a reference parameter. Is a matrix which will contain
- *  6 columns and one row per detection at the end of the function: columns 
+ *  6 columns and one row per detection at the end of the function: columns
  *  1-4 give the bounding box coordinates (x1, y1, x2, y2) of each
  *  detection. Column 5 specifies the model component used for each
  *  detection and column 6 gives the score obtained by the detection.
- *  \param boxes - is a reference parameter. Is a matrix with one row per 
- *  detection. Each sequential group of 4 columns specifies the pixel 
- *  coordinates of each model filter bounding box (where the parts are 
- *  placed). The index in the sequence is the same as the index in field 
+ *  \param boxes - is a reference parameter. Is a matrix with one row per
+ *  detection. Each sequential group of 4 columns specifies the pixel
+ *  coordinates of each model filter bounding box (where the parts are
+ *  placed). The index in the sequence is the same as the index in field
  *  <tt>filters</tt> of Model.
- *  \param info - is a reference parameter. Is a matrix containing detailed 
- *  information about each detection required for extracted feature vector 
+ *  \param info - is a reference parameter. Is a matrix containing detailed
+ *  information about each detection required for extracted feature vector
  *  during learning part.
  *  \param pyra - is the feature pyramid of the image used to match the model
  *  \param model - is the object model used in the detection and represents
@@ -38,8 +38,8 @@
  *  \param bbox - not used parameter. It was used for learning purposes
  *  \param overlap - not used parameter. It was used for learning purposes
  */
-  void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info, 
-                const FeatPyramid &pyra, Model *model, double thresh = -1.0, 
+  void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
+                const FeatPyramid &pyra, Model *model, double thresh = -1.0,
                 double *bbox = NULL, double overlap = NEGATIVE_INF);
 
 
@@ -52,12 +52,12 @@
  *  \param bbox - not used parameter. It was used for learning purposes
  *  \param overlap - not used parameter. It was used for learning purposes
  */
-  void symbolScore (Model *model, int s, bool latent, const FeatPyramid &pyra, 
+  void symbolScore (Model *model, int s, bool latent, const FeatPyramid &pyra,
                     double *bbox, double overlap);
 
 
-/** The function computes the score pyramid for rule <tt>r</tt>, by 
- *  calling the function <tt>applyStructuralRule</tt> or 
+/** The function computes the score pyramid for rule <tt>r</tt>, by
+ *  calling the function <tt>applyStructuralRule</tt> or
  *  <tt>applyDeformationRule</tt>.
  *  \param model - is the object model used in the detection operation
  *  \param r - is the rule to apply. Can be structural o deformation
@@ -67,8 +67,8 @@
   void applyRule (Model *model, const Cell &r, int padY, int padX);
 
 
-/** The function computes the score pyramid for structural rule 
- *  <tt>r</tt>. 
+/** The function computes the score pyramid for structural rule
+ *  <tt>r</tt>.
  *  \param model - is the object model used in the detection operation
  *  \param r - is the structural rule to apply
  *  \param padY - is the number of rows of feature map padding
@@ -93,13 +93,13 @@
  *  \param bbox - not used parameter. It was used for learning purposes
  *  \param overlap - not used parameter. It was used for learning purposes
  */
-  void filterResponses (Model *model, const FeatPyramid  &pyra, bool latent, 
+  void filterResponses (Model *model, const FeatPyramid  &pyra, bool latent,
                         double *bbox, double overlap);
 
 
 /** The function returns the valid features pyramid levels can be used.
- *  If <tt>latent</tt> is false, all levels are returned. Otherwise, 
- *  only returns leves that can be actual used for latent detections. 
+ *  If <tt>latent</tt> is false, all levels are returned. Otherwise,
+ *  only returns leves that can be actual used for latent detections.
  *  This behaviour was used in the developing phase.
  *  \param model - is the object model used in the detection operation
  *  \param pyra - is the features pyramid of the image build before
@@ -107,13 +107,13 @@
  *  (for this reason, all the pyramid levels are returned)
  *  \param bbox - not used parameter. It was used for learning purposes
  *  \param overlap - not used parameter. It was used for learning purposes
- *  \param dim - reference parameter. The dimension of the vector 
+ *  \param dim - reference parameter. The dimension of the vector
  *  containing the features pyramid levels is given in this way
  *  \return The function return the vector of features pyramid levels. The
  *  number of elements contained in this vector is given by <tt>dim</tt>
- *  reference parameter 
+ *  reference parameter
  */
-  int* validateLevels (const Model *model, const FeatPyramid &pyra, 
+  int* validateLevels (const Model *model, const FeatPyramid &pyra,
                        bool latent, double *bbox, double overlap, int *dim);
 
 

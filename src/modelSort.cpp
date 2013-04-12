@@ -9,8 +9,7 @@ LStructure *modelSort (const Model *m, LStructure* L, int i, int* V)
   {
     topcall = true;
     i = (int) m->getStart();
-    L->L = NULL ;
-    L->LDim = 0;
+    L->v.clear();
     assert (m->getNumSymbols() > 0);
     V = new int [(int) m->getNumSymbols()];
     assert (V != NULL);
@@ -20,7 +19,7 @@ LStructure *modelSort (const Model *m, LStructure* L, int i, int* V)
 
   // Check for cycle containing symbol i
   if (V[i] == 1)
-    cout << "ERROR >> Cycle detected in grammar!" << endl;
+    std::cout << "ERROR >> Cycle detected in grammar!" << std::endl;
 
   // Mark symbol i as pre-visit
   V[i] = 1;
@@ -54,18 +53,7 @@ LStructure *modelSort (const Model *m, LStructure* L, int i, int* V)
   // Mark symbol i as post-visit
   V[i] = 2;
 
-  int* auxL = new int [(L->LDim)+1];
-  assert (auxL != NULL);
-
-
-  if ( L->L != NULL)
-    for (int j = 0; j < (L->LDim); j++)
-      auxL[j] = L->L[j];
-
-  auxL[L->LDim] = i;
-
-  L->L = auxL;
-  (L->LDim)++;
+  L->v.push_back(i);
 
   V[i] = 0;
 

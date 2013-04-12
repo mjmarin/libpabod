@@ -87,14 +87,12 @@ static void trace(int padX, int padY, const float *scales, int sx, int sy,
   double *info;
   char type;
   int fi;
-  int *fsz;
   double scale;
   int x1;
   int y1;
   int x2;
   int y2;
 
-  bool success = false;
   rules symRules;
   int rulesDim;
   int r = 0;
@@ -107,9 +105,6 @@ static void trace(int padX, int padY, const float *scales, int sx, int sy,
   double *score;
   int sz[2];
 
-  int *detwin;
-
-  int *rhs;
   int rhsDim;
 
   anchor anch;
@@ -155,7 +150,7 @@ static void trace(int padX, int padY, const float *scales, int sx, int sy,
       fi = model->getSymbols()[n.symbol].filter-1;
 
       // Filter size
-      fsz = model->getFilters()[fi].size;
+      const std::vector<int>& fsz = model->getFilters()[fi].size;
 
       // Detection scale
       scale = model->getSbin()/scales[n.l];
@@ -176,7 +171,6 @@ static void trace(int padX, int padY, const float *scales, int sx, int sy,
 
     // Find the rule that produced the current node by looking at
     // which score table holds n.val at the symbol's location
-    success = false;
     symRules = rul[n.symbol];
     rulesDim = symRules.n;
     r = 0;
@@ -194,7 +188,6 @@ static void trace(int padX, int padY, const float *scales, int sx, int sy,
       // pick this rule if the score at the probe location matches n.val
       if (score[probeX*sz[0] + probeY] - 0.005 <= n.val && score[probeX*sz[0] + probeY] + 0.005 >= n.val)
       {
-        success = true;
         delete [] score;
         break;
       }
@@ -210,7 +203,7 @@ static void trace(int padX, int padY, const float *scales, int sx, int sy,
     if (n.symbol == startSymbol)
     {
       // Get detection window for startSymbol and rule r
-      detwin = symRules.structure[r].getDetwindow();
+      const std::vector<int>& detwin = symRules.structure[r].getDetwindow();
 
       // Detection scale
       scale = model->getSbin()/scales[n.l];
@@ -240,7 +233,7 @@ static void trace(int padX, int padY, const float *scales, int sx, int sy,
 
     // Push rhs symbols from the selected rule
     type = symRules.structure[r].getType();
-    rhs = symRules.structure[r].getRhs();
+    std::vector<int> rhs = symRules.structure[r].getRhs();
     rhsDim = symRules.structure[r].getRhsDim();
 
     if (type == 'S')
@@ -262,7 +255,7 @@ static void trace(int padX, int padY, const float *scales, int sx, int sy,
         // Remove virtual padding for to compute the probe location in the
         // score table
         probeY = py - virtpadding(padY, n.ds+ds);
-        push(n, cur, probeX, probeY, px, py, pl, ds, rhs, j);
+        push(n, cur, probeX, probeY, px, py, pl, ds, rhs.data(), j);
       }
     }
 
@@ -299,7 +292,7 @@ static void trace(int padX, int padY, const float *scales, int sx, int sy,
       probeX2 = Ix[probeX*isz[0] + probeY];
       probeY2 = Iy[probeX*isz[0] + probeY];
 
-      push(n, cur, probeX2, probeY2, px, py, n.l, 0, rhs, 0);
+      push(n, cur, probeX2, probeY2, px, py, n.l, 0, rhs.data(), 0);
 
       // save detection information
       info[DET_X] = px + 1;     // actual location (x)

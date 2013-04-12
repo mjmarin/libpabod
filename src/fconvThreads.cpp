@@ -6,20 +6,20 @@
 CvMat** fconv (CvMatND* features, CvMatND** filters, int a, int filtersDim)
 {
   // Get A operand
-  const CvMatND *mxA = features;  
+  const CvMatND *mxA = features;
 
   if (mxA->dims != 3)
-    cout << "Invalid input: A" << endl;
+    std::cout << "Invalid input: A" << std::endl;
 
   // Get B operand
-  int num_bs = filtersDim;  
+  int num_bs = filtersDim;
 
   // Get start and end
   int start = a - 1;
   int end = filtersDim - 1;
 
   if (start < 0 || end >= num_bs || start > end)
-  cout << "Invalid input: start/end" << endl;
+  std::cout << "Invalid input: start/end" << std::endl;
 
   int len = end - start + 1;
 
@@ -39,11 +39,11 @@ CvMat** fconv (CvMatND* features, CvMatND** filters, int a, int filtersDim)
   int height;
   int width;
 
-  for (int i = 0; i < len; i++) 
+  for (int i = 0; i < len; i++)
   {
     mxB = filters[i+start];
 
-    for (int d = 0; d < 3; d++)    
+    for (int d = 0; d < 3; d++)
       td[i].ADims[d] = ADims[d];
 
     td[i].A = A;
@@ -51,14 +51,14 @@ CvMat** fconv (CvMatND* features, CvMatND** filters, int a, int filtersDim)
     td[i].B = getMatNData <double> (mxB);
 
     if (mxB->dims != 3 || td[i].ADims[2] != td[i].BDims[2])
-    cout << "Invalid input: B" << endl;
+    std::cout << "Invalid input: B" << std::endl;
 
     // Output size is computed
     height = td[i].ADims[0] - td[i].BDims[0] + 1;
     width = td[i].ADims[1] - td[i].BDims[1] + 1;
 
     if (height < 1 || width < 1)
-      cout << "Invalid input: B should be smaller than A" << endl;
+      std::cout << "Invalid input: B should be smaller than A" << std::endl;
 
     td[i].CDims[0] = height;
     assert (td[i].CDims[0] > 0);
@@ -71,13 +71,13 @@ CvMat** fconv (CvMatND* features, CvMatND** filters, int a, int filtersDim)
     getMatData <double> (td[i].mxC, td[i].C);
 
     if (pthread_create (&ts[i], NULL, process, (void*) &td[i]))
-      cout << "Error creating threads" << endl;
+      std::cout << "Error creating threads" << std::endl;
   }
 
   // Wait for the treads to finish and set return values
   void *status;
 
-  for (int i = 0; i < len; i++) 
+  for (int i = 0; i < len; i++)
   {
     pthread_join(ts[i], &status);
 
@@ -92,7 +92,7 @@ CvMat** fconv (CvMatND* features, CvMatND** filters, int a, int filtersDim)
   delete[] td;
   delete[] ts;
 
-  return result;  
+  return result;
 }
 
 #else
@@ -101,20 +101,20 @@ CvMat** fconv (CvMatND* features, CvMatND** filters, int a, int filtersDim)
 {
 
   // Get A operand
-  const CvMatND *mxA = features;  
+  const CvMatND *mxA = features;
 
   if (mxA->dims != 3)
-    cout << "Invalid input: A" << endl;
+    std::cout << "Invalid input: A" << std::endl;
 
   // Get B operand
-  int num_bs = filtersDim;  
+  int num_bs = filtersDim;
 
   // Get start and end
   int start = a - 1;
   int end = filtersDim - 1;
 
   if (start < 0 || end >= num_bs || start > end)
-  cout << "Invalid input: start/end" << endl;
+  std::cout << "Invalid input: start/end" << std::endl;
 
   int len = end - start + 1;
 
@@ -131,17 +131,17 @@ CvMat** fconv (CvMatND* features, CvMatND** filters, int a, int filtersDim)
   double *A = getMatNData <double> (mxA);
 
 #ifdef USE_OPENMP
- 
+
   int i;
   std::vector<CvMatND *> mxB2(len);
   omp_set_num_threads(len);
   #pragma omp parallel for
-  for (i = 0; i < len; i++) 
+  for (i = 0; i < len; i++)
   {
-    //cout << "Thread " << omp_get_thread_num() << " of Num OMP-threads: " << omp_get_num_threads() << endl;
+    //std::cout << "Thread " << omp_get_thread_num() << " of Num OMP-threads: " << omp_get_num_threads() << std::endl;
     mxB2[i] = filters[i+start];
 
-    for (int d = 0; d < 3; d++)    
+    for (int d = 0; d < 3; d++)
       td[i].ADims[d] = ADims[d];
 
     td[i].A = A;
@@ -149,14 +149,14 @@ CvMat** fconv (CvMatND* features, CvMatND** filters, int a, int filtersDim)
     td[i].B = getMatNData <double> (mxB2[i]);
 
 //    if (mxB->dims != 3 || td[i].ADims[2] != td[i].BDims[2])
-//       cout << "Invalid input: B" << endl;
+//       std::cout << "Invalid input: B" << std::endl;
 
     // Output size is computed
     //height = td[i].ADims[0] - td[i].BDims[0] + 1;
     //width = td[i].ADims[1] - td[i].BDims[1] + 1;
 
 //    if (height < 1 || width < 1)
-//      cout << "Invalid input: B should be smaller than A" << endl;
+//      std::cout << "Invalid input: B should be smaller than A" << std::endl;
 
     td[i].CDims[0] = td[i].ADims[0] - td[i].BDims[0] + 1; // height;
     assert (td[i].CDims[0] > 0);
@@ -183,11 +183,11 @@ CvMat** fconv (CvMatND* features, CvMatND** filters, int a, int filtersDim)
   int height;
   int width;
 
-  for (int i = 0; i < len; i++) 
-  {    
+  for (int i = 0; i < len; i++)
+  {
     mxB = filters[i+start];
 
-    for (int d = 0; d < 3; d++)    
+    for (int d = 0; d < 3; d++)
       td[i].ADims[d] = ADims[d];
 
     td[i].A = A;
@@ -195,14 +195,14 @@ CvMat** fconv (CvMatND* features, CvMatND** filters, int a, int filtersDim)
     td[i].B = getMatNData <double> (mxB);
 
     if (mxB->dims != 3 || td[i].ADims[2] != td[i].BDims[2])
-    cout << "Invalid input: B" << endl;
+    std::cout << "Invalid input: B" << std::endl;
 
     // Output size is computed
     height = td[i].ADims[0] - td[i].BDims[0] + 1;
     width = td[i].ADims[1] - td[i].BDims[1] + 1;
 
     if (height < 1 || width < 1)
-      cout << "Invalid input: B should be smaller than A" << endl;
+      std::cout << "Invalid input: B should be smaller than A" << std::endl;
 
     td[i].CDims[0] = height;
     assert (td[i].CDims[0] > 0);
@@ -231,13 +231,13 @@ CvMat** fconv (CvMatND* features, CvMatND** filters, int a, int filtersDim)
   delete[] td;
 //  delete[] ts;
 
-  return result;  
+  return result;
 }
 
 #endif
 
 
-void* process (void *thread_arg) 
+void* process (void *thread_arg)
 {
   thread_data *args = (thread_data *)thread_arg;
   double *A = args->A;
@@ -255,24 +255,24 @@ void* process (void *thread_arg)
   double *A_off;
   double *B_off;
 
-  for (int f = 0; f < num_features; f++) 
+  for (int f = 0; f < num_features; f++)
   {
     dst = C;
-    A_src = A + f*ADims[0]*ADims[1];    
+    A_src = A + f*ADims[0]*ADims[1];
     B_src = B + f*BDims[0]*BDims[1];
 
-    for (int x = 0; x < CDims[1]; x++) 
+    for (int x = 0; x < CDims[1]; x++)
     {
-      for (int y = 0; y < CDims[0]; y++) 
+      for (int y = 0; y < CDims[0]; y++)
       {
         val = 0;
 
-        for (int xp = 0; xp < BDims[1]; xp++) 
+        for (int xp = 0; xp < BDims[1]; xp++)
         {
           A_off = A_src + (x+xp)*ADims[0] + y;
           B_off = B_src + xp*BDims[0];
 
-          switch (BDims[0]) 
+          switch (BDims[0])
           {
             case 20: val += A_off[19] * B_off[19];
             case 19: val += A_off[18] * B_off[18];
@@ -295,8 +295,8 @@ void* process (void *thread_arg)
             case 2: val += A_off[1] * B_off[1];
             case 1: val += A_off[0] * B_off[0];
               break;
-            default:        
-              for (int yp = 0; yp < BDims[0]; yp++) 
+            default:
+              for (int yp = 0; yp < BDims[0]; yp++)
               val += *(A_off++) * *(B_off++);
           }
 

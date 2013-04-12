@@ -1,6 +1,16 @@
 #include <gdetect.h>
 
 
+template <typename Type>
+struct greater_than {
+  greater_than(Type v) : _v(v) {}
+  bool operator()(Type arg) {
+    return arg > _v;
+  }
+  Type _v;
+} ;
+
+
 void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
               const FeatPyramid &pyra, Model *model, double thresh,
               double *bbox, double overlap)
@@ -31,118 +41,72 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
   assert (L != NULL);
   L = modelSort (model, L); // mjmarin: uses def params --> i=-1, V=NULL
 
-  for (int s = 0; s < L->LDim; s++)
+  for (std::vector<int>::size_type s = 0; s < L->v.size(); s++)
   {
-    for (int r = 0; r < model->getRules()[L->L[s]].n; r++)
-      applyRule (model, model->getRules()[L->L[s]].structure[r],
+    for (int r = 0; r < model->getRules()[L->v[s]].n; r++)
+      applyRule (model, model->getRules()[L->v[s]].structure[r],
                  pyra.getPadY(), pyra.getPadX());
 
-    symbolScore (model, L->L[s], latent, pyra, bbox, overlap);
+    symbolScore (model, L->v[s], latent, pyra, bbox, overlap);
   }
 
-  delete[] L;
+  delete L;
 
   // Find scores above threshold
-  int *X = NULL;
-  int XDim = 0;
-  int *Y = NULL;
-  int YDim = 0;
-  int *I = NULL;
-  int IDim = 0;
-  int *Lvl = NULL;
-  int LvlDim = 0;
-  double *S = NULL;
-  int SDim = 0;
-  int *idx = NULL;
-  int idxDim = 0;
-
-  int tmpsDim;
-  int *tmpI;
-
-  double* ptrScore;
-
-  int *tmpX;
-  int *tmpY;
-  int *tmpL;
-  double *tmpS;
+  std::vector<int> X;
+  std::vector<int> Y;
+  std::vector<int> I;
+  std::vector<int> Lvl;
+  std::vector<double> S;
+  std::vector<size_t> tmpI;
+  std::vector<int> tmpX;
+  std::vector<int> tmpY;
 
   for (int level = model->getInterval() + 1; level < pyra.getDim(); level++)
   {
     CvMat* score = model->getSymbols()[(int) model->getStart()].score[level];
 
-    ptrScore = new double [score->rows * score->cols];
-    getMatData <double> (score, ptrScore);
+    std::vector<double> ptrScore = get_mat_data<double>(score);
 
     // Returns all values of score which are greater or equal to thresh
-    tmpsDim = find (HIGHER, ptrScore, score->rows * score->cols, thresh, &tmpI);
+    tmpI = find (ptrScore, greater_than<double>(thresh));
 
-    ind2sub (score->rows, score->cols, tmpI, tmpsDim, &tmpY, &tmpX);
+    ind_to_sub (score->rows, score->cols, tmpI, tmpY, tmpX);
 
-    appendArray (&X, XDim, tmpX, tmpsDim);
+    X.insert(X.end(), tmpX.begin(), tmpX.end());
+    Y.insert(Y.end(), tmpY.begin(), tmpY.end());
+    I.insert(I.end(), tmpI.begin(), tmpI.end());
+    std::vector<int> tmpL(tmpI.size(), level);
+    Lvl.insert(Lvl.end(), tmpL.begin(), tmpL.end());
 
-    XDim += tmpsDim;
+    std::vector<double> tmpS = get_elem_on_idx(ptrScore, tmpI.begin(), tmpI.end());
 
-    appendArray (&Y, YDim, tmpY, tmpsDim);
-
-    YDim += tmpsDim;
-
-    appendArray (&I, IDim, tmpI, tmpsDim);
-
-    IDim += tmpsDim;
-
-    createConstVector (level, tmpsDim, &tmpL);
-
-    appendArray (&Lvl, LvlDim, tmpL, tmpsDim);
-
-    LvlDim += tmpsDim;
-
-    getMatData <double> (score, ptrScore);
-
-    getElemOnIdx (ptrScore, score->rows * score->cols, tmpI, tmpsDim, &tmpS);
-
-    appendArray (&S, SDim, tmpS, tmpsDim);
-
-    SDim += tmpsDim;
-
-    delete[] ptrScore;
-    delete[] tmpX;
-    delete[] tmpY;
-    delete[] tmpI;
-    delete[] tmpL;
-    delete[] tmpS;
+    S.insert(S.end(), tmpS.begin(), tmpS.end());
   }
 
-  idxDim = SDim;
+  std::vector<size_t> idx;
+  shell_sort (S, DESCEND, idx);
 
-  shellSort (S, SDim, DESCEND, (&idx));
+  X   = get_elem_on_idx(X  , idx.begin(), idx.end());
+  Y   = get_elem_on_idx(Y  , idx.begin(), idx.end());
+  I   = get_elem_on_idx(I  , idx.begin(), idx.end());
+  Lvl = get_elem_on_idx(Lvl, idx.begin(), idx.end());
 
-  getElemOnIdx (X, XDim, idx, idxDim, &X);
-  getElemOnIdx (Y, YDim, idx, idxDim, &Y);
-  getElemOnIdx (I, IDim, idx, idxDim, &I);
-  getElemOnIdx (Lvl, LvlDim, idx, idxDim, &Lvl);
-
-  for (int m = 0; m < XDim; m++)
+  for (std::vector<int>::size_type m = 0; m < X.size(); m++)
     X[m]++;
 
-  for (int m = 0; m < YDim; m++)
+  for (std::vector<int>::size_type m = 0; m < Y.size(); m++)
     Y[m]++;
 
-  for (int m = 0; m < IDim; m++)
+  for (std::vector<int>::size_type m = 0; m < I.size(); m++)
     I[m]++;
 
-  for (int m = 0; m < LvlDim; m++)
+  for (std::vector<int>::size_type m = 0; m < Lvl.size(); m++)
     Lvl[m]++;
 
   // Compute detection bounding boxes and parse information
   getDetections (model, pyra.getPadX(), pyra.getPadY(), pyra.getScales(),
-                 X, Y, Lvl, S, XDim, dets, boxes, info);
-
-  delete[] idx;
-  delete[] X;
-  delete[] Y;
-  delete[] I;
-  delete[] Lvl;
-  delete[] S;
+                 X.data(), Y.data(), Lvl.data(), S.data(), X.size(), dets, boxes, info);
 }
 
 
@@ -150,23 +114,24 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
 void symbolScore (Model *model, int s, bool latent, const FeatPyramid &pyra,
                   double *bbox, double overlap)
 {
+  (void)latent;
+  (void)pyra;
+  (void)bbox;
+  (void)overlap;
+
   // Take pointwise max over scores for each rule with s as the lhs
   rules r = model->getRules()[s];
-  CvMat **score = r.structure[0].getScore();
+  const std::vector<CvMat*>& score = r.structure[0].getScore();
 
-  CvMat **sc = new CvMat* [r.structure[0].getScoreDim()];
-
-  assert (sc != NULL);
+  std::vector<CvMat*> sc(r.structure[0].getScoreDim());
 
   for (int i = 0; i < r.structure[0].getScoreDim(); i++)
-
     sc[i] = cvCloneMat (score[i]);
 
   for (int j = 1; j < r.n; j++)
     for (int i = 0; i < r.structure[j].getScoreDim(); i++)
       cvMax (sc[i], r.structure[j].getScore()[i], sc[i]);
 
-  model->getSymbols()[s].dimScore = r.structure[0].getScoreDim();
   model->getSymbols()[s].score = sc;
 }
 
@@ -187,8 +152,7 @@ void applyStructuralRule (Model *model, const Cell &r, int padY, int padX)
 {
   // Structural rule -> shift and sum scores from rhs symbols
   // Prepare score for this rule
-  CvMat** score = new CvMat* [model->getScoretptDim()];
-  assert (score != NULL);
+  std::vector<CvMat*> score(model->getScoretptDim());
 
   int scoreDims[2];
 
@@ -261,11 +225,10 @@ void applyStructuralRule (Model *model, const Cell &r, int padY, int padX)
     startLevel = int( (model->getInterval() + 1) * ds);
 
     // Score table to shift and down sample
-    CvMat** s = model->getSymbols()[(int) r.getRhs()[j]].score;
-    assert (s != NULL);
+    const std::vector<CvMat*>& s = model->getSymbols()[(int) r.getRhs()[j]].score;
 
     for (int i = startLevel;
-         i < (int) (model->getSymbols()[(int)r.getRhs()[j]].dimScore);
+         i < (int) (model->getSymbols()[(int)r.getRhs()[j]].score.size());
          i++)
     {
       level = i - int( (model->getInterval() + 1) * ds);
@@ -350,8 +313,6 @@ void applyStructuralRule (Model *model, const Cell &r, int padY, int padX)
   }
 
   model->getRules()[(int) r.getLhs()].structure
-                   [(int) r.getI()].setScoreDim(model->getScoretptDim());
-  model->getRules()[(int) r.getLhs()].structure
                    [(int) r.getI()].setScore(score);
 }
 
@@ -360,15 +321,11 @@ void applyStructuralRule (Model *model, const Cell &r, int padY, int padX)
 void applyDeformationRule (Model *model, const Cell &r)
 {
   // Deformation rule -> apply distance transform
-  double *d = r.getDef().w;
-  int dim = model->getSymbols()[(int) r.getRhs()[0]].dimScore;
-  CvMat** score = model->getSymbols()[(int) r.getRhs()[0]].score;
-
-  CvMat **Ix = new CvMat* [dim];
-  assert (Ix != NULL);
-
-  CvMat **Iy = new CvMat* [dim];
-  assert (Iy != NULL);
+  const double* d = r.getDef().w;
+  int dim = model->getSymbols()[(int) r.getRhs()[0]].score.size();
+  std::vector<CvMat*> score = model->getSymbols()[(int) r.getRhs()[0]].score;
+  std::vector<CvMat*> Ix(dim);
+  std::vector<CvMat*> Iy(dim);
 
   for (int i = 0; i < dim; i++)
   {
@@ -378,17 +335,11 @@ void applyDeformationRule (Model *model, const Cell &r)
   }
 
   model->getRules()[(int) r.getLhs()].structure[(int) r.getI()]
-                                     .setScoreDim(dim);
-  model->getRules()[(int) r.getLhs()].structure[(int) r.getI()]
                                      .setScore(score);
 
   model->getRules()[(int) r.getLhs()].structure[(int) r.getI()]
-                                     .setIxDim(dim);
-  model->getRules()[(int) r.getLhs()].structure[(int) r.getI()]
                                      .setIx(Ix);
 
-  model->getRules()[(int) r.getLhs()].structure[(int) r.getI()]
-                                     .setIyDim(dim);
   model->getRules()[(int) r.getLhs()].structure[(int) r.getI()]
                                      .setIy(Iy);
 }
@@ -462,8 +413,7 @@ void filterResponses (Model *model, const FeatPyramid  &pyra, bool latent,
 
   for (int i = 0; i < rDim; i++)
   {
-    model->getSymbols()[filter_to_symbol[i]].dimScore = dim;
-    model->getSymbols()[filter_to_symbol[i]].score = new CvMat* [dim];
+    model->getSymbols()[filter_to_symbol[i]].score = std::vector<CvMat*>(dim);
   }
 
   int s[2];
@@ -505,6 +455,7 @@ void filterResponses (Model *model, const FeatPyramid  &pyra, bool latent,
       cvReleaseMat(&r[i]); // Release old memory
       r[i] = newArray;
 
+      cvReleaseMat(&model->getSymbols()[filter_to_symbol[i]].score[levels[j]]);
       model->getSymbols()[filter_to_symbol[i]].score[levels[j]] = r[i];
     }
 
@@ -517,6 +468,7 @@ void filterResponses (Model *model, const FeatPyramid  &pyra, bool latent,
     assert (scoretpt != NULL);
 
     model->getScoretpt()[j] = scoretpt;
+    delete[] r;
   }
 
   delete[] filters;
@@ -533,6 +485,9 @@ int* validateLevels (const Model *model, const FeatPyramid &pyra,
                      bool latent, double *bbox, double overlap,
                      int *dim)
 {
+  (void)model;
+  (void)bbox;
+  (void)overlap;
   int *levels = NULL;
 
   if (!latent)

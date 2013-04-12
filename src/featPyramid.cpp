@@ -156,7 +156,7 @@ IplImage* FeatPyramid::resize (const IplImage *mxsrc, const float mxscale)
   float scale = mxscale;
 
   if (scale > 1.0)
-    cout << "Invalid scaling factor" << endl;
+    std::cout << "Invalid scaling factor" << std::endl;
 
   int ddims[3];
   ddims[0] = (int)round(sdims[0]*scale);
@@ -216,13 +216,13 @@ int FeatPyramid::getPaddingY (const Model *m)
 
 CvMatND* FeatPyramid::process ( const IplImage *mximage, const float mxsbin )
 {
-//cout << "Init process pyramid" << endl;
+//std::cout << "Init process pyramid" << std::endl;
   float *im = getImgData <float> (mximage);
   int dims[3];
 	getDimensions (mximage, dims);
 
   if (dims[2] != 3)
-    cout << "Invalid input" << endl;
+    std::cout << "Invalid input" << std::endl;
 
   int sbin = (int) mxsbin;
 
@@ -247,12 +247,12 @@ CvMatND* FeatPyramid::process ( const IplImage *mximage, const float mxsbin )
   // memory for HOG features
   int out[3];
 
-  out[0] = max(blocks[0]-2, 0);
-  out[1] = max(blocks[1]-2, 0);
+  out[0] = std::max(blocks[0]-2, 0);
+  out[1] = std::max(blocks[1]-2, 0);
   out[2] = 27+4+1;
 
   CvMatND *mxfeat;
-//cout << "POS" << endl;
+//std::cout << "POS" << std::endl;
   if (out[0] == 0 && out[1] == 0 )
     mxfeat = NULL;
 
@@ -264,11 +264,11 @@ CvMatND* FeatPyramid::process ( const IplImage *mximage, const float mxsbin )
     //mxfeat = createNDMatrix (3, out, CV_64FC1);
 		createMatrix (3, out, CV_64FC1, &mxfeat);
     assert (mxfeat != NULL);
-//cout << "POS" << endl;
+//std::cout << "POS" << std::endl;
     //double *feat = new double [out[0] * out[1] * out[2]];
     float *feat = getMatNData <float> (mxfeat);
     assert (feat != NULL);
-//cout << "POS" << endl;
+//std::cout << "POS" << std::endl;
     int visible[2];
     visible[0] = blocks[0]*sbin;
     visible[1] = blocks[1]*sbin;
@@ -305,11 +305,11 @@ CvMatND* FeatPyramid::process ( const IplImage *mximage, const float mxsbin )
     float t4 = 0;
 
 		float h1, h2, h3, h4;
-//cout << "POS-antes-sum" << endl;
-//cout << *src << endl;
-//cout << blocks[0] << " " << blocks[1] << endl;
+//std::cout << "POS-antes-sum" << std::endl;
+//std::cout << *src << std::endl;
+//std::cout << blocks[0] << " " << blocks[1] << std::endl;
 		float sum = 0;//= *src + *(src + 9*blocks[0]*blocks[1]);
-//cout << "POS-despues-sum" << endl;
+//std::cout << "POS-despues-sum" << std::endl;
     for (int x = 1; x < visible[1]-1; x++)
     {
       for (int y = 1; y < visible[0]-1; y++)
@@ -378,7 +378,7 @@ CvMatND* FeatPyramid::process ( const IplImage *mximage, const float mxsbin )
         vx1 = 1.0-vx0;
         vy1 = 1.0-vy0;
         v = sqrt(v);
-//cout << "POS" << endl;
+//std::cout << "POS" << std::endl;
         if (ixp >= 0 && iyp >= 0)
         {
           *(hist + ixp*blocks[0] + iyp + best_o*blocks[0]*blocks[1]) += vx1*vy1*v;
@@ -400,7 +400,7 @@ CvMatND* FeatPyramid::process ( const IplImage *mximage, const float mxsbin )
         }
       }
     }
-//cout << "POS" << endl;
+//std::cout << "POS" << std::endl;
     // compute energy in each block by summing over orientations
     for (int o = 0; o < 9; o++)
     {
@@ -416,7 +416,7 @@ CvMatND* FeatPyramid::process ( const IplImage *mximage, const float mxsbin )
         src2++;
       }
     }
-//cout << "POS" << endl;
+//std::cout << "POS" << std::endl;
     // compute features
     for (int x = 0; x < out[1]; x++)
     {
@@ -488,14 +488,14 @@ CvMatND* FeatPyramid::process ( const IplImage *mximage, const float mxsbin )
 
     delete[] hist;
     delete[] norm;
-//cout << "POS" << endl;
+//std::cout << "POS" << std::endl;
     setMatNData (mxfeat, feat);
 
     delete[] feat;
   }
-//cout << "POS" << endl;
+//std::cout << "POS" << std::endl;
 	delete[] im;
-//cout << " Fin featpyram" << endl;
+//std::cout << " Fin featpyram" << std::endl;
   return mxfeat;
 }
 
@@ -589,7 +589,7 @@ void FeatPyramid::featpyramid (const IplImage *im, const Model *model, int padX,
   assert (imsize[1] > 0);
 
   setImSize (imsize);
-//cout << "Antes de bucle featpyramid" << endl;
+//std::cout << "Antes de bucle featpyramid" << std::endl;
   for (int i = 0; i < interval; i++)
   {
     // Image is resized
@@ -620,7 +620,7 @@ void FeatPyramid::featpyramid (const IplImage *im, const Model *model, int padX,
     // mjmarin: more release needed for imAux
     cvReleaseImage(&imAux);
   }
-  //cout << "Antes de bucle2 featpyramid" << endl;
+  //std::cout << "Antes de bucle2 featpyramid" << std::endl;
   for (int i = 0; i < getDim(); i++ )
   {
     // Add 1 to padding because feature generation deletes a 1-cell

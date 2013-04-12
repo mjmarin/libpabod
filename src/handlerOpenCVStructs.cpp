@@ -1,8 +1,6 @@
 #include <fstream>
 #include <handlerOpenCVStructs.h>
 
-using namespace std;
-
 void createMatrix (int nDims, int *sizes, int type, CvMat **mat)
 {
   assert (nDims == 2);
@@ -45,8 +43,8 @@ CvMat* subMat (const CvMat* mat, int* iy, int iyDim, int* ix, int ixDim)
 {
   CvMat *aux;
 
-  if ( (iyDim >= mat->rows && ixDim >= mat->cols) || 
-        iyDim <= 0 || 
+  if ( (iyDim >= mat->rows && ixDim >= mat->cols) ||
+        iyDim <= 0 ||
         ixDim <= 0)
     aux = cvCloneMat (mat);
 
@@ -62,9 +60,32 @@ CvMat* subMat (const CvMat* mat, int* iy, int iyDim, int* ix, int ixDim)
   return aux;
 }
 
-void ind2sub (const int nRows, const int nCols, const int *v, const int nV, 
+CvMat* sub_mat (const CvMat* mat, const std::vector<int>& iy, const std::vector<int>& ix)
+{
+  CvMat *aux;
+
+  if ( (iy.size() >= static_cast<std::vector<int>::size_type>(mat->rows) &&
+        ix.size() >= static_cast<std::vector<int>::size_type>(mat->cols)) ||
+        iy.size() <= 0 ||
+        ix.size() <= 0)
+    aux = cvCloneMat (mat);
+
+  else
+  {
+    aux = cvCreateMat (iy.size(), ix.size(), mat->type);
+
+    for (size_t i = 0; i < iy.size(); i++)
+      for (size_t j = 0; j < ix.size(); j++)
+        cvSetReal2D (aux, i, j, cvGetReal2D (mat, iy[i], ix[j]));
+  }
+
+  return aux;
+}
+
+void ind2sub (const int nRows, const int nCols, const int *v, const int nV,
               int **rowsIdx, int **colsIdx)
 {
+  (void)nCols;
   (*rowsIdx) = new int [nV];
   (*colsIdx) = new int [nV];
 
@@ -80,9 +101,28 @@ void ind2sub (const int nRows, const int nCols, const int *v, const int nV,
   }
 }
 
+void ind_to_sub (const int nRows, const int nCols, const std::vector<size_t>& v,
+              std::vector<int>& rowsIdx, std::vector<int>& colsIdx)
+{
+  (void)nCols;
+  rowsIdx.resize(v.size());
+  colsIdx.resize(v.size());
+
+  for (std::vector<size_t>::size_type i = 0; i < v.size(); i++)
+  {
+    rowsIdx[i] = v[i] % nRows;
+
+    if (v[i] != 0)
+      colsIdx[i] = v[i] / nRows;
+
+    else
+      colsIdx[i] = 0;
+  }
+}
+
 bool matToFile(const CvMat * mat, const char * filename)
 {
-   ofstream fid;
+    std::ofstream fid;
    fid.open(filename);
    if (!fid.is_open())
       return false;
@@ -92,7 +132,7 @@ bool matToFile(const CvMat * mat, const char * filename)
    {
       for (j = 0; j < mat->cols; j++)
          fid << cvGetReal2D(mat, i,j) << " ";
-      fid << endl;
+      fid << std::endl;
    }
    fid.close();
    return true;

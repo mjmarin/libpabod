@@ -1,6 +1,6 @@
 Using CMake with libpabod
 ==========================
-In order to install libpabod in your Unix system, you should execute the following commands: 
+In order to install libpabod in your Unix system, you should execute the following commands:
    cd <libpabod_dir>
    mkdir build
    cd build

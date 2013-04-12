@@ -13,18 +13,13 @@ PABOD_EXPORT float makeDetection (CvMat **results, IplImage *img, Model * model,
 
   bool found = imgDetect (img, model, thresh, NULL, NEGATIVE_INF, &dets, &boxes, &info);
 
-  int detected = 0;
-
   if (found)
   {
-    int *pick;
-    int pickDim;
+    std::vector<int> pick = nms (dets, 0.3);
 
-    nms (&pick, &pickDim, dets, 0.5);
+    (*results) = cvCreateMat (pick.size(), 6, CV_32FC1);
 
-    (*results) = cvCreateMat (pickDim, 6, CV_32FC1);
-
-    for (int i = 0; i < pickDim; i++)
+    for (size_t i = 0; i < pick.size(); i++)
     {
       cvSetReal2D ((*results), i, 0, cvGetReal2D (dets, pick[i], 0));
       cvSetReal2D ((*results), i, 1, cvGetReal2D (dets, pick[i], 1));
@@ -34,10 +29,6 @@ PABOD_EXPORT float makeDetection (CvMat **results, IplImage *img, Model * model,
       cvSetReal2D ((*results), i, 4, cvGetReal2D (dets, pick[i], 5));
       cvSetReal2D ((*results), i, 5, cvGetReal2D (dets, pick[i], 4));
     }
-
-    detected = pickDim;
-
-    delete[] pick;
   }
 
 	else
@@ -59,10 +50,10 @@ PABOD_EXPORT float makeDetection (CvMat **results, IplImage *img, Model * model,
 		info = NULL;
 	}
 
-  return thresh;   
+  return thresh;
 }
 
-float makeDetection (CvMat **results, IplImage *img, string modelType, float thresh)
+float makeDetection (CvMat **results, IplImage *img, std::string modelType, float thresh)
 {
   float athresh;
   Model *model = new Model(modelType);
