@@ -1,6 +1,16 @@
 #include <gdetect.h>
 
 
+template <typename Type>
+struct greater_than {
+  greater_than(Type v) : _v(v) {}
+  bool operator()(Type arg) {
+    return arg > _v;
+  }
+  Type _v;
+} ;
+
+
 void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
               const FeatPyramid &pyra, Model *model, double thresh,
               double *bbox, double overlap)
@@ -59,7 +69,7 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
     std::vector<double> ptrScore = get_mat_data<double>(score);
 
     // Returns all values of score which are greater or equal to thresh
-    tmpI = find (ptrScore, [thresh](double score){return score > thresh;});
+    tmpI = find (ptrScore, greater_than<double>(thresh));
 
     ind_to_sub (score->rows, score->cols, tmpI, tmpY, tmpX);
 

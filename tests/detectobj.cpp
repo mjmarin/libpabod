@@ -179,7 +179,7 @@ int main ( int argc, char *argv[] )
 	int nDetected = 0;
 	float usedThresh=NEGATIVE_INF, thresh = POSITIVE_INF;
 	float minScore, maxScore;
-        bool savedata = false, display = true;
+        bool savedata = false, display = false;
 
 	if (argc < 5)
 	{

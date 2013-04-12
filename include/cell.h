@@ -83,7 +83,7 @@ typedef struct anchor
  */
 typedef struct def
 {
-    double w[4] = {0.0, 0.0, 0.0, 0.0};
+    double w[4];
     int blocklabel;
     bool flip;
     char symmetric;

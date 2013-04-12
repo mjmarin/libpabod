@@ -25,7 +25,7 @@ std::string read_string (matvar_t *matVar, const std::string& var, int pos)
     if ( field->data_type == MAT_T_UINT8 )
       result = static_cast<char*>(field->data);
 
-  return std::move(result);
+  return result;
 }
 
 

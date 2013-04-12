@@ -150,7 +150,7 @@ std::vector<Type> read_number(matvar_t *matVar, const std::string& var, int pos 
       return number;
     }
   }
-  return std::move(number);
+  return number;
 }
 
 

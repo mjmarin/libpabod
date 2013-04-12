@@ -592,7 +592,7 @@ std::vector<Type> get_mat_data (const CvMat *mat)
       counter++;
     }
   }
-  return std::move(v);
+  return v;
 }
 
 
@@ -941,16 +941,32 @@ void shellSort (Type *v, int n, int mode, int **idx)
   }
 }
 
+template <typename Type>
+struct less_by_index {
+  less_by_index(const std::vector<Type>& v) : _v(v) {}
+  bool operator()(size_t i1, size_t i2) const { return _v[i1] < _v[i2]; }
+  const std::vector<Type>& _v;
+} ;
+
+template <typename Type>
+struct greater_by_index {
+  greater_by_index(const std::vector<Type>& v) : _v(v) {}
+  bool operator()(size_t i1, size_t i2) const { return _v[i1] > _v[i2]; }
+  const std::vector<Type>& _v;
+} ;
+
 
 template <typename Type>
 void shell_sort(Type* v, const int n, const int mode, std::vector<size_t>& idx)
 {
     idx.resize(n);
-    std::iota(idx.begin(), idx.end(), static_cast<size_t>(0));
+    for(size_t i = 0; i < idx.size(); ++i) {
+        idx[i] = i;
+    }
     if(mode == ASCEND) {
-        std::stable_sort(idx.begin(), idx.end(), [&v](size_t i1, size_t i2) { return v[i1] < v[i2]; });
+        std::stable_sort(idx.begin(), idx.end(), less_by_index<Type>(v));
     } else {
-        std::stable_sort(idx.begin(), idx.end(), [&v](size_t i1, size_t i2) { return v[i1] > v[i2]; });
+        std::stable_sort(idx.begin(), idx.end(), greater_by_index<Type>(v));
     }
 
     if(mode == ASCEND) {
@@ -974,11 +990,13 @@ template <typename Type>
 void shell_sort(std::vector<Type>& v, const int mode, std::vector<size_t>& idx)
 {
     idx.resize(v.size());
-    std::iota(idx.begin(), idx.end(), static_cast<size_t>(0));
+    for(size_t i = 0; i < idx.size(); ++i) {
+        idx[i] = i;
+    }
     if(mode == ASCEND) {
-        std::stable_sort(idx.begin(), idx.end(), [&v](size_t i1, size_t i2) { return v[i1] < v[i2]; });
+        std::stable_sort(idx.begin(), idx.end(), less_by_index<Type>(v));
     } else {
-        std::stable_sort(idx.begin(), idx.end(), [&v](size_t i1, size_t i2) { return v[i1] > v[i2]; });
+        std::stable_sort(idx.begin(), idx.end(), greater_by_index<Type>(v));
     }
 
     if(mode == ASCEND) {
@@ -1105,7 +1123,7 @@ std::vector<size_t> find(const std::vector<Type>& mat, Func f)
       result.push_back(i);
     }
   }
-  return std::move(result);
+  return result;
 }
 
 template <class Type>
@@ -1197,7 +1215,7 @@ std::vector<Type> get_elem_on_idx(const std::vector<Type>& v, const std::vector<
   for(std::vector<size_t>::size_type i = 0; i < idx.size(); ++i) {
     result[i] = v[idx[i]];
   }
-  return std::move(result);
+  return result;
 }
 
 
@@ -1208,7 +1226,7 @@ std::vector<Type> get_elem_on_idx(const std::vector<Type>& v, IdxIter idx_begin,
   for(IdxIter i = idx_begin; i < idx_end; ++i) {
     result.push_back(v[*i]);
   }
-  return std::move(result);
+  return result;
 }
 
 
@@ -1219,7 +1237,7 @@ std::vector<Type> get_elem_on_idx(Type* v_begin, IdxIter idx_begin, IdxIter idx_
   for(IdxIter i = idx_begin; i < idx_end; ++i) {
     result.push_back(*(v_begin + *i));
   }
-  return std::move(result);
+  return result;
 }
 
 

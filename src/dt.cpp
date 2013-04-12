@@ -42,16 +42,6 @@ static void dt1d (std::vector<double>& src, int src_offset,
 }
 
 
-template <typename T>
-static void print_vec(const std::vector<T>& v) {
-  for(const auto& a : v) {
-    std::cout << "  " << a << std::endl;
-  }
-  std::cout << std::endl;
-  std::cout << std::endl;
-}
-
-
 void dt (const CvMat* score, double d0, double d1, double d2, double d3,
          CvMat **scoreRet, CvMat** mIx, CvMat** mIy)
 {

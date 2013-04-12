@@ -5,7 +5,7 @@ std::vector<int> nms (CvMat *dets, double overlap)
 {
     std::vector<int> pick;
     if (dets == NULL) {
-        return std::move(pick);
+        return pick;
     }
 
     std::vector<double> x1(dets->rows);
@@ -29,10 +29,10 @@ std::vector<int> nms (CvMat *dets, double overlap)
     // see http://stackoverflow.com/questions/1577475/c-sorting-and-keeping-track-of-indexes
     // and http://stackoverflow.com/questions/10580982/c-sort-keeping-track-of-indices
     std::vector<size_t> idx(dets->rows);
-    std::iota(idx.begin(), idx.end(), static_cast<size_t>(0));
-    std::sort(idx.begin(), idx.end(), [&scores](size_t i1, size_t i2) {
-        return scores[i1] < scores[i2];
-    });
+    for(size_t i = 0; i < idx.size(); ++i) {
+        idx[i] = i;
+    }
+    std::sort(idx.begin(), idx.end(), less_by_index<double>(scores));
 
     while (idx.size() > 0)
     {
@@ -40,7 +40,8 @@ std::vector<int> nms (CvMat *dets, double overlap)
         size_t i = idx[last];
         pick.push_back(i);
 
-        std::vector<size_t> suppress {last};
+        std::vector<size_t> suppress;
+        suppress.push_back(last);
 
         for (size_t pos = 0; pos < last; pos++)
         {
@@ -67,6 +68,6 @@ std::vector<int> nms (CvMat *dets, double overlap)
 
         remove_indexes (idx, suppress);
     }
-    return std::move(pick);
+    return pick;
 }
 
