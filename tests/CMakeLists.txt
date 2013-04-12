@@ -12,9 +12,3 @@ INSTALL(TARGETS detectobj2  RUNTIME DESTINATION bin)
 ADD_EXECUTABLE(detectvid detectvid.cpp)
 INSTALL(TARGETS detectvid  RUNTIME DESTINATION bin)
 
-set(CMAKE_CXX_FLAGS "${cmake_cxx_flags} -std=c++11")
-
-find_package(Boost REQUIRED filesystem system)
-ADD_EXECUTABLE(detect-vehicle detect-vehicle.cpp)
-target_link_libraries(detect-vehicle ${Boost_LIBRARIES})
-INSTALL(TARGETS detect-vehicle  RUNTIME DESTINATION bin)
