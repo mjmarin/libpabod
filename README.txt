@@ -89,6 +89,7 @@ URL: http://people.cs.uchicago.edu/~pff/latent/
 
 Version history:
 ================
+ - v0.2.7: memory leaks found by github/yokox solved. Thanks!
  - v0.2.6: new file 'export.h' for properly exporting functions to dll's.
  - v0.2.5: updated CMake files and other minor improvements for Windows compatibility.
  - v0.2.4: CMake and code updated to properly manage libmatio on Windows (thanks to Eric Sommerlade for his invaluable contributions). See new file 'INSTALL.windows'. libmatio 1.5.x is supported.
