@@ -517,6 +517,9 @@ void filterResponses (Model *model, const FeatPyramid  &pyra, bool latent,
     assert (scoretpt != NULL);
 
     model->getScoretpt()[j] = scoretpt;
+
+	// Bug found by yokox
+	delete [] r;
   }
 
   delete[] filters;
