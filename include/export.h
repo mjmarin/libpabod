@@ -1,3 +1,9 @@
+/** 
+    \file export.h
+    \author Manuel J. Marin-Jimenez
+    \brief  Useful defines for exporting functions/classes to dll's
+*/	
+
 #if defined _WIN32  
   #define PABOD_EXPORT __declspec(dllexport)
   
