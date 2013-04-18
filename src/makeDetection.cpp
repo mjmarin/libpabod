@@ -62,7 +62,7 @@ PABOD_EXPORT float makeDetection (CvMat **results, IplImage *img, Model * model,
   return thresh;   
 }
 
-float makeDetection (CvMat **results, IplImage *img, string modelType, float thresh)
+PABOD_EXPORT float makeDetection (CvMat **results, IplImage *img, string modelType, float thresh)
 {
   float athresh;
   Model *model = new Model(modelType);

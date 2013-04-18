@@ -31,7 +31,7 @@
  *  value. If it is not given, default value is used (infinite). The
  *  function will use the threshold value define in the model file.
  */
-float makeDetection (CvMat **results, IplImage *img, string modelType, 
+PABOD_EXPORT float makeDetection (CvMat **results, IplImage *img, string modelType, 
                      float thresh = POSITIVE_INF);
 
 /** To be documented
