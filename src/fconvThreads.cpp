@@ -309,9 +309,10 @@ void* process (void *thread_arg)
 
 #ifdef USE_PTHREADS
   pthread_exit (NULL);
-#else
-  return NULL;
+//#else
+//  return NULL;
 #endif
+  return NULL;
 }
 
 
