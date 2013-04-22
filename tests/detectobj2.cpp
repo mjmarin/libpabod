@@ -111,11 +111,12 @@ int main ( int argc, char *argv[] )
 	float usedThresh=NEGATIVE_INF, thresh = POSITIVE_INF;
 	float minScore, maxScore;
         bool savedata = false, display = true;
+	double iouNms = 0.5;
    
 	if (argc < 5)
 	{
 		cout << "  >> ERROR: the general form is:\n"
-				"            ./detectobj -m <model_path> -i <image_path> [-t <threshold> -o <detections_path> -d <0/1>]" << endl;
+				"            ./detectobj -m <model_path> -i <image_path> [-t <threshold> -n <iouNMSthr> -o <detections_path> -d <0/1>]" << endl;
 		return -1;
 	}
 
@@ -140,6 +141,9 @@ int main ( int argc, char *argv[] )
 
                 } else if (string(argv[i]) == "-t") {
                     thresh = atof(argv[i + 1]);
+
+                } else if (string(argv[i]) == "-n") {
+                    iouNms = atof(argv[i + 1]);
 
                 } else {
                     cerr << ">> ERROR: Not enough or invalid arguments, please try again.\n";
@@ -194,7 +198,7 @@ int main ( int argc, char *argv[] )
 	GET_TIME(&t_ini);
 
        // Call to main function
-	usedThresh = detector.detect(im, thresh, &results);
+	usedThresh = detector.detect(im, thresh, iouNms, &results);
        
 	if (results != NULL)
 		nDetected = results->rows;
@@ -209,8 +213,8 @@ int main ( int argc, char *argv[] )
 
 	cout << "Elapsed time: " << secs << " seconds" << endl << endl;
 
-	cout << nDetected << " object(s) found using threshold = " << usedThresh << endl;
-	cout << "----------------------------------------------" << endl << endl;
+	cout << nDetected << " object(s) found using threshold = " << usedThresh << " and iouNMS = " << iouNms <<endl;
+	cout << "---------------------------------------------------------------" << endl << endl;
 
 	if (nDetected > 0)
 	{

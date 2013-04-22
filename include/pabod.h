@@ -41,7 +41,8 @@ class PABOD_EXPORT Pabod{
 		\return Used detection threshold
 		*/
 	float detect(IplImage * img, float thr, CvMat ** detections);
-        float detect(const char * imgfilename, float thr, CvMat ** detections);
+	float detect(IplImage * img, float thr, double iouNms, CvMat ** detections);
+	float detect(const char * imgfilename, float thr, CvMat ** detections);
 	
 	/** Draws all detections as rectangles on image.
 		\param img Target image
@@ -56,7 +57,7 @@ class PABOD_EXPORT Pabod{
 	
  private:
    Model * _model; //! Class model	
-	bool _isCopied; //! Controls is model has been either copied or loaded from file
+	bool _isCopied; //! Controls if model has been either copied or loaded from file
 	bool drawBB(IplImage * img, CvPoint p1, CvPoint p2, CvScalar color=cvScalar(128,255,128), float score = -(numeric_limits<float>::infinity()), int component = -1);
 	
 };

@@ -1,7 +1,7 @@
 #include <makeDetection.h>
 
 
-PABOD_EXPORT float makeDetection (CvMat **results, IplImage *img, Model * model, float thresh)
+PABOD_EXPORT float makeDetection (CvMat **results, IplImage *img, Model * model, float thresh, double iouNms)
 {
 
   CvMat *dets = NULL;
@@ -20,7 +20,7 @@ PABOD_EXPORT float makeDetection (CvMat **results, IplImage *img, Model * model,
     int *pick;
     int pickDim;
 
-    nms (&pick, &pickDim, dets, 0.5);
+    nms (&pick, &pickDim, dets, iouNms);
 
     (*results) = cvCreateMat (pickDim, 6, CV_32FC1);
 

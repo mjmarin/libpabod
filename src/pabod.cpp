@@ -93,6 +93,20 @@ float Pabod::detect(IplImage * img, float thr, CvMat ** detections)
 	return usedThr;
 }
 
+float Pabod::detect(IplImage * img, float thr, double iouNms, CvMat ** detections)
+{
+	float usedThr = -999999;
+	if (!empty())
+	{		
+	   // Call to main detection function
+		usedThr = makeDetection (detections, img, _model, thr, iouNms);
+	}
+	else
+		cerr << "ERROR: model must be set before calling this method." << endl;
+	
+	return usedThr;
+}
+
 int Pabod::drawDetections(IplImage * img, CvMat * detections)
 {
 	int ndetections = 0;

@@ -35,8 +35,9 @@ PABOD_EXPORT float makeDetection (CvMat **results, IplImage *img, string modelTy
                      float thresh = POSITIVE_INF);
 
 /** To be documented
+   \param iouNms - intersection-over-union threshold used during non-maxima supression. Default is 0.5
 */
-PABOD_EXPORT float makeDetection (CvMat **results, IplImage *img, Model * model, float thresh = POSITIVE_INF);
+PABOD_EXPORT float makeDetection (CvMat **results, IplImage *img, Model * model, float thresh = POSITIVE_INF, double iouNms = 0.5);
 
 #endif // MAKEDETECTION_H
 
