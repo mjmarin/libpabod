@@ -116,7 +116,7 @@ int main ( int argc, char *argv[] )
 	if (argc < 5)
 	{
 		cout << "  >> ERROR: the general form is:\n"
-				"            ./detectobj -m <model_path> -i <image_path> [-t <threshold> -n <iouNMSthr> -o <detections_path> -d <0/1>]" << endl;
+				"            ./detectobj2 -m <model_path> -i <image_path> [-t <threshold> -n <iouNMSthr> -o <detections_path> -d <0/1>]" << endl;
 		return -1;
 	}
 

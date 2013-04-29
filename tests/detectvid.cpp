@@ -40,64 +40,6 @@ string extractModelName (string modelPath)
 	return name;
 }
 
-void drawBoxes (IplImage *im, const CvPoint p1, const CvPoint p2, const string modelName, int i,
-				float maxScore, float minScore, float curScore)
-{
-	CvScalar color;
-	CvPoint bottomLeftCornerTag;
-	CvPoint topRightCornerTag;
-	CvPoint textPoint;
-	CvFont font;
-	CvSize textSize;
-	int textBase = 0;
-	char modelNameCh[1024]; //char modelNameCh[modelName.length()+4];
-	float m, b;
-	int h;
-
-
-	sprintf (modelNameCh, "%s %d", modelName.c_str(), i);
-
-	m = (-300) / (maxScore-minScore);
-	b = -(m * maxScore);
-	h = cvRound(m*curScore + b);
-
-	color = cvScalar (h/2, 255, 255);
-
-	cvCvtColor (im, im, CV_BGR2HSV);
-
-	cvRectangle (im, p1, p2, color, 2);
-
-	cvInitFont (&font, CV_FONT_HERSHEY_DUPLEX, 0.4, 0.6, 0, 1, CV_AA);
-	cvGetTextSize (modelNameCh, &font, &textSize, &textBase);
-
-	bottomLeftCornerTag.x = min (p1.x, p2.x) -1;
-	bottomLeftCornerTag.y = min (p1.y, p2.y);
-
-	topRightCornerTag.x = bottomLeftCornerTag.x + textSize.width + 2;
-	topRightCornerTag.y = bottomLeftCornerTag.y - textSize.height - 3;
-
-	if (bottomLeftCornerTag.x < 0)
-	{
-		bottomLeftCornerTag.x = max (p1.x, p2.x) +1;
-		topRightCornerTag.x = bottomLeftCornerTag.x - textSize.width - 2;
-	}
-
-	if (topRightCornerTag.y < 0)
-	{
-		bottomLeftCornerTag.y = max (p1.y, p2.y);
-		topRightCornerTag.y = bottomLeftCornerTag.y + textSize.height + 3;
-	}
-
-	cvRectangle (im, bottomLeftCornerTag, topRightCornerTag, color, CV_FILLED);
-
-	cvCvtColor (im, im, CV_HSV2BGR);
-
-	textPoint.x = min (bottomLeftCornerTag.x, topRightCornerTag.x) + 1;
-	textPoint.y = max (bottomLeftCornerTag.y, topRightCornerTag.y) - 2;
-
-	cvPutText (im, modelNameCh, textPoint, &font, cvScalarAll (255));
-}
-
 string saveImage (const IplImage *im, string imgPath, int mode, const CvMat *results)
 {
 	string name, path;
@@ -167,7 +109,8 @@ int main ( int argc, char *argv[] )
 	int nDetected = 0;
 	float usedThresh=NEGATIVE_INF, thresh = POSITIVE_INF;
 	float minScore, maxScore;
-        bool savedata = false, display = true;
+    bool savedata = false, display = true;
+	double iouNms = 0.5;
 
 
 	if (argc < 5)
@@ -198,6 +141,9 @@ int main ( int argc, char *argv[] )
 
                 } else if (string(argv[i]) == "-t") {
                     thresh = atof(argv[i + 1]);
+
+                } else if (string(argv[i]) == "-n") {
+                    iouNms = atof(argv[i + 1]);
 
                 } else {
                     cerr << ">> ERROR: Not enough or invalid arguments, please try again.\n";
@@ -273,7 +219,7 @@ int main ( int argc, char *argv[] )
 	GET_TIME(&t_ini);
 
     // Call to main function	
-	usedThresh = detector.detect(im, thresh, &results);
+	usedThresh = detector.detect(im, thresh, iouNms, &results);
 
 	if (results != NULL)
 		nDetected = results->rows;
@@ -341,29 +287,16 @@ int main ( int argc, char *argv[] )
                    }
                 }
 
-		for (int i = nDetected - 1; i >= 0; i--)
-		{
-			drawBoxes 	(
-							im,
-							cvPoint (cvGetReal2D(results, i, 0), cvGetReal2D(results, i, 1)),
-							cvPoint (cvGetReal2D(results, i, 2), cvGetReal2D(results, i, 3)),
-							extractModelName(modelfile),
-							i+1,
-							maxScore,
-							minScore,
-							cvGetReal2D (results, i, 4)
-						);
-
-
-		}
+       // Draw detections
+		detector.drawDetections(im, results);
 
 		for (int i = 0; i < nDetected; i++)
 			cout << "  - " << extractModelName(modelfile) << " " << i+1 << ", score = " << cvGetReal2D (results, i, 4) << endl;
 
                 if (display)
                 {
-		   cvNamedWindow("Detected image", CV_WINDOW_AUTOSIZE);
-		   cvShowImage ("Detected image", im);
+		   cvNamedWindow("Detected objects", CV_WINDOW_AUTOSIZE);
+		   cvShowImage ("Detected objects", im);
 
 
 		   cout << endl << "Push 't' key to save a copy of (t)agged image" << endl;
