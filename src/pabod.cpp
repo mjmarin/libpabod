@@ -107,6 +107,45 @@ float Pabod::detect(IplImage * img, float thr, double iouNms, CvMat ** detection
 	return usedThr;
 }
 
+float Pabod::detect(cv::Mat & img, float thr, double iouNms, cv::Mat & detections)
+{
+	float usedThr = -999999;
+	if (!empty())
+	{		
+		CvMat * detections_ = NULL;
+		IplImage img_ = img;
+	   // Call to main detection function
+		usedThr = makeDetection (&detections_, &img_, _model, thr, iouNms);
+		
+		detections = detections_;
+	}
+	else
+		cerr << "ERROR: model must be set before calling this method." << endl;
+	
+	return usedThr;
+}
+
+int Pabod::drawDetections(cv::Mat & img, cv::Mat & detections)
+{
+	int ndetections = 0;
+	int i;
+	CvPoint p1, p2;
+	//srand(time(NULL));
+	srand(123456);
+	IplImage img_ = img;
+
+	ndetections = detections.rows; 
+	for (i = 0; i < ndetections; i++)
+	{
+           p1 = cvPoint ((int)detections.at<float>(i, 0), (int)detections.at<float>(i, 1));
+           p2 = cvPoint ((int)detections.at<float>(i, 2), (int)detections.at<float>(i, 3));
+
+	   drawBB(&img_, p1, p2, cvScalar(int(rand()%256), int(rand()%256), int(rand()%256)), (float)detections.at<float>(i, 4), detections.at<float>(i, 5));
+	}
+
+	return ndetections;
+}
+
 int Pabod::drawDetections(IplImage * img, CvMat * detections)
 {
 	int ndetections = 0;

@@ -42,6 +42,7 @@ class PABOD_EXPORT Pabod{
 		*/
 	float detect(IplImage * img, float thr, CvMat ** detections);
 	float detect(IplImage * img, float thr, double iouNms, CvMat ** detections);
+	float detect(cv::Mat & img, float thr, double iouNms, cv::Mat & detections); //! Most modern interface
 	float detect(const char * imgfilename, float thr, CvMat ** detections);
 	
 	/** Draws all detections as rectangles on image.
@@ -50,6 +51,7 @@ class PABOD_EXPORT Pabod{
 		\return Number of detections drawn into image
 	*/	
 	int drawDetections(IplImage * img, CvMat * detections);
+	int drawDetections(cv::Mat & img, cv::Mat & detections); //! Most modern interface
 
 	/** Gets the class registered in the model
 	 */

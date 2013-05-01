@@ -2,8 +2,9 @@
   #include <windows.h> 
   #include <ctime>
   typedef time_t TIMER;
-  #define GET_TIME(var) time(var)
-  #define TIME_DIFF(tend, tini) difftime(tend, tini)
+  #include <cv.h>
+  #define GET_TIME(var) cv::getTickCount() //time(var)
+  #define TIME_DIFF(tend, tini) (((double)tend -tini)/cv::getTickFrequency()) //difftime(tend, tini)
   
   #if !defined _CRT_SECURE_NO_DEPRECATE && _MSC_VER > 1300
     #define _CRT_SECURE_NO_DEPRECATE /* to avoid multiple Visual Studio 2005 warnings */
