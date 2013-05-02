@@ -10,7 +10,8 @@
 #include <highgui.h>
 #include "export.h"
 #include "model.h"
-
+#include "detection.h"	
+	
 /** \class Pabod
  *  This class implements a part-based object detector.
  */	
@@ -43,6 +44,7 @@ class PABOD_EXPORT Pabod{
 	float detect(IplImage * img, float thr, CvMat ** detections);
 	float detect(IplImage * img, float thr, double iouNms, CvMat ** detections);
 	float detect(cv::Mat & img, float thr, double iouNms, cv::Mat & detections); //! Most modern interface
+	float detect(cv::Mat & img, float thr, double iouNms, LDetections & detections); //! Most modern interface
 	float detect(const char * imgfilename, float thr, CvMat ** detections);
 	
 	/** Draws all detections as rectangles on image.
@@ -52,6 +54,7 @@ class PABOD_EXPORT Pabod{
 	*/	
 	int drawDetections(IplImage * img, CvMat * detections);
 	int drawDetections(cv::Mat & img, cv::Mat & detections); //! Most modern interface
+	int drawDetections(cv::Mat & img, LDetections & detections);
 
 	/** Gets the class registered in the model
 	 */

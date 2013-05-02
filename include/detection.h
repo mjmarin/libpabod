@@ -7,14 +7,23 @@
 #ifndef _DETECTION_H_
 #define _DETECTION_H_
 	
+#include <vector>
 #include "export.h"
+
+#define LOWESTSCORE 	-999999
 	
 /** \class Detection
  *  This class represents a single detection returned by a Pabod detector.
  */		
 class PABOD_EXPORT Detection{	
    public:
-	   Detection();
+	   Detection()
+		{
+			_x1 = _x2 = _y1 = _y2 = -1;
+			_component = -1;
+			_score = LOWESTSCORE;
+		};
+				
 		Detection(int x1, int y1, int x2, int y2, float score, int component)
 		{
 			_x1 = x1;
@@ -24,7 +33,13 @@ class PABOD_EXPORT Detection{
 			_score = score;
 			_component = component;
 		};
-		~Detection();
+	   /** Creates a new Detection from the given parameters.
+		   \param x1, y1, x2, y2 are the coordinates of the bounding-box
+			\param score the higher the better
+			\param component index of the component fired by the detector
+	   */		
+		
+		//~Detection();
 		
 		int getX1(void){return _x1;};
 		int getX2(void){return _x2;};
@@ -32,6 +47,15 @@ class PABOD_EXPORT Detection{
 		int getY2(void){return _y2;};
 		int getW(void){return (_x2-_x1+1);};
 		int getH(void){return (_y2-_y1+1);};
+		int getComponent(void){return _component;};
+		
+		float getScore(void){return _score;}; 
+		/** Returns the detection score
+		*/	
+		
+		bool empty(void){return (_component == -1) && (_score == LOWESTSCORE);}; 
+		/** Checks if object has not been initialized yet
+		*/
 		
    private:
 		int _x1;
@@ -41,6 +65,7 @@ class PABOD_EXPORT Detection{
 		float _score;   //! Detection score
 		int _component; //! Component that fired
 };	
-	
+
+typedef 	std::vector<Detection> LDetections; //! List of detections
+
 #endif
-	

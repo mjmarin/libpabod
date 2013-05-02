@@ -167,7 +167,8 @@ int main ( int argc, char *argv[] )
 	//IplImage *im = NULL, *copy = NULL;
 	cv::Mat im, copy;
 	//CvMat *results = NULL;
-	cv::Mat results;
+	//cv::Mat results;
+	LDetections results;
 	int nDetected = 0;
 	float usedThresh=NEGATIVE_INF, thresh = POSITIVE_INF;
 	float minScore, maxScore;
@@ -266,11 +267,14 @@ int main ( int argc, char *argv[] )
 	//usedThresh = detector.detect(im, thresh, iouNms, &results);
 	usedThresh = detector.detect(im, thresh, iouNms, results);
        
+	nDetected = results.size();
+	/*
 	if (results.data != NULL)
 		//nDetected = results->rows;
-		nDetected = results.rows;
+		nDetected = results.rows;		
 	else
 		nDetected = 0;
+	*/
 
 	// Get the current time after detection
 	t_fin = GET_TIME(&t_fin);
@@ -296,10 +300,17 @@ int main ( int argc, char *argv[] )
             if (cvGetReal2D(results, i, 4) > maxScore)
                 maxScore = cvGetReal2D(results, i, 4);
 				*/
+			/*
 			if (results.at<float>(i, 4) < minScore)
                 minScore = results.at<float>(i, 4);
             if (results.at<float>(i, 4) > maxScore)
                 maxScore = results.at<float>(i, 4);			
+			*/
+			if (results[i].getScore() < minScore)
+				minScore = results[i].getScore();
+
+			if (results[i].getScore() < maxScore)
+				maxScore = results[i].getScore();
         }
 
         if (maxScore == minScore)
@@ -328,9 +339,14 @@ int main ( int argc, char *argv[] )
 			fid << cvGetReal2D(results, i, 2) << " " << cvGetReal2D(results, i, 3) << " ";
 			fid << cvGetReal2D (results, i, 4) << endl;
 */
+/*
 			fid << results.at<float>(i, 0) << " " << results.at<float>(i, 1) << " ";
 			fid << results.at<float>(i, 2) << " " << results.at<float>(i, 3) << " ";
 			fid << results.at<float>(i, 4) << endl;
+*/
+				  fid << results[i].getX1() << " " << results[i].getY1() << " ";
+			      fid << results[i].getX2() << " " << results[i].getY2() << " ";
+			      fid << results[i].getScore() << endl;
 		      }
 
                       // Close file
@@ -342,7 +358,7 @@ int main ( int argc, char *argv[] )
         detector.drawDetections(im, results);	        	        		
 
 		for (int i = 0; i < nDetected; i++)
-			cout << "  - " << extractModelName(modelfile) << " " << i+1 << ", score = " << results.at<float>(i, 4) << endl;
+			cout << "  - " << extractModelName(modelfile) << " " << i+1 << ", score = " << results[i].getScore() << endl;
 
                 if (display)
                 {
@@ -364,7 +380,7 @@ int main ( int argc, char *argv[] )
 			if (c == 't' || c == 'T')
 			{
 			//aux = saveImage (im, imName, TAGGED, NULL);
-				aux = saveImage (im, imName, TAGGED, NULL);
+//To update				aux = saveImage (im, imName, TAGGED, NULL);
 				cout << "  >> Tagged image saved on <" << aux << "> folder" << endl << endl;
 
 				c = 0;
@@ -377,7 +393,7 @@ int main ( int argc, char *argv[] )
 			else if (c == 'c' || c == 'C')
 			{
 			//	aux = saveImage (copy, imName, CUT, results);
-				aux = saveImage (copy, imName, CUT, &results);
+//To update				aux = saveImage (copy, imName, CUT, &results);
 				cout << "  >> Cut images saved on <" << aux << "> folder" << endl << endl;
 
 				c = 0;

@@ -42,3 +42,9 @@ Thumbs.db
 *.aux
 *.bbl
 *.blg
+*.html
+*.map
+*.md5
+*.png
+*.gch
+*.css
