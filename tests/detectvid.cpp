@@ -98,14 +98,74 @@ string saveImage (const IplImage *im, string imgPath, int mode, const CvMat *res
 	return path;
 }
 
+string saveImage (const cv::Mat & im, string imgPath, int mode, const LDetections & results)
+{
+	string name, path;
+	size_t pos;
+	char imgNameCh[8];	
+	
+	int x, y, w, h;
+
+	pos = imgPath.find_last_of ("/");
+	path = imgPath.substr(0, pos);
+
+	if (mode == TAGGED)
+	{
+		pos = imgPath.find_last_of(".");
+
+		name = imgPath.substr (0, pos);
+
+		name.append ("_tagged");
+		name.append(imgPath.substr(pos));
+
+		cv::imwrite(name,im);
+		
+	}
+
+	else if (mode == CUT)
+	{
+		for (int i = 0; i < results.size(); i++)
+		{
+			x = min (results[i].getX1(), results[i].getX2());
+			y = min (results[i].getY1(), results[i].getY2());
+			w = abs(results[i].getW());
+			h = abs(results[i].getH());
+
+			cv::Mat cut2(cv::Size(w, h), cv::DataType<cv::Vec<uchar,3>>::type);
+			cout <<  im.channels() << endl;					
+
+			for (int m = x; m < w+x; m++)
+				for (int n = y; n < h+y; n++)					
+					cut2.at<cv::Vec3b>(n-y, m-x) = im.at<cv::Vec3b>(n, m);
+
+
+			pos = imgPath.find_last_of(".");
+
+			name = imgPath.substr (0, pos);
+
+			sprintf (imgNameCh, "_cut%d", i+1);
+
+			name.append (imgNameCh);
+			name.append(imgPath.substr(pos));
+
+			
+			cv::imwrite(name, cut2);
+			cut2.release();
+		}
+	}
+
+	return path;
+}
 
 int main ( int argc, char *argv[] )
 {
 	TIMER t_ini, t_fin;
 	double secs=0;
 	string modelfile(""), vidName(""), imName(""), aux, datafile;
-	IplImage *im = NULL, *copy = NULL, *frame= NULL;
-	CvMat *results = NULL;
+	//IplImage *im = NULL, *copy = NULL, *frame= NULL;
+	cv::Mat im, copy, frame;
+	//CvMat *results = NULL;
+	LDetections results;
 	int nDetected = 0;
 	float usedThresh=NEGATIVE_INF, thresh = POSITIVE_INF;
 	float minScore, maxScore;
@@ -183,7 +243,7 @@ int main ( int argc, char *argv[] )
         frame = cvQueryFrame( vid);
 
         // Check if frame is read
-        if (frame == NULL)
+		if (frame.empty())
         {
             break; // No more frames
         }
@@ -195,7 +255,8 @@ int main ( int argc, char *argv[] )
            frix++;
         }
 
-        im = cvCloneImage(frame);
+		im = frame.clone();
+        //im = cvCloneImage(frame);
 
 	cout << endl << endl << endl << endl;
 	cout << "  Model: " << modelfile << endl;
@@ -208,26 +269,30 @@ int main ( int argc, char *argv[] )
 
         if (display)
         {
-	   cvNamedWindow("Input image", CV_WINDOW_AUTOSIZE);
-	   cvShowImage ("Input image", im);
+	   cvNamedWindow("Input frame", CV_WINDOW_AUTOSIZE);
+	   //cvShowImage ("Input image", im);
+	   cv::imshow("Input frame", im);
 	   cvWaitKey(250);
         }
 
 	cout << "Searching for objects... This operation may take a few seconds" << endl << endl;
 
 	// Get the current time before starting detection
-	GET_TIME(&t_ini);
+	t_ini = GET_TIME(&t_ini);
 
     // Call to main function	
-	usedThresh = detector.detect(im, thresh, iouNms, &results);
+	usedThresh = detector.detect(im, thresh, iouNms, results);
 
+	/*
 	if (results != NULL)
 		nDetected = results->rows;
 	else
 		nDetected = 0;
+		*/
+	nDetected = results.size();
 
 	// Get the current time after detection
-	GET_TIME(&t_fin);
+	t_fin = GET_TIME(&t_fin);
 
 	// Number of secs taken to run detection	
 	secs = TIME_DIFF(t_fin, t_ini);
@@ -245,16 +310,19 @@ int main ( int argc, char *argv[] )
 
         for (int i = 0; i < nDetected; i++)
         {
-            if (cvGetReal2D(results, i, 4) < minScore)
-                minScore = cvGetReal2D(results, i, 4);
-            if (cvGetReal2D(results, i, 4) > maxScore)
-                maxScore = cvGetReal2D(results, i, 4);
+
+			if (results[i].getScore() < minScore)
+				minScore = results[i].getScore();
+
+			if (results[i].getScore() < maxScore)
+				maxScore = results[i].getScore();
         }
 
         if (maxScore == minScore)
             minScore = usedThresh;
 
-		copy = cvCloneImage (im);
+		//copy = cvCloneImage (im);
+		copy = im.clone();
 
                 // Save data?
                 if (savedata)
@@ -276,10 +344,14 @@ int main ( int argc, char *argv[] )
                       fid << nDetected << endl;
                       for (int i = nDetected - 1; i >= 0; i--)
 		      {
-
+				  /*
 			fid << cvGetReal2D(results, i, 0) << " " << cvGetReal2D(results, i, 1) << " ";
 			fid << cvGetReal2D(results, i, 2) << " " << cvGetReal2D(results, i, 3) << " ";
 			fid << cvGetReal2D (results, i, 4) << endl;
+			*/
+				  fid << results[i].getX1() << " " << results[i].getY1() << " ";
+			      fid << results[i].getX2() << " " << results[i].getY2() << " ";
+			      fid << results[i].getScore() << endl;
 		      }
 
                       // Close file
@@ -291,12 +363,13 @@ int main ( int argc, char *argv[] )
 		detector.drawDetections(im, results);
 
 		for (int i = 0; i < nDetected; i++)
-			cout << "  - " << extractModelName(modelfile) << " " << i+1 << ", score = " << cvGetReal2D (results, i, 4) << endl;
+			cout << "  - " << extractModelName(modelfile) << " " << i+1 << ", score = " << results[i].getScore() << endl;
 
                 if (display)
                 {
 		   cvNamedWindow("Detected objects", CV_WINDOW_AUTOSIZE);
-		   cvShowImage ("Detected objects", im);
+		   //cvShowImage ("Detected objects", im);
+		   cv::imshow("Detected objects", im);
 
 
 		   cout << endl << "Push 't' key to save a copy of (t)agged image" << endl;
@@ -311,7 +384,7 @@ int main ( int argc, char *argv[] )
 
 			if (c == 't' || c == 'T')
 			{
-				aux = saveImage (im, imName, TAGGED, NULL);
+				aux = saveImage (im, imName, TAGGED, results);
 				cout << "  >> Tagged image saved on <" << aux << "> folder" << endl << endl;
 
 				c = 0;
@@ -344,9 +417,10 @@ int main ( int argc, char *argv[] )
 	else
 		cout << endl << "  >> No objects found" << endl << endl;
 
-	
-	cvReleaseMat (&results);
-        cvReleaseImage (&im);
+		results.clear();
+	//cvReleaseMat (&results);
+		im.release();
+        //cvReleaseImage (&im);
 
      } // while-doProcessing
 

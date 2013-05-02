@@ -1,7 +1,7 @@
 /**
    \file detection.h
    \author Manuel J. Marin-Jimenez
-// (c) MJMJ/2013
+   \date May 2013
 */
 	
 #ifndef _DETECTION_H_
@@ -41,19 +41,19 @@ class PABOD_EXPORT Detection{
 		
 		//~Detection();
 		
-		int getX1(void){return _x1;};
-		int getX2(void){return _x2;};
-		int getY1(void){return _y1;};
-		int getY2(void){return _y2;};
-		int getW(void){return (_x2-_x1+1);};
-		int getH(void){return (_y2-_y1+1);};
-		int getComponent(void){return _component;};
+		int getX1(void) const {return _x1;};
+		int getX2(void) const {return _x2;};
+		int getY1(void) const {return _y1;};
+		int getY2(void) const {return _y2;};
+		int getW(void) const {return (_x2-_x1+1);}; //! Width of BB
+		int getH(void) const {return (_y2-_y1+1);}; //! Height of BB
+		int getComponent(void) const {return _component;};
 		
-		float getScore(void){return _score;}; 
+		float getScore(void) const {return _score;}; 
 		/** Returns the detection score
 		*/	
 		
-		bool empty(void){return (_component == -1) && (_score == LOWESTSCORE);}; 
+		bool empty(void) const {return (_component == -1) && (_score == LOWESTSCORE);}; 
 		/** Checks if object has not been initialized yet
 		*/
 		

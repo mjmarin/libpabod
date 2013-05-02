@@ -1,2 +1,3 @@
++ Some memory leaks still to be fixed.
 + Add a new method to load object models from XML file. This requires a M-script to create such XML model files.
 + Convert CvMat * variables to cv::Mat class.
