@@ -1,4 +1,5 @@
 #include <gdetect.h>
+#include <crossplatform.h>
 
 
 void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
@@ -23,10 +24,14 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
   if ( overlap == NEGATIVE_INF )
     overlap = 0.7;
 
+    _CrtMemState s1, s2, s3;
+
+ 
   // Cache filter response
   filterResponses (model, pyra, latent, bbox, overlap);
 
   // Compute parse scores
+  
   LStructure* L = new LStructure;
   assert (L != NULL);
   L = modelSort (model, L); // mjmarin: uses def params --> i=-1, V=NULL
@@ -41,6 +46,7 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
   }
 
   delete[] L;
+
 
   // Find scores above threshold
   int *X = NULL;
@@ -65,6 +71,8 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
   int *tmpY;
   int *tmpL;
   double *tmpS;
+
+
 
   for (int level = model->getInterval() + 1; level < pyra.getDim(); level++)
   {
@@ -402,6 +410,9 @@ void filterResponses (Model *model, const FeatPyramid  &pyra, bool latent,
   int dim = 0;
   int spadX, spadY;
 
+  _CrtMemState s1, s2, s3;
+  _CrtMemCheckpoint( &s1 );
+
   // Firstable the function has to count how many elements there will be
   for (int s = 0; s < model->getSymbolsDim(); s++)
   {
@@ -412,21 +423,21 @@ void filterResponses (Model *model, const FeatPyramid  &pyra, bool latent,
   // Gather filters for computing match quality responses
   assert (i > 0);
 
-  CvMatND **filters = new CvMatND* [i];
+  CvMatND **filters = new CvMatND* [i]; // Suspicious
   assert (filters != NULL);
 
   int filtersDim = i;
 
-  int *filtersDimF = new int [i];
+  int *filtersDimF = new int [i]; // Suspicious
   assert (filtersDimF != NULL);
 
-  int *filtersDimC = new int [i];
+  int *filtersDimC = new int [i]; // Suspicious
   assert (filtersDimC != NULL);
 
-  int *filtersDimA = new int [i];
+  int *filtersDimA = new int [i]; // Suspicious
   assert (filtersDimA != NULL);
 
-  int *filter_to_symbol = new int [i];
+  int *filter_to_symbol = new int [i]; // Suspicious
   assert (filter_to_symbol != NULL);
 
   i = 0;
@@ -463,7 +474,7 @@ void filterResponses (Model *model, const FeatPyramid  &pyra, bool latent,
   for (int i = 0; i < rDim; i++)
   {
     model->getSymbols()[filter_to_symbol[i]].dimScore = dim;
-    model->getSymbols()[filter_to_symbol[i]].score = new CvMat* [dim];
+    model->getSymbols()[filter_to_symbol[i]].score = new CvMat* [dim]; // Suspicious --> to be tracked
   }
 
   int s[2];
@@ -505,7 +516,9 @@ void filterResponses (Model *model, const FeatPyramid  &pyra, bool latent,
       cvReleaseMat(&r[i]); // Release old memory
       r[i] = newArray;
 
+	   _CrtMemCheckpoint( &s1 );
       model->getSymbols()[filter_to_symbol[i]].score[levels[j]] = r[i];
+
     }
 
     assert (s[0] > 0);
@@ -522,12 +535,14 @@ void filterResponses (Model *model, const FeatPyramid  &pyra, bool latent,
 	delete [] r;
   }
 
+
   delete[] filters;
   delete[] filtersDimF;
   delete[] filtersDimC;
   delete[] filtersDimA;
   delete[] filter_to_symbol;
   delete[] levels;
+
 }
 
 
@@ -542,7 +557,7 @@ int* validateLevels (const Model *model, const FeatPyramid &pyra,
   {
     assert (pyra.getDim() > 0);
 
-    levels = new int [pyra.getDim()];
+    levels = new int [pyra.getDim()]; // Suspicious
 
     assert (levels != NULL);
 

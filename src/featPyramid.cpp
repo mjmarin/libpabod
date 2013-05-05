@@ -579,9 +579,9 @@ void FeatPyramid::featpyramid (const IplImage *im, const Model *model, int padX,
     setDim (int(maxScale + interval));
 
   assert (getDim() > 0);
-  _feat = new CvMatND* [getDim()];
+  _feat = new CvMatND* [getDim()];    // Suspicious
   assert (_feat != NULL);
-  _scales = new float [getDim()];
+  _scales = new float [getDim()]; // Suspicious
   assert (_scales != NULL);
 
   // Field imsize is setted
@@ -698,7 +698,7 @@ void FeatPyramid::destroyFeatPyramid()
 
 void FeatPyramid::setImSize(int *imSize)
 {
-  _imSize = new int [PAIR];
+  _imSize = new int [PAIR];  // Suspicious
 
   assert (imSize[0] > 0);
   assert (imSize[1] > 0);

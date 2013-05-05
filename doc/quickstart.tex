@@ -35,6 +35,22 @@ Object detection was never so simple! Follow the next steps and you will get the
 
 \noindent So easy!
 
+\section{Using the OpenCV C++ interface}
+
+\begin{verbatim}
+	LDetections detections;
+
+	cv::Mat img = cv::imread("my_image.jpg", CV_LOAD_IMAGE_COLOR);
+
+	Pabod detector("data/models/person_v6.mat");
+	
+	detector.detect(img, POSITIVE_INF, 0.5, detections);
+	
+	detector.drawDetections(img, detections);
+
+	cv::imwrite("my_image_dets.jpg", img);
+\end{verbatim} 
+
 \begin{thebibliography}{}
 	 \bibitem{felzenszwalb2010}
 	 P. Felzenszwalb, R. Girshick, D. McAllester, D. Ramanan. ``Object Detection with Discriminatively Trained Part Based Models''. IEEE Transactions on Pattern Analysis and Machine Intelligence, Vol. 32, No. 9, September 2010.

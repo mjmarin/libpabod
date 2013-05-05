@@ -32,7 +32,7 @@ Pabod::Pabod(const char * modelfile)
 
 Pabod::Pabod(string modelfile)
 {
-	_model = new Model(modelfile);
+	_model = new Model(modelfile); 
 	_isCopied = false;
 }
 

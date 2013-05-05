@@ -76,6 +76,7 @@ void Model::destroyModel ()
     _rules = NULL;
   }
 
+  // filterResponses() fills it
   if (_symbols != NULL)
   {
     for (int i = 0; i < getSymbolsDim(); i++)
@@ -184,7 +185,7 @@ void Model::destroyModel ()
     delete[] _bboxpred;
     _bboxpred = NULL;
   }
-
+  // filterResponses() fills it
   if (_scoretpt != NULL)
   {
     for (int i = 0; i < getScoretptDim(); i++)
@@ -1002,7 +1003,7 @@ void Model::setFilters (filters *f)
   {
     assert (getFiltersDim() > 0);
 
-    _filters = new filters [getFiltersDim()];
+    _filters = new filters [getFiltersDim()]; // Suspicious
 
     assert (_filters != NULL);
 
@@ -1020,7 +1021,7 @@ void Model::setRules (rules *r)
   {
     assert (getRulesDim() > 0);
 
-    _rules = new rules [getRulesDim()];
+    _rules = new rules [getRulesDim()]; // Suspicious
 
     assert (_rules != NULL);
 
@@ -1038,7 +1039,7 @@ void Model::setSymbols (symbols *s)
   {
     assert (getSymbolsDim() > 0);
 
-    _symbols = new symbols [getSymbolsDim()];
+    _symbols = new symbols [getSymbolsDim()]; // Suspicious
 
     assert (_symbols != NULL);
 
@@ -1147,7 +1148,7 @@ void Model::setLowerbounds (lowerbounds *l)
   {
     assert (getLowerboundsDim() > 0);
 
-    _lowerbounds = new lowerbounds [getLowerboundsDim()];
+    _lowerbounds = new lowerbounds [getLowerboundsDim()]; // Suspicious
 
     assert (_lowerbounds != NULL);
 
@@ -1208,7 +1209,7 @@ void Model::setScoretpt (CvMat **scoretpt)
   if (scoretpt != NULL)
     assert (getScoretptDim() > 0);
 
-  _scoretpt = new CvMat* [getScoretptDim()];
+  _scoretpt = new CvMat* [getScoretptDim()]; // Suspicious
 
   assert (_scoretpt != NULL);
 
@@ -1318,7 +1319,7 @@ void Model::initializeRules (matvar_t *rulesStructure)
       {
         /* Allocate memory for a scalar element, the field structure
         of r[i] variable (Cell*) and calls the constructor of Cell */
-        r[i].structure = new Cell(field);
+        r[i].structure = new Cell(field); // Suspicious
         assert (r[i].structure != NULL);
       }
 
@@ -1327,7 +1328,7 @@ void Model::initializeRules (matvar_t *rulesStructure)
       {
         /* Allocate memory for an array element, the field structure of
         r[i] variable (Cell*) */
-        r[i].structure = new Cell [lengthField];
+        r[i].structure = new Cell [lengthField]; // Suspicious
         assert (r[i].structure != NULL);
 
         // Calls the Cell constructor for each element of the r[i] array
@@ -1521,4 +1522,41 @@ ostream & operator<<(ostream & co, const Model & m)
    return co;
 }
 
+void Model::resetModel()
+{
+	//_releaseSymbols();
+	_releaseScores();
+}
 
+// Private methods
+void Model::_releaseSymbols(void)
+  {
+	  symbols * sym = this->getSymbols();
+	  if (sym != NULL)
+	  {
+		  for (int i = 0; i < this->getSymbolsDim(); i++)
+		  {
+			  CvMat ** score = sym[i].score;
+			  for (int j = 0; j < sym[i].dimScore; j++)
+				  cvReleaseMat(&(score[j]));
+			  delete [] score;
+		  }
+		  delete [] sym;
+		  _symbols = NULL;
+	  }
+  }
+
+  void Model::_releaseScores(void)
+  {
+		 CvMat** scorept = this->getScoretpt() ;
+		 if (scorept != NULL)
+		 {
+
+			 for (int i = 0; i < this->getScoretptDim(); i++)
+			 {
+				 cvReleaseMat(&(scorept[i]));
+			 }
+			 delete [] scorept;
+			 _scoretpt = NULL;
+		 }
+  }

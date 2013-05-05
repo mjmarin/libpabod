@@ -3,7 +3,7 @@
 
 #include <image.h>
 #include <limits>
-
+#include <crossplatform.h>
 
 /** \file
  *  The file contains a wide variety of different handling matrixes and

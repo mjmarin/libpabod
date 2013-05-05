@@ -332,7 +332,7 @@ void Cell::setRhs (int *rhs)
 {
   assert (getRhsDim() > 0);
 
-  _rhs = new int [getRhsDim()];
+  _rhs = new int [getRhsDim()]; // Suspicious
 
   assert (_rhs != NULL);
 
@@ -358,7 +358,7 @@ void Cell::setAnchor (anchor *a)
 {
   assert (getAnchorDim() > 0);
 
-  _anchor = new anchor [getAnchorDim()];
+  _anchor = new anchor [getAnchorDim()]; // Suspicious
 
   assert (_anchor != NULL);
 

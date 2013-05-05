@@ -15,7 +15,6 @@
 #include <pabod.h>
 #include <crossplatform.h>
 
-
 #define TAGGED	0
 #define CUT		1
 

@@ -64,6 +64,10 @@ LStructure *modelSort (const Model *m, LStructure* L, int i, int* V)
 
   auxL[L->LDim] = i;
 
+  // Added by mjmarin
+  if (L->L != NULL)
+	  delete [] L->L;
+
   L->L = auxL;
   (L->LDim)++;
 

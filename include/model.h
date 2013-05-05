@@ -883,6 +883,13 @@ public:
  */
   void destroyModel ();
 
+  /** Releases temporal memory from a previous detection.
+    * Model definition is not modified. Then, same model
+	* is ready for a new detection.
+	*/
+
+  void resetModel(); 
+
 /** Allocates dinamic memory for the private vector variable 
  *  <tt>_scoretpt</tt>. This function is necessary because the vector 
  *  is initialized element by element, so the memory must be
@@ -995,6 +1002,11 @@ private:
   CvMat** _scoretpt;
 
   int _scoretptDim;
+
+  // Private methods
+  void _releaseSymbols(void); //! Release memory allocated during a detection
+
+  void _releaseScores(void); //! Release memory allocated during a detection
 };
 
 

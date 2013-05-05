@@ -61,6 +61,9 @@ PABOD_EXPORT float makeDetection (LDetections & D, IplImage *img, Model * model,
 		info = NULL;
 	}
 
+  // Release extra memory from detection
+  model->resetModel();
+
   return thresh;   
 }
 
@@ -121,6 +124,9 @@ PABOD_EXPORT float makeDetection (CvMat **results, IplImage *img, Model * model,
 	  cvReleaseMatND(&info);
 		info = NULL;
 	}
+
+  // Release extra memory from detection
+  model->resetModel();
 
   return thresh;   
 }
