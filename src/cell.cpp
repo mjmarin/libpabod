@@ -111,6 +111,60 @@ void Cell::destroyCell ()
 }
 
 
+void Cell::releaseScore(void)
+{
+	  if (_score != NULL)
+      {
+        for (int i = 0; i < getScoreDim(); i++)
+        {
+          if (_score[i] != NULL)
+          {
+            cvReleaseMat (&_score[i]);
+            _score[i] = NULL;
+          }
+        }
+      
+        delete[] _score;
+        _score = NULL;
+      }
+    
+}
+
+void Cell::releaseIxIy(void)
+{
+	
+    if (_Ix != NULL)
+    {
+      for (int i = 0; i < getIxDim(); i++)
+      {
+        if (_Ix[i] != NULL)
+        {
+          cvReleaseMat (&_Ix[i]);
+          _Ix[i] = NULL;
+        }
+      }
+
+      delete[] _Ix;
+      _Ix = NULL;
+    }
+
+    if (_Iy != NULL)
+    {
+      for (int i = 0; i < getIyDim(); i++)
+      {
+        if (_Iy[i] != NULL)
+        {
+          cvReleaseMat (&_Iy[i]);
+          _Iy[i] = NULL;
+        }
+      }
+
+      delete[]_Iy;
+      _Iy = NULL;
+    }
+}
+
+
 ///////////////////////////////
 ///// LOAD FILE FUNCTIONS /////
 ///////////////////////////////
@@ -156,6 +210,8 @@ void Cell::loadEmptyCell ()
 
 void Cell::loadCell (matvar_t *matVar, int i)
 {
+  loadEmptyCell (); // Initialize all members
+
   loadType (matVar, i);
   loadLhs (matVar, i);
   loadDetwindow (matVar, i);
@@ -332,7 +388,10 @@ void Cell::setRhs (int *rhs)
 {
   assert (getRhsDim() > 0);
 
-  _rhs = new int [getRhsDim()]; // Suspicious
+  if (_rhs != NULL)
+	  delete [] _rhs;
+
+  _rhs = new int [getRhsDim()]; 
 
   assert (_rhs != NULL);
 
@@ -344,6 +403,9 @@ void Cell::setRhs (int *rhs)
 void Cell::setDetwindow (double *d)
 {
   assert (getDetwindowDim() > 0);
+
+  if (_detwindow != NULL)
+	  delete [] _detwindow;
 
   _detwindow = new int [getDetwindowDim()];
 
@@ -358,6 +420,9 @@ void Cell::setAnchor (anchor *a)
 {
   assert (getAnchorDim() > 0);
 
+  if (_anchor != NULL)
+	  delete [] _anchor;
+
   _anchor = new anchor [getAnchorDim()]; // Suspicious
 
   assert (_anchor != NULL);
@@ -370,6 +435,9 @@ void Cell::setAnchor (anchor *a)
 void Cell::setScore (CvMat **score)
 {  
   assert (getScoreDim() > 0);
+
+  if (_score != NULL)
+	  delete [] _score;
 
   _score = new CvMat* [getScoreDim()];
 
@@ -384,6 +452,9 @@ void Cell::setIx (CvMat **Ix)
 {
   assert (getIxDim() > 0);
 
+  if (_Ix != NULL)
+	  delete [] _Ix;
+
   _Ix = new CvMat* [getIxDim()];
 
   assert (_Ix != NULL);
@@ -396,6 +467,9 @@ void Cell::setIx (CvMat **Ix)
 void Cell::setIy (CvMat **Iy)
 {
   assert (getIyDim() > 0);
+
+  if (_Iy != NULL)
+	  delete [] _Iy;
 
   _Iy = new CvMat* [getIyDim()];
 

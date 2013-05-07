@@ -70,6 +70,12 @@ typedef struct anchor
 {
   int* array;
   int dim;
+
+  anchor()
+  {
+	  dim = 0;
+	  array = NULL;
+  }
 } anchor;
 
 
@@ -151,6 +157,10 @@ public:
  *  variables to invalid values
 */
   void destroyCell ();
+
+  void releaseScore(void);
+  void releaseIxIy(void);
+
 
 
 ///////////////////////////////

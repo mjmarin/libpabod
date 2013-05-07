@@ -55,6 +55,13 @@ typedef struct rules
 {
   int n;
   Cell *structure;
+
+  rules()
+  {
+    n=0;
+    structure = NULL;
+  }
+
 } rules;
 
 ///////////////////////////////
@@ -73,6 +80,13 @@ typedef struct symbols
   int filter;
   CvMat **score;
   int dimScore;
+
+  symbols()
+  {
+	  score = NULL;
+	  dimScore = 0;
+  }
+
 } symbols;
 
 ///////////////////////////////////
@@ -89,6 +103,12 @@ typedef struct lowerbounds
   float *v;
   int f;
   int c;
+
+  lowerbounds()
+  {
+	  v = NULL;
+  }
+
 } lowerbounds;
 
 ////////////////////////////////
@@ -107,6 +127,11 @@ typedef struct bboxpred
   float *x2;
   float *y2;
   int dim;
+
+  bboxpred()
+  {
+	  dim = 0;
+  }
 } bboxpred;
 
 
@@ -1004,6 +1029,10 @@ private:
   int _scoretptDim;
 
   // Private methods
+  void initPtrs(void);
+
+  void _releaseRules(bool full=false); //! Release memory allocated during a detection
+
   void _releaseSymbols(void); //! Release memory allocated during a detection
 
   void _releaseScores(void); //! Release memory allocated during a detection
