@@ -24,7 +24,7 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
   if ( overlap == NEGATIVE_INF )
     overlap = 0.7;
 
-    _CrtMemState s1, s2, s3;
+//    _CrtMemState s1, s2, s3;
 
  
   // Cache filter response
@@ -410,8 +410,8 @@ void filterResponses (Model *model, const FeatPyramid  &pyra, bool latent,
   int dim = 0;
   int spadX, spadY;
 
-  _CrtMemState s1, s2, s3;
-  _CrtMemCheckpoint( &s1 );
+//  _CrtMemState s1, s2, s3;
+//  _CrtMemCheckpoint( &s1 );
 
   // Firstable the function has to count how many elements there will be
   for (int s = 0; s < model->getSymbolsDim(); s++)

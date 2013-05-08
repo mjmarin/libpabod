@@ -60,8 +60,10 @@ void Cell::destroyCell ()
         _anchor = NULL;
       } 
 
-      if (_score != NULL)
+     if (_score != NULL)
+	   //if (_score.size() > 0)
       {
+		  
         for (int i = 0; i < getScoreDim(); i++)
         {
           if (_score[i] != NULL)
@@ -73,11 +75,16 @@ void Cell::destroyCell ()
       
         delete[] _score;
         _score = NULL;
+		
+		//  _score.clear();
       }
+	  		  
     }
 
     if (_Ix != NULL)
+	//if(_Ix.size() > 0)
     {
+		
       for (int i = 0; i < getIxDim(); i++)
       {
         if (_Ix[i] != NULL)
@@ -89,10 +96,14 @@ void Cell::destroyCell ()
 
       delete[] _Ix;
       _Ix = NULL;
+	  
+		//_Ix.clear();
     }
 
     if (_Iy != NULL)
+	//if (_Iy.size() > 0)
     {
+		
       for (int i = 0; i < getIyDim(); i++)
       {
         if (_Iy[i] != NULL)
@@ -104,7 +115,11 @@ void Cell::destroyCell ()
 
       delete[]_Iy;
       _Iy = NULL;
+	  
+		//_Iy.clear();
     }
+	
+		
   }
 
   setFlagStr (INVALID_STR);
@@ -437,7 +452,11 @@ void Cell::setScore (CvMat **score)
   assert (getScoreDim() > 0);
 
   if (_score != NULL)
+  {
+	  	  for (int i = 0; i < getScoreDim(); i++)
+		  cvReleaseMat(&_score[i]);
 	  delete [] _score;
+  }
 
   _score = new CvMat* [getScoreDim()];
 
@@ -453,7 +472,11 @@ void Cell::setIx (CvMat **Ix)
   assert (getIxDim() > 0);
 
   if (_Ix != NULL)
+  {
+	  for (int i = 0; i < getIxDim(); i++)
+		  cvReleaseMat(&_Ix[i]);
 	  delete [] _Ix;
+  }
 
   _Ix = new CvMat* [getIxDim()];
 
@@ -469,7 +492,11 @@ void Cell::setIy (CvMat **Iy)
   assert (getIyDim() > 0);
 
   if (_Iy != NULL)
+  {
+	  for (int i = 0; i < getIyDim(); i++)
+		  cvReleaseMat(&_Iy[i]);
 	  delete [] _Iy;
+  }
 
   _Iy = new CvMat* [getIyDim()];
 

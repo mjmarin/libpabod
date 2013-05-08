@@ -1,20 +1,21 @@
 #ifndef _CELL_H_
 #define _CELL_H_
 
+#include <vector>
 #include <readTypes.h>
 #include <handlerOpenCVStructs.h>
 
-
-/** \file
- *  This file contains the definition of Model class. This class is used to
- *  load a the model structure stored on a .mat file.
- */
 
 /** \file
  *  This file contains the definition of <tt>Cell</tt> class. This class is
  *  an auxiliar part of class <tt>Model</tt>, and is used to load the 
  *  field <tt>rules</tt> of .mat model file 
  */  
+
+/** \typedef vectorMat 
+   Vector of OpenCV Mat
+  */
+typedef std::vector<cv::Mat> vectorMat;
 
 
 /** \def INVALID_STR 
@@ -485,6 +486,7 @@ public:
  *  \sa _scoreDim
  */
   CvMat** getScore () const  {return _score;}
+  //const vectorMat & getScore () const  {return _score;}
 
 
 /** Set the value of private variable <tt>_score</tt> to <tt>score</tt>.
@@ -493,6 +495,7 @@ public:
  *  \sa _scoreDim
  */
   void setScore (CvMat **score);
+  //void setScore (vectorMat & score);
 
 
 /** Returns the value of private variable <tt>_scoreDim</tt>
@@ -521,6 +524,7 @@ public:
  *  \sa _IxDim
  */
   CvMat** getIx () const  {return _Ix;}
+  //const vectorMat & getIx () const  {return _Ix;}
 
 
 /** Set the value of private variable <tt>_Ix</tt> to <tt>Ix</tt>.
@@ -529,7 +533,7 @@ public:
  *  \sa _IxDim
  */
   void setIx (CvMat **Ix);
-
+  //void setIx (vectorMat &Ix);
 
 /** Returns the value of private variable <tt>_IxDim</tt>
  *  \return The int value <tt>_IxDim</tt>, which indicates <tt>_Ix</tt> 
@@ -558,6 +562,7 @@ public:
  *  \sa _IyDim
  */
   CvMat** getIy () const  {return _Iy;}
+  //const vectorMat & getIy () const  {return _Iy;}
 
 
 /** Set the value of private variable <tt>_Iy</tt> to <tt>Iy</tt>.
@@ -566,6 +571,7 @@ public:
  *  \sa _IyDim
  */
   void setIy (CvMat **Iy);
+  //void setIy (vectorMat & Iy);
 
 
 /** Returns the value of private variable <tt>_IyDim</tt>
@@ -697,6 +703,7 @@ private:
  *  \sa _scoreDim
  */
   CvMat** _score;
+  //vectorMat _score;
 
 
 /** Is an int private variable. Indicates the size of
@@ -710,6 +717,7 @@ private:
  *  \sa _IxDim
  */
   CvMat** _Ix;
+  //vectorMat _Ix;
 
 
 /** Is an int private variable. Indicates the size of 
@@ -723,6 +731,7 @@ private:
  *  \sa _IyDim
  */
   CvMat** _Iy;
+  //vectorMat _Iy;
 
 
 /** Is an int private variable. Indicates the size of 
