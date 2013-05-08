@@ -103,22 +103,20 @@ void Model::destroyModel ()
   {
     for (int i = 0; i < getSymbolsDim(); i++)
     {
-      for (int j = 0; j < getSymbols()[i].dimScore; j++)
-      {
-        if (getSymbols()[i].score[j] != NULL)
-        {
-          cvReleaseMat(&(getSymbols()[i].score[j]));
-          getSymbols()[i].score[j] = NULL;
-        }
-      }
+		if (getSymbols()[i].score != NULL)
+		{
+			for (int j = 0; j < getSymbols()[i].dimScore; j++)
+			{
+				if (getSymbols()[i].score[j] != NULL)
+				{
+					cvReleaseMat(&(getSymbols()[i].score[j]));
+					getSymbols()[i].score[j] = NULL;
+				}
+			}
 
-      /*delete[] getSymbols()[i].score;
-      getSymbols()[i].score = NULL;*/
-      if (getSymbols()[i].score != NULL) 
-      {  
-         delete [] getSymbols()[i].score;  
-         getSymbols()[i].score = NULL;
-      }
+			delete [] getSymbols()[i].score;  
+			getSymbols()[i].score = NULL;
+		}
 
     }
     delete[] _symbols;
@@ -1630,6 +1628,7 @@ void Model::_releaseSymbols(void)
 				  cvReleaseMat(&(score[j]));
 			  */
 			  delete [] score;
+			  this->_symbols[i].score = NULL;
 		  }
 		  /* Do not delete member _symbols, it is part of the model definition */
 		  //delete [] sym;
