@@ -485,8 +485,8 @@ public:
  *  \sa _score
  *  \sa _scoreDim
  */
-  CvMat** getScore () const  {return _score;}
-  //const vectorMat & getScore () const  {return _score;}
+  //CvMat** getScore () const  {return _score;}
+  const vectorMat & getScore () const  {return _score;}
 
 
 /** Set the value of private variable <tt>_score</tt> to <tt>score</tt>.
@@ -494,8 +494,8 @@ public:
  *  \sa _score
  *  \sa _scoreDim
  */
-  void setScore (CvMat **score);
-  //void setScore (vectorMat & score);
+  //void setScore (CvMat **score);
+  void setScore (vectorMat & score);
 
 
 /** Returns the value of private variable <tt>_scoreDim</tt>
@@ -523,8 +523,8 @@ public:
  *  \sa _Ix
  *  \sa _IxDim
  */
-  CvMat** getIx () const  {return _Ix;}
-  //const vectorMat & getIx () const  {return _Ix;}
+  //CvMat** getIx () const  {return _Ix;}
+  const vectorMat & getIx () const  {return _Ix;}
 
 
 /** Set the value of private variable <tt>_Ix</tt> to <tt>Ix</tt>.
@@ -532,8 +532,14 @@ public:
  *  \sa _Ix
  *  \sa _IxDim
  */
-  void setIx (CvMat **Ix);
-  //void setIx (vectorMat &Ix);
+  //void setIx (CvMat **Ix);
+  void setIx (vectorMat &Ix);
+
+  void addIxItem(cv::Mat &Ix){_Ix.push_back(Ix);};
+  void addIyItem(cv::Mat &Iy){_Iy.push_back(Iy);};
+  
+  void addIxItem(CvMat * Ix){_Ix.push_back(Ix);};
+  void addIyItem(CvMat * Iy){_Iy.push_back(Iy);};
 
 /** Returns the value of private variable <tt>_IxDim</tt>
  *  \return The int value <tt>_IxDim</tt>, which indicates <tt>_Ix</tt> 
@@ -561,8 +567,8 @@ public:
  *  \sa _Iy
  *  \sa _IyDim
  */
-  CvMat** getIy () const  {return _Iy;}
-  //const vectorMat & getIy () const  {return _Iy;}
+  //CvMat** getIy () const  {return _Iy;}
+  const vectorMat & getIy () const  {return _Iy;}
 
 
 /** Set the value of private variable <tt>_Iy</tt> to <tt>Iy</tt>.
@@ -570,8 +576,8 @@ public:
  *  \sa _Iy
  *  \sa _IyDim
  */
-  void setIy (CvMat **Iy);
-  //void setIy (vectorMat & Iy);
+  //void setIy (CvMat **Iy);
+  void setIy (vectorMat & Iy);
 
 
 /** Returns the value of private variable <tt>_IyDim</tt>
@@ -702,8 +708,8 @@ private:
 /** Is a CvMat* array private variable.
  *  \sa _scoreDim
  */
-  CvMat** _score;
-  //vectorMat _score;
+  //CvMat** _score;
+  vectorMat _score;
 
 
 /** Is an int private variable. Indicates the size of
@@ -716,8 +722,8 @@ private:
 /** Is a CvMat* array private variable.
  *  \sa _IxDim
  */
-  CvMat** _Ix;
-  //vectorMat _Ix;
+  //CvMat** _Ix;
+  vectorMat _Ix;
 
 
 /** Is an int private variable. Indicates the size of 
@@ -730,8 +736,8 @@ private:
 /** Is a CvMat* array private variable.
  *  \sa _IyDim
  */
-  CvMat** _Iy;
-  //vectorMat _Iy;
+  //CvMat** _Iy;
+  vectorMat _Iy;
 
 
 /** Is an int private variable. Indicates the size of 

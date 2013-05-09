@@ -60,10 +60,10 @@ void Cell::destroyCell ()
         _anchor = NULL;
       } 
 
-     if (_score != NULL)
-	   //if (_score.size() > 0)
+     //if (_score != NULL)
+	   if (_score.size() > 0)
       {
-		  
+		  /*
         for (int i = 0; i < getScoreDim(); i++)
         {
           if (_score[i] != NULL)
@@ -75,16 +75,16 @@ void Cell::destroyCell ()
       
         delete[] _score;
         _score = NULL;
-		
-		//  _score.clear();
+		*/
+		  _score.clear();
       }
 	  		  
     }
 
-    if (_Ix != NULL)
-	//if(_Ix.size() > 0)
+    //if (_Ix != NULL)
+	if(_Ix.size() > 0)
     {
-		
+		/*
       for (int i = 0; i < getIxDim(); i++)
       {
         if (_Ix[i] != NULL)
@@ -96,14 +96,14 @@ void Cell::destroyCell ()
 
       delete[] _Ix;
       _Ix = NULL;
-	  
-		//_Ix.clear();
+	  */
+		_Ix.clear();
     }
 
-    if (_Iy != NULL)
-	//if (_Iy.size() > 0)
+    //if (_Iy != NULL)
+	if (_Iy.size() > 0)
     {
-		
+		/*
       for (int i = 0; i < getIyDim(); i++)
       {
         if (_Iy[i] != NULL)
@@ -115,8 +115,8 @@ void Cell::destroyCell ()
 
       delete[]_Iy;
       _Iy = NULL;
-	  
-		//_Iy.clear();
+	  */
+		_Iy.clear();
     }
 	
 		
@@ -128,8 +128,10 @@ void Cell::destroyCell ()
 
 void Cell::releaseScore(void)
 {
-	  if (_score != NULL)
+	  //if (_score != NULL)
+	if(!_score.empty())
       {
+		  /*
         for (int i = 0; i < getScoreDim(); i++)
         {
           if (_score[i] != NULL)
@@ -141,6 +143,8 @@ void Cell::releaseScore(void)
       
         delete[] _score;
         _score = NULL;
+		*/
+		  _score.clear();
       }
     
 }
@@ -148,8 +152,10 @@ void Cell::releaseScore(void)
 void Cell::releaseIxIy(void)
 {
 	
-    if (_Ix != NULL)
+    //if (_Ix != NULL)
+	if(!_Ix.empty())
     {
+		/*
       for (int i = 0; i < getIxDim(); i++)
       {
         if (_Ix[i] != NULL)
@@ -161,10 +167,14 @@ void Cell::releaseIxIy(void)
 
       delete[] _Ix;
       _Ix = NULL;
+	  */
+		_Ix.clear();
     }
 
-    if (_Iy != NULL)
+    //if (_Iy != NULL)
+	if (!_Iy.empty())
     {
+		/*
       for (int i = 0; i < getIyDim(); i++)
       {
         if (_Iy[i] != NULL)
@@ -176,6 +186,8 @@ void Cell::releaseIxIy(void)
 
       delete[]_Iy;
       _Iy = NULL;
+	  */
+		_Iy.clear();
     }
 }
 
@@ -213,13 +225,13 @@ void Cell::loadEmptyCell ()
   getDef().symmetric = 0;
 
   _scoreDim = -1;
-  _score = NULL;
+//  _score = NULL;
 
   _IxDim = -1;
-  _Ix = NULL;
+//  _Ix = NULL;
 
   _IyDim = -1;
-  _Iy = NULL;
+//  _Iy = NULL;
 }
 
 
@@ -250,13 +262,13 @@ void Cell::loadCell (matvar_t *matVar, int i)
   }
 
   _IxDim = -1;
-  _Ix = NULL;
+//  _Ix = NULL;
 
   _IyDim = -1;
-  _Iy = NULL;
+//  _Iy = NULL;
 
   _scoreDim = -1;
-  _score = NULL;
+//  _score = NULL;
 }
 
 
@@ -446,7 +458,7 @@ void Cell::setAnchor (anchor *a)
     _anchor[i] = a[i];
 }
 
-
+/*
 void Cell::setScore (CvMat **score)
 {  
   assert (getScoreDim() > 0);
@@ -465,8 +477,13 @@ void Cell::setScore (CvMat **score)
   for (int i = 0; i < getScoreDim(); i++)
     _score[i] = score[i];
 }
+*/
+void Cell::setScore (vectorMat  &score)
+{
+	_score = score;
+}
 
-
+/*
 void Cell::setIx (CvMat **Ix)
 {
   assert (getIxDim() > 0);
@@ -485,8 +502,15 @@ void Cell::setIx (CvMat **Ix)
   for (int i = 0; i < getIxDim(); i++)
     _Ix[i] = Ix[i];
 }
+*/
+
+void Cell::setIx (vectorMat &Ix)
+{
+	_Ix = Ix;
+}
 
 
+/*
 void Cell::setIy (CvMat **Iy)
 {
   assert (getIyDim() > 0);
@@ -505,7 +529,11 @@ void Cell::setIy (CvMat **Iy)
   for (int i = 0; i < getIyDim(); i++)
     _Iy[i] = Iy[i];
 }
-
+*/
+void Cell::setIy (vectorMat &Iy)
+{
+	_Iy = Iy;
+}
 
 ////////////////////////
 ///// INITIALIZERS /////

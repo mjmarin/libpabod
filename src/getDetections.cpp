@@ -179,14 +179,17 @@ static void trace(int padX, int padY, const float *scales, int sx, int sy,
     success = false;
     symRules = rul[n.symbol];
     rulesDim = symRules.n;
-    r = 0;
+    
 
-    for (; r < rulesDim; r++)
+    for (r = 0; r < rulesDim; r++)
     {
       // probe location = symbol location minus virtual padding
       probeY = n.y - virtpadding(padY, n.ds);
       probeX = n.x - virtpadding(padX, n.ds);
-      mxScore = symRules.structure[r].getScore()[n.l];
+	  cv::Mat tmpScore;
+      tmpScore = symRules.structure[r].getScore()[n.l];
+	  CvMat mxScore2 = tmpScore;
+	  mxScore = &mxScore2;
       score = new double [mxScore->rows * mxScore->cols];
       getMatData  <double> (mxScore, score);
       getDimensions(mxScore, sz);
@@ -269,8 +272,16 @@ static void trace(int padX, int padY, const float *scales, int sx, int sy,
     else
     {
       // Deformation rule (only 1 rhs symbol)
-      mxIx = symRules.structure[r].getIx()[n.l];
-      mxIy = symRules.structure[r].getIy()[n.l];
+	  cv::Mat tmpMxIx;
+      tmpMxIx = symRules.structure[r].getIx()[n.l];
+	  CvMat mxIx2 = tmpMxIx;
+	  mxIx = &mxIx2;
+
+	  cv::Mat tmpMxIy;
+      tmpMxIy = symRules.structure[r].getIy()[n.l];
+	  CvMat mxIy2 = tmpMxIy;
+	  mxIy = &mxIy2;
+
       Ix = new int [mxIx->rows * mxIx->cols];
       getMatData <int> (mxIx, Ix);
       Iy = new int [mxIy->rows * mxIy->cols];
