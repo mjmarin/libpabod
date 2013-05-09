@@ -26,4 +26,7 @@
 void nms (int** pick, int *pickDim,  
           CvMat *dets = NULL, double overlap = POSITIVE_INF);
 
+void nms2 (std::vector<int> & pick,  
+          CvMat *dets, double overlap);
+
 #endif

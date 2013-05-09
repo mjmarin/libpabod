@@ -41,7 +41,7 @@ float vv[9] =
 
 FeatPyramid::FeatPyramid ()
 {
-  _feat = NULL;
+//  _feat = NULL;
   _scales = NULL;
   _dim = -1;
   _imSize = NULL;
@@ -579,8 +579,12 @@ void FeatPyramid::featpyramid (const IplImage *im, const Model *model, int padX,
     setDim (int(maxScale + interval));
 
   assert (getDim() > 0);
-  _feat = new CvMatND* [getDim()];    // Suspicious
-  assert (_feat != NULL);
+//  _feat = new CvMatND* [getDim()];    // Suspicious
+  _feat.reserve(getDim());
+  for (int i = 0; i < getDim(); i++) // Pre-allocate memory
+	  _feat.push_back(cv::Mat());
+//  assert (_feat != NULL);
+  assert(!_feat.empty());
   _scales = new float [getDim()]; // Suspicious
   assert (_scales != NULL);
 
@@ -620,39 +624,51 @@ void FeatPyramid::featpyramid (const IplImage *im, const Model *model, int padX,
     // mjmarin: more release needed for imAux
     cvReleaseImage(&imAux);
   }
-  //cout << "Antes de bucle2 featpyramid" << endl;
+  // Second loop
   for (int i = 0; i < getDim(); i++ )
   {
     // Add 1 to padding because feature generation deletes a 1-cell
     // Wide border around the feature map
     pad[0] = padY + 1;
     pad[1] = padX + 1;
-    pad[2] = 0;
-
-    // mjmarin: TODO memory leak?
-    //setFeat (padArray (getFeat()[i], pad, 0), i);
-    CvMatND* tmpfeat = getFeat()[i];
-    CvMatND* tmppad = padArray (tmpfeat, pad, 0);
+    pad[2] = 0;    
+    
+    //CvMatND* tmpfeat = getFeat()[i];
+	cv::Mat tmpfeat = getFeat()[i];
+	CvMatND tmpND = tmpfeat;
+    //CvMatND* tmppad = padArray (tmpfeat, pad, 0);
+	CvMatND* tmppad = padArray (&tmpND, pad, 0);
     setFeat (tmppad, i);
-    cvReleaseMatND(&tmpfeat);
-    // end of fix
+    //cvReleaseMatND(&tmpfeat); // mjmarin: commented out since it should be auto released with use of cv::Mat
+    
 
     // Write boundary occlusion feature
+	cv::Mat fMat = getFeat()[i];
     for (int j = 0; j <= padY; j++)
-      for (int k = 0; k < getFeat()[i]->dim[1].size; k++)
-        cvSetReal3D (getFeat()[i], j, k, 31, 1);
+      //for (int k = 0; k < getFeat()[i]->dim[1].size; k++)
+	  for (int k = 0; k < fMat.size.p[1]; k++)
+        //cvSetReal3D (getFeat()[i], j, k, 31, 1);
+		fMat.at<double>(j, k, 31) = 1;
 
-    for (int j = getFeat()[i]->dim[0].size - padY -1; j < getFeat()[i]->dim[0].size; j++)
-      for (int k = 0; k < getFeat()[i]->dim[1].size; k++)
-        cvSetReal3D (getFeat()[i], j, k, 31, 1);
+    //for (int j = getFeat()[i]->dim[0].size - padY -1; j < getFeat()[i]->dim[0].size; j++)
+	for (int j = fMat.size.p[0] - padY -1; j < fMat.size.p[0]; j++)
+      //for (int k = 0; k < getFeat()[i]->dim[1].size; k++)
+	  for (int k = 0; k < fMat.size.p[1]; k++)
+        //cvSetReal3D (getFeat()[i], j, k, 31, 1);
+		fMat.at<double>(j, k, 31) = 1;
 
-    for (int j = 0; j < getFeat()[i]->dim[0].size; j++)
+    //for (int j = 0; j < getFeat()[i]->dim[0].size; j++)
+	for (int j = 0; j < fMat.size.p[0]; j++)
       for (int k = 0; k <= padX; k++)
-        cvSetReal3D (getFeat()[i], j, k, 31, 1);
+        //cvSetReal3D (getFeat()[i], j, k, 31, 1);
+		fMat.at<double>(j, k, 31) = 1;
 
-    for (int j = 0; j < getFeat()[i]->dim[0].size; j++)
-      for (int k = getFeat()[i]->dim[1].size - padX - 1; k < getFeat()[i]->dim[1].size; k++)
-        cvSetReal3D (getFeat()[i], j, k, 31, 1);
+    //for (int j = 0; j < getFeat()[i]->dim[0].size; j++)
+	for (int j = 0; j < fMat.size.p[0]; j++)
+      //for (int k = getFeat()[i]->dim[1].size - padX - 1; k < getFeat()[i]->dim[1].size; k++)
+	  for (int k = fMat.size.p[1] - padX - 1; k < fMat.size.p[1]; k++)
+        //cvSetReal3D (getFeat()[i], j, k, 31, 1);
+		fMat.at<double>(j, k, 31) = 1;
   }
 
   setPadX (padX);
@@ -663,8 +679,10 @@ void FeatPyramid::featpyramid (const IplImage *im, const Model *model, int padX,
 
 void FeatPyramid::destroyFeatPyramid()
 {
-	if (_feat != NULL)
+	//if (_feat != NULL)
+	if (!_feat.empty())
 	{
+		/*
 		for (int i = 0; i < getDim(); i++)
 		{
 			if (_feat[i] != NULL)
@@ -676,6 +694,8 @@ void FeatPyramid::destroyFeatPyramid()
 
 		delete[] _feat;
 		_feat = NULL;
+		*/
+		_feat.clear();
 	}
 
 	if (_scales != NULL)

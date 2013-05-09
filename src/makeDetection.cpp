@@ -17,10 +17,13 @@ PABOD_EXPORT float makeDetection (LDetections & D, IplImage *img, Model * model,
 
   if (found)
   {
-    int *pick;
-    int pickDim;
+    //int *pick;
+	  std::vector<int> pick;
+    
 
-    nms (&pick, &pickDim, dets, iouNms);
+    //nms (&pick, &pickDim, dets, iouNms);
+	nms2(pick, dets, iouNms);
+	int pickDim = pick.size();
 
 //    (*results) = cvCreateMat (pickDim, 6, CV_32FC1);
 
@@ -39,7 +42,8 @@ PABOD_EXPORT float makeDetection (LDetections & D, IplImage *img, Model * model,
 
     detected = pickDim;
 
-    delete[] pick;
+    //delete[] pick;
+	pick.clear();
   }
 /*
 	else

@@ -3,6 +3,7 @@
 
 #include <image.h>
 #include <limits>
+#include <algorithm>
 #include <crossplatform.h>
 
 /** \file
@@ -13,6 +14,11 @@
  *  \li Developing of a useful module to use in different projects which
  *  uses library \e OpenCV, arrays and matrixes
  */
+
+/** \typedef vectorMat 
+   Vector of OpenCV Mat
+  */
+typedef std::vector<cv::Mat> vectorMat;
 
 
 /** \def PAIR
@@ -762,6 +768,73 @@ void removeIndexes (Type **original, int dimOr, const int *indexes, int dimIdx)
 
   else
     (*original) = NULL;
+}
+
+template <class Type>
+bool greaterThan (Type i, Type j) { return (i > j); }
+
+//! Remove from original elements at locations defined by indexes
+template <class Type>
+void removeIndexes (Type **original, int dimOr, std::vector<int> &indexes)
+{
+  Type *aux = (*original);
+  //int *sortedIdx = (int*) indexes;
+  std::vector<int> sortedIdx = indexes;
+  int dimIdx = indexes.size();
+
+  if (dimOr - dimIdx > 0)
+  {
+    (*original) = new Type [dimOr - dimIdx];
+
+    //shellSort (sortedIdx, dimIdx, DESCEND);
+	std::sort(sortedIdx.begin(), sortedIdx.end(), greaterThan<Type>);
+
+    for (int i = 0; i < dimIdx; i++)
+      for (int j = 0; j < dimOr - sortedIdx[i]; j++)
+        aux[sortedIdx[i] + j] = aux[sortedIdx[i] + j + 1];
+
+    for (int i = 0; i < dimOr - dimIdx; i++)
+      (*original)[i] = aux[i];
+  }
+
+  else
+    (*original) = NULL;
+}
+
+
+template <class Type>
+void removeIndexes (std::vector<Type> & original, int dimOr, const int *indexes, int dimIdx)
+{
+  //Type *aux = (*original);
+  std::vector<Type> aux = original;
+  int *sortedIdx = (int*) indexes;
+  int siz = dimOr - dimIdx;
+
+  if (siz > 0)
+  {
+    //(*original) = new Type [dimOr - dimIdx];
+	  original.clear();
+	  original.reserve(siz);
+	  for (int i = 0; i < siz; i++)
+		  original.push_back(0);
+
+    shellSort (sortedIdx, dimIdx, DESCEND);
+
+    for (int i = 0; i < dimIdx; i++)
+      for (int j = 0; j < dimOr - sortedIdx[i]; j++)
+        //aux[sortedIdx[i] + j] = aux[sortedIdx[i] + j + 1];
+		aux[sortedIdx[i] + j] = aux[sortedIdx[i] + j + 1];
+
+	/*
+    for (int i = 0; i < dimOr - dimIdx; i++)
+      (*original)[i] = aux[i];
+	  */
+	original = aux;
+  }
+
+  else
+    //(*original) = NULL;
+	original.clear();
 }
 
 

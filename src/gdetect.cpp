@@ -541,8 +541,8 @@ void applyStructuralRule (Model *model, const Cell &r, int padY, int padX)
       getDimensions (sp, sz);
 
       // Sum with correct offset
-      assert (score[i]->rows > 0);
-      assert (score[i]->cols > 0);
+      assert (score[i].rows > 0);
+      assert (score[i].cols > 0);
 
       sTmpDims[0] = score[i].rows;
       sTmpDims[1] = score[i].cols;
@@ -739,7 +739,8 @@ void filterResponses (Model *model, const FeatPyramid  &pyra, bool latent,
   for (int j = 0; j < dim; j++)
   {
     // Compute filter response for all filters at this level
-    r = fconv (pyra.getFeat()[levels[j]], filters, 1, filtersDim);
+	  CvMatND tmpF = pyra.getFeat()[levels[j]];
+    r = fconv (&tmpF, filters, 1, filtersDim);
 
     // Find max response array size for this level
     s[0] = NEGATIVE_INF_INT; // mjmarin fix

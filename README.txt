@@ -89,6 +89,8 @@ URL: http://people.cs.uchicago.edu/~pff/latent/
 
 Version history:
 ================
+ - v0.2.9: moving CvMat to cv::Mat
+ - v0.2.8: new class Detection
  - v0.2.7: memory leaks found by github/yokox solved. Thanks!
  - v0.2.6: new file 'export.h' for properly exporting functions to dll's.
  - v0.2.5: updated CMake files and other minor improvements for Windows compatibility.

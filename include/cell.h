@@ -12,12 +12,6 @@
  *  field <tt>rules</tt> of .mat model file 
  */  
 
-/** \typedef vectorMat 
-   Vector of OpenCV Mat
-  */
-typedef std::vector<cv::Mat> vectorMat;
-
-
 /** \def INVALID_STR 
  *  This define is used to indicate a structure is invalid, which means their 
  *  fields are not considered.
