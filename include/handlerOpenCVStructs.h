@@ -645,6 +645,42 @@ Type* getMatNData (const CvMatND *mat)
   return v;
 }
 
+template <class Type>
+Type* getMatNData (const cv::Mat & mat_)
+{
+  Type *v;
+  CvMatND mat__ = mat_;
+  CvMatND * mat = &mat__;
+
+  int counter = 0;
+  unsigned int dim0 = mat->dim[0].size;
+  unsigned int dim1 = mat->dim[1].size;
+  unsigned int dim2 = mat->dim[2].size;
+
+  assert (dim2 > 0);
+  assert (dim1 > 0);
+  assert (dim0 > 0);
+
+  v = new Type [dim2 * dim1 * dim0];
+
+  assert (v != NULL);
+
+  for (unsigned int i = 0; i < dim2; i++)
+  {
+    for (unsigned int j = 0; j < dim1; j++)
+    {
+      for (unsigned int k = 0; k < dim0; k++)
+      {
+        v[counter] = (Type) cvGetReal3D (mat, k, j, i);
+        counter++;
+      }
+
+    }
+  }
+
+  return v;
+}
+
 
 template <class Type>
 void setMatNData (CvMatND *mat, const Type *v)
@@ -661,6 +697,31 @@ void setMatNData (CvMatND *mat, const Type *v)
       for (unsigned int k = 0; k < dim0; k++)
       {
         cvSetReal3D (mat, k, j, i, v[counter]);
+        counter++;
+      }
+
+    }
+  }
+}
+
+
+template <class Type>
+void setMatNData (cv::Mat & mat_, const Type *v)
+{
+  CvMatND mat = mat_; // Intermediate var
+
+  int counter = 0;
+  unsigned int dim0 = mat.dim[0].size;
+  unsigned int dim1 = mat.dim[1].size;
+  unsigned int dim2 = mat.dim[2].size;
+
+  for (unsigned int i = 0; i < dim2; i++)
+  {
+    for (unsigned int j = 0; j < dim1; j++)
+    {
+      for (unsigned int k = 0; k < dim0; k++)
+      {
+        cvSetReal3D (&mat, k, j, i, v[counter]);
         counter++;
       }
 

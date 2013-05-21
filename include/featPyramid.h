@@ -154,6 +154,8 @@ public:
  */
   CvMatND *process(const IplImage *mximage, const float mxsbin);
 
+  cv::Mat FeatPyramid::process2( const IplImage *mximage, const float mxsbin );
+
 /** The function pad the mat array with so many values <tt>val</tt>
  *  like indicates the vector <tt>dimPad</tt>. Each element means
  *  one dimension.
@@ -234,6 +236,12 @@ public:
  *  \param i - indicates the index of the element in the vector
  */
   void setFeat (CvMatND* feat, int i)
+  {
+    assert (i < getDim());
+    _feat[i] = feat;
+  }
+
+  void setFeat (const cv::Mat & feat, int i)
   {
     assert (i < getDim());
     _feat[i] = feat;
