@@ -26,5 +26,10 @@
   #define GET_TIME(var) gettimeofday(var, NULL)
   #define TIME_DIFF(tend, tini) ((double)(tend.tv_sec + (double)tend.tv_usec/1000000.0) - (double)(tini.tv_sec + (double)tini.tv_usec/1000000.0))
   
+  
+  #if (CV_MAJOR_VERSION >= 2) && (CV_MINOR_VERSION >= 3)
+    #include <opencv2/opencv.hpp>
+  #endif
+  
 #endif
 
