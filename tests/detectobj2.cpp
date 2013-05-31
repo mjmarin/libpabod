@@ -169,8 +169,10 @@ string saveImage (const cv::Mat & im, string imgPath, int mode, const LDetection
 	pos = imgPath.find_last_of ("/");
 	path = imgPath.substr(0, pos);
 
-	if (mode == TAGGED)
+	switch (mode)
 	{
+	   case TAGGED:
+
 		pos = imgPath.find_last_of(".");
 
 		name = imgPath.substr (0, pos);
@@ -180,10 +182,10 @@ string saveImage (const cv::Mat & im, string imgPath, int mode, const LDetection
 
 		cv::imwrite(name,im);
 		
-	}
+	    break;
 
-	else if (mode == CUT)
-	{
+	   case CUT:
+	
 		for (int i = 0; i < results.size(); i++)
 		{
 			x = min (results[i].getX1(), results[i].getX2());
@@ -212,6 +214,9 @@ string saveImage (const cv::Mat & im, string imgPath, int mode, const LDetection
 			cv::imwrite(name, cut2);
 			cut2.release();
 		}
+		break;
+	   default:
+		   cv::imwrite(imgPath, im);
 	}
 
 	return path;
@@ -231,13 +236,14 @@ int main ( int argc, char *argv[] )
 	int nDetected = 0;
 	float usedThresh=NEGATIVE_INF, thresh = POSITIVE_INF;
 	float minScore, maxScore;
-        bool savedata = false, display = true;
+    bool savedata = false, display = true, saveOutputImg = false;
+	string outputimg("");
 	double iouNms = 0.5;
    
 	if (argc < 5)
 	{
 		cout << "  >> ERROR: the general form is:\n"
-				"            ./detectobj2 -m <model_path> -i <image_path> [-t <threshold> -n <iouNMSthr> -o <detections_path> -d <0/1>]" << endl;
+				"            ./detectobj2 -m <model_path> -i <image_path> [-t <threshold> -n <iouNMSthr> -o <detections_path> -O <out_img_path> -d <0/1>]" << endl;
 		return -1;
 	}
 
@@ -258,8 +264,11 @@ int main ( int argc, char *argv[] )
                     datafile = argv[i + 1];
                     savedata = true;
                 } else if (string(argv[i]) == "-d") { // Display images?
-                    display = atoi(argv[i+1]);
+                    display = atoi(argv[i + 1]) > 0;
 
+                } else if (string(argv[i]) == "-O") { // Automatically save image with detections?
+                    outputimg = argv[i + 1]; //atoi(argv[i + 1]) > 0;
+					saveOutputImg = true;
                 } else if (string(argv[i]) == "-t") {
                     thresh = atof(argv[i + 1]);
 
@@ -418,6 +427,12 @@ int main ( int argc, char *argv[] )
 
 		for (int i = 0; i < nDetected; i++)
 			cout << "  - " << extractModelName(modelfile) << " " << i+1 << ", score = " << results[i].getScore() << endl;
+
+		        if (saveOutputImg) // Save image with detections to disk?
+				{
+					// Save tagged with given name
+					aux = saveImage (im, outputimg, 999, results);
+				}
 
                 if (display)
                 {
