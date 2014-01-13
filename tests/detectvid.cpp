@@ -131,7 +131,7 @@ string saveImage (const cv::Mat & im, string imgPath, int mode, const LDetection
 			w = abs(results[i].getW());
 			h = abs(results[i].getH());
 
-			cv::Mat cut2(cv::Size(w, h), cv::DataType<cv::Vec<uchar,3>>::type);
+			cv::Mat cut2(cv::Size(w, h), cv::DataType<cv::Vec<uchar,3> >::type);
 			cout <<  im.channels() << endl;					
 
 			for (int m = x; m < w+x; m++)
@@ -278,7 +278,7 @@ int main ( int argc, char *argv[] )
 	cout << "Searching for objects... This operation may take a few seconds" << endl << endl;
 
 	// Get the current time before starting detection
-	t_ini = GET_TIME(&t_ini);
+	GET_TIME(&t_ini);
 
     // Call to main function	
 	usedThresh = detector.detect(im, thresh, iouNms, results);
@@ -292,7 +292,7 @@ int main ( int argc, char *argv[] )
 	nDetected = results.size();
 
 	// Get the current time after detection
-	t_fin = GET_TIME(&t_fin);
+	GET_TIME(&t_fin);
 
 	// Number of secs taken to run detection	
 	secs = TIME_DIFF(t_fin, t_ini);

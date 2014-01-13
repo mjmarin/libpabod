@@ -154,7 +154,7 @@ public:
  */
   CvMatND *process(const IplImage *mximage, const float mxsbin);
 
-  cv::Mat FeatPyramid::process2( const IplImage *mximage, const float mxsbin );
+  cv::Mat process2( const IplImage *mximage, const float mxsbin );
 
 /** The function pad the mat array with so many values <tt>val</tt>
  *  like indicates the vector <tt>dimPad</tt>. Each element means
