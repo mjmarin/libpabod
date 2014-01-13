@@ -50,11 +50,12 @@ class PABOD_EXPORT Pabod{
 	/** Draws all detections as rectangles on image.
 		\param img Target image
 		\param detections As returned by method detect
+		\param topN Shows only top N detections
 		\return Number of detections drawn into image
 	*/	
 	int drawDetections(IplImage * img, CvMat * detections);
-	int drawDetections(cv::Mat & img, cv::Mat & detections); //! Most modern interface
-	int drawDetections(cv::Mat & img, LDetections & detections);
+	int drawDetections(cv::Mat & img, cv::Mat & detections, int topN = -1); //! Most modern interface
+	int drawDetections(cv::Mat & img, LDetections & detections, int topN = -1);
 
 	/** Gets the class registered in the model
 	 */

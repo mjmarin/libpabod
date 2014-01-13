@@ -233,7 +233,7 @@ int main ( int argc, char *argv[] )
 	//CvMat *results = NULL;
 	//cv::Mat results;
 	LDetections results;
-	int nDetected = 0;
+	int nDetected = 0, nTopShow = -1;
 	float usedThresh=NEGATIVE_INF, thresh = POSITIVE_INF;
 	float minScore, maxScore;
     bool savedata = false, display = true, saveOutputImg = false;
@@ -243,7 +243,7 @@ int main ( int argc, char *argv[] )
 	if (argc < 5)
 	{
 		cout << "  >> ERROR: the general form is:\n"
-				"            ./detectobj2 -m <model_path> -i <image_path> [-t <threshold> -n <iouNMSthr> -o <detections_path> -O <out_img_path> -d <0/1>]" << endl;
+				"            ./detectobj2 -m <model_path> -i <image_path> [-t <threshold> -n <iouNMSthr> -o <detections_path> -O <out_img_path> -d <0/1> -k <top_detections>]" << endl;
 		return -1;
 	}
 
@@ -271,6 +271,9 @@ int main ( int argc, char *argv[] )
 					saveOutputImg = true;
                 } else if (string(argv[i]) == "-t") {
                     thresh = atof(argv[i + 1]);
+
+                } else if (string(argv[i]) == "-k") {
+                    nTopShow = atoi(argv[i + 1]);
 
                 } else if (string(argv[i]) == "-n") {
                     iouNms = atof(argv[i + 1]);
@@ -423,7 +426,7 @@ int main ( int argc, char *argv[] )
                 }
 
 		// Draw detections
-        detector.drawDetections(im, results);	        	        		
+        detector.drawDetections(im, results, nTopShow);	        	        		
 
 		for (int i = 0; i < nDetected; i++)
 			cout << "  - " << extractModelName(modelfile) << " " << i+1 << ", score = " << results[i].getScore() << endl;

@@ -143,7 +143,7 @@ float Pabod::detect(cv::Mat & img, float thr, double iouNms, LDetections & detec
 	return usedThr;
 }
 
-int Pabod::drawDetections(cv::Mat & img, LDetections & detections)
+int Pabod::drawDetections(cv::Mat & img, LDetections & detections, int topN)
 {
 	int ndetections = 0;
 	int i;
@@ -153,6 +153,9 @@ int Pabod::drawDetections(cv::Mat & img, LDetections & detections)
 	IplImage img_ = img;
 
 	ndetections = detections.size(); 
+        if (topN > 0 && topN < ndetections)
+           ndetections = topN;
+
 	for (i = 0; i < ndetections; i++)
 	{
            p1 = cvPoint (detections[i].getX1(), detections[i].getY1());
@@ -164,7 +167,7 @@ int Pabod::drawDetections(cv::Mat & img, LDetections & detections)
 	return ndetections;
 }
 
-int Pabod::drawDetections(cv::Mat & img, cv::Mat & detections)
+int Pabod::drawDetections(cv::Mat & img, cv::Mat & detections, int topN)
 {
 	int ndetections = 0;
 	int i;
@@ -174,6 +177,9 @@ int Pabod::drawDetections(cv::Mat & img, cv::Mat & detections)
 	IplImage img_ = img;
 
 	ndetections = detections.rows; 
+        if (topN > 0 && topN < ndetections)
+           ndetections = topN;
+
 	for (i = 0; i < ndetections; i++)
 	{
            p1 = cvPoint ((int)detections.at<float>(i, 0), (int)detections.at<float>(i, 1));
