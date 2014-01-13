@@ -95,6 +95,7 @@ URL: http://people.cs.uchicago.edu/~pff/latent/
 --------------------------------------------------------------------------------
 Version history:
 --------------------------------------------------------------------------------
+ - v0.2.10: new option '-k' added to 'detectobj2' to show only K top detections
  - v0.2.9: moving CvMat to cv::Mat
  - v0.2.8: new class Detection
  - v0.2.7: memory leaks found by github/yokox solved. Thanks!
