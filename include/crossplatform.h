@@ -3,7 +3,7 @@
   #include <ctime>
   typedef time_t TIMER;
   #include <cv.h>
-  #define GET_TIME(var) cv::getTickCount() //time(var)
+  #define GET_TIME(var) (*var = cv::getTickCount()) //time(var)
   #define TIME_DIFF(tend, tini) (((double)tend -tini)/cv::getTickFrequency()) //difftime(tend, tini)
   
   #if !defined _CRT_SECURE_NO_DEPRECATE && _MSC_VER > 1300
