@@ -89,6 +89,16 @@ typedef struct def
   int blocklabel;
   bool flip;
   char symmetric;
+
+  //! Constructor
+  def()
+  {
+     w[0]=w[1]=w[2]=w[3] = 0;
+     blocklabel = 0;
+     flip = 0;
+     symmetric = 'N';
+  }
+
 } def;
 
 

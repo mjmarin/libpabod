@@ -456,118 +456,122 @@ void applyStructuralRule (Model *model, const Cell &r, int padY, int padX)
 
   int sTmpDims[2];
 
-  // Sum scores from rhs (with appropriate shift and down sample)
-  for (int j = 0; j < r.getRhsDim(); j++)
+  anchor *anc;
+  anc = r.getAnchor();
+  if (anc != NULL)
   {
-    ax = r.getAnchor()[j].array[0];
-    ay = r.getAnchor()[j].array[1];
-      ds = r.getAnchor()[j].array[2];
+     // Sum scores from rhs (with appropriate shift and down sample)
+     for (int j = 0; j < r.getRhsDim(); j++)
+     {     
+        ax = anc[j].array[0]; //r.getAnchor()[j].array[0];
+        ay = anc[j].array[1]; //r.getAnchor()[j].array[1];
+        ds = anc[j].array[2]; //r.getAnchor()[j].array[2];
 
-    // Step size for down sampling
-    step = int(pow (2, ds));
+        // Step size for down sampling
+        step = int(pow (2, ds));
 
-    // Amount of (virtual) padding to halucinate
-    virtPadY = (step-1) * padY;
-    virtPadX = (step-1) * padX;
+        // Amount of (virtual) padding to halucinate
+        virtPadY = (step-1) * padY;
+        virtPadX = (step-1) * padX;
 
-    // Starting points (simulates additional padding at finer scales)
-    startY = int(ay - virtPadY);
-    startX = int(ax - virtPadX);
+        // Starting points (simulates additional padding at finer scales)
+        startY = int(ay - virtPadY);
+        startX = int(ax - virtPadX);
 
-    // Starting level
-    startLevel = int( (model->getInterval() + 1) * ds);
+        // Starting level
+        startLevel = int( (model->getInterval() + 1) * ds);
 
-    // Score table to shift and down sample
-    CvMat** s = model->getSymbols()[(int) r.getRhs()[j]].score;
-    assert (s != NULL);
+        // Score table to shift and down sample
+        CvMat** s = model->getSymbols()[(int) r.getRhs()[j]].score;
+        assert (s != NULL);
 
-    for (int i = startLevel;
-         i < (int) (model->getSymbols()[(int)r.getRhs()[j]].dimScore);
-         i++)
-    {
-      level = i - int( (model->getInterval() + 1) * ds);
+        for (int i = startLevel;
+           i < (int) (model->getSymbols()[(int)r.getRhs()[j]].dimScore);
+           i++)
+        {
+           level = i - int( (model->getInterval() + 1) * ds);
 
-      // Ending points
-      endY = min ((int) s[level]->rows, (int) (startY +
-		  (step * (score[i].rows))) );
-      endX = min ((int) s[level]->cols, (int) (startX +
-                                              (step * (score[i].cols))) );
+           // Ending points
+           endY = min ((int) s[level]->rows, (int) (startY +
+              (step * (score[i].rows))) );
+           endX = min ((int) s[level]->cols, (int) (startX +
+              (step * (score[i].cols))) );
 
-      // Y sample points
-      assert ( (endY-startY) > 0);
-      assert ( step > 0);
+           // Y sample points
+           assert ( (endY-startY) > 0);
+           assert ( step > 0);
 
-      iyDim = round((float)(endY-startY)/step);
-      iy = new int [iyDim];
-      assert (iy != NULL);
+           iyDim = round((float)(endY-startY)/step);
+           iy = new int [iyDim];
+           assert (iy != NULL);
 
-      iter = 0;
+           iter = 0;
 
-      for (int k = startY; k < endY; k += step)
-      {
-        iy[iter] = k;
-        iter++;
-      }
+           for (int k = startY; k < endY; k += step)
+           {
+              iy[iter] = k;
+              iter++;
+           }
 
-      oy = countElementsWhich (LOWER, 0, &iy, iyDim, true);
+           oy = countElementsWhich (LOWER, 0, &iy, iyDim, true);
 
-      iyDim = iyDim - oy;
-      assert (iyDim > 0);
+           iyDim = iyDim - oy;
+           assert (iyDim > 0);
 
-      // X sample points
-      assert ( (endX-startX) > 0);
-      assert (step > 0);
+           // X sample points
+           assert ( (endX-startX) > 0);
+           assert (step > 0);
 
-      ixDim = round((float)(endX-startX)/step);
-      ix = new int [ixDim];
-      assert (ix != NULL);
+           ixDim = round((float)(endX-startX)/step);
+           ix = new int [ixDim];
+           assert (ix != NULL);
 
-      iter = 0;
+           iter = 0;
 
-      for (int k = startX; k < endX; k += step)
-      {
-        ix[iter] = k;
-        iter++;
-      }
+           for (int k = startX; k < endX; k += step)
+           {
+              ix[iter] = k;
+              iter++;
+           }
 
-      ox = countElementsWhich (LOWER, 0, &ix, ixDim, true);
+           ox = countElementsWhich (LOWER, 0, &ix, ixDim, true);
 
-      ixDim = ixDim - ox;
-      assert (ixDim > 0);
+           ixDim = ixDim - ox;
+           assert (ixDim > 0);
 
-      // Sample scores
-      sp = subMat (s[level], iy, iyDim, ix, ixDim);
-      assert (sp != NULL);
-      getDimensions (sp, sz);
+           // Sample scores
+           sp = subMat (s[level], iy, iyDim, ix, ixDim);
+           assert (sp != NULL);
+           getDimensions (sp, sz);
 
-      // Sum with correct offset
-      assert (score[i].rows > 0);
-      assert (score[i].cols > 0);
+           // Sum with correct offset
+           assert (score[i].rows > 0);
+           assert (score[i].cols > 0);
 
-      sTmpDims[0] = score[i].rows;
-      sTmpDims[1] = score[i].cols;
+           sTmpDims[0] = score[i].rows;
+           sTmpDims[1] = score[i].cols;
 
-      createMatrix (2, sTmpDims, CV_64FC1, &sTmp);
+           createMatrix (2, sTmpDims, CV_64FC1, &sTmp);
 
-      assert (sTmp != NULL);
+           assert (sTmp != NULL);
 
-      fillMat (sTmp, NEGATIVE_INF);
+           fillMat (sTmp, NEGATIVE_INF);
 
-      for (int j = oy; j < oy+sz[0]; j++)
-        for (int k = ox; k < ox+sz[1]; k++)
-          cvSetReal2D (sTmp, j, k, cvGetReal2D (sp, j-oy, k-ox));
+           for (int j = oy; j < oy+sz[0]; j++)
+              for (int k = ox; k < ox+sz[1]; k++)
+                 cvSetReal2D (sTmp, j, k, cvGetReal2D (sp, j-oy, k-ox));
 
-	  cv::Mat sTmp2 = sTmp;
-      //cvAdd (score[i], sTmp, score[i]);
-	  add (score[i], sTmp2, score[i]);
+           cv::Mat sTmp2 = sTmp;
+           //cvAdd (score[i], sTmp, score[i]);
+           add (score[i], sTmp2, score[i]);
 
-      delete[] iy;
-      delete[] ix;
-      cvReleaseMat (&sp);
-      cvReleaseMat (&sTmp);
-    }
-  }
-
+           delete[] iy;
+           delete[] ix;
+           cvReleaseMat (&sp);
+           cvReleaseMat (&sTmp);
+        }
+     }
+  } // if
   model->getRules()[(int) r.getLhs()].structure
                    [(int) r.getI()].setScoreDim(model->getScoretptDim());
   model->getRules()[(int) r.getLhs()].structure

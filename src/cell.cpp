@@ -400,7 +400,8 @@ void Cell::loadDef (matvar_t *matVar, int i)
 
   field = Mat_VarGetStructField (matVar, (char*) variable, BY_NAME, i);
 
-  initializeDef (field);
+  if (field != NULL)
+     initializeDef (field);
 
   delete[] variable;
 }
