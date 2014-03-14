@@ -1553,7 +1553,7 @@ bool Model::existField (matvar_t *matVar, char* var)
 
   field = Mat_VarGetStructField (matVar, (char*) var, BY_NAME, 0);
 
-  if ( field != NULL )
+  if ( field != NULL && field->data_size > 0)
     flag = true;
 
   return flag;

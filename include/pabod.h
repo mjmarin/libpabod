@@ -6,7 +6,7 @@
 #ifndef _PABOD_H_
 #define _PABOD_H_
 
-#include <limits.h>
+#include <limits>
 #include <highgui.h>
 #include "export.h"
 #include "model.h"

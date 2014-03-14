@@ -91,6 +91,12 @@ void readNumber (matvar_t *matVar, char* var, Type **number, int* dim, int pos)
   matvar_t *field;
   double* auxNumb = NULL;
 
+  if (!matVar ) 
+  {
+     *dim = 0;
+     return;
+  }
+
   // If the variable is a Struct
   if ( matVar->data_type == MAT_T_STRUCT )
     field = Mat_VarGetStructField (matVar, (char*) var, BY_NAME, pos);

@@ -36,11 +36,15 @@ void gdetect (CvMat **dets, CvMat **boxes, CvMatND **info,
   assert (L != NULL);
   L = modelSort (model, L); // mjmarin: uses def params --> i=-1, V=NULL
 
+  rules* rules = model->getRules();
   for (int s = 0; s < L->LDim; s++)
   {
-    for (int r = 0; r < model->getRules()[L->L[s]].n; r++)
-      applyRule (model, model->getRules()[L->L[s]].structure[r],
-                 pyra.getPadY(), pyra.getPadX());
+     if (rules)
+     {
+        for (int r = 0; r < rules[L->L[s]].n; r++)
+           applyRule(model, rules[L->L[s]].structure[r],
+                     pyra.getPadY(), pyra.getPadX());
+     }
 
     symbolScore (model, L->L[s], latent, pyra, bbox, overlap);
   }

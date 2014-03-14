@@ -22,6 +22,9 @@ bool readLogical (matvar_t *matVar, char* var, int pos)
   char *auxChar = NULL;
   bool flag = false;
 
+  if (!matVar)
+     return false;
+
   field = Mat_VarGetStructField (matVar, (char*) var, BY_NAME, pos);
 
   if ( field != NULL )

@@ -541,8 +541,10 @@ cv::Mat FeatPyramid::process2( const IplImage *mximage, const float mxsbin )
   cv::Mat mxfeat;
 //cout << "POS" << endl;
   if (out[0] == 0 && out[1] == 0 )
+  {
     cout << "Empty matrix" << endl;
-
+    mxfeat = 0.0;
+  }
   else
   {
     assert (out[0] > 0);

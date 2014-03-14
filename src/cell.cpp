@@ -605,16 +605,24 @@ void Cell::initializeDef (matvar_t *defStructure)
 
   strcpy (variable, "blocklabel");
   readNumber (defStructure, variable, &el, &dim);
-  d.blocklabel = el[0];
-
+  //d.blocklabel = el[0];
+  if (el) 
+    d.blocklabel = el[0];
+  else 
+    d.blocklabel = 0;
+   
   delete[] el;
 
   strcpy (variable, "flip");
   d.flip = readLogical (defStructure, variable);
 
   strcpy (variable, "symmetric");
-  d.symmetric = readString (defStructure, variable)[0];
-
+  //d.symmetric = readString (defStructure, variable)[0];
+  if ( defStructure ) 
+    d.symmetric = readString (defStructure, variable)[0];
+  else 
+    d.symmetric = 0;
+  
   setDef (d);
 
   delete[] variable;
