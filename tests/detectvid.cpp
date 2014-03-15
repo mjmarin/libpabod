@@ -103,7 +103,7 @@ string saveImage (const cv::Mat & im, string imgPath, int mode, const LDetection
 	string name, path;
 	size_t pos;
 	char imgNameCh[8];	
-	
+	int nresults;
 	int x, y, w, h;
 
 	pos = imgPath.find_last_of ("/");
@@ -124,7 +124,8 @@ string saveImage (const cv::Mat & im, string imgPath, int mode, const LDetection
 
 	else if (mode == CUT)
 	{
-		for (int i = 0; i < results.size(); i++)
+      nresults = (int) results.size();
+		for (int i = 0; i < nresults; i++)
 		{
 			x = min (results[i].getX1(), results[i].getX2());
 			y = min (results[i].getY1(), results[i].getY2());

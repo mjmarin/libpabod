@@ -39,131 +39,13 @@ string extractModelName (string modelPath)
 
 	return name;
 }
-/*
-string saveImage (const IplImage *im, string imgPath, int mode, const CvMat *results)
-{
-	string name, path;
-	size_t pos;
-	char imgNameCh[8];
-	IplImage *cut = NULL;
-	int x, y, w, h;
 
-	pos = imgPath.find_last_of ("/");
-	path = imgPath.substr(0, pos);
-
-	if (mode == TAGGED)
-	{
-		pos = imgPath.find_last_of(".");
-
-		name = imgPath.substr (0, pos);
-
-		name.append ("_tagged");
-		name.append(imgPath.substr(pos));
-
-		cvSaveImage (name.c_str(), im);
-	}
-
-	else if (mode == CUT)
-	{
-		for (int i = 0; i < results->rows; i++)
-		{
-			x = min (cvGetReal2D (results, i, 0), cvGetReal2D (results, i, 2));
-			y = min (cvGetReal2D (results, i, 1), cvGetReal2D (results, i, 3));
-			w = abs(cvGetReal2D (results, i, 0) - cvGetReal2D (results, i, 2));
-			h = abs(cvGetReal2D (results, i, 1) - cvGetReal2D (results, i, 3));
-
-			cut = cvCreateImage (cvSize (w, h), im->depth, im->nChannels);
-
-			for (int m = x; m < w+x; m++)
-				for (int n = y; n < h+y; n++)
-					cvSet2D (cut, n-y, m-x, cvGet2D(im, n, m));
-
-
-			pos = imgPath.find_last_of(".");
-
-			name = imgPath.substr (0, pos);
-
-			sprintf (imgNameCh, "_cut%d", i+1);
-
-			name.append (imgNameCh);
-			name.append(imgPath.substr(pos));
-
-			cvSaveImage	(name.c_str(), cut);
-
-			cvReleaseImage (&cut);
-			cut = NULL;
-		}
-	}
-
-	return path;
-}
-*/
-/*
-string saveImage (const cv::Mat & im, string imgPath, int mode, const cv::Mat * results)
-{
-	string name, path;
-	size_t pos;
-	char imgNameCh[8];	
-	
-	int x, y, w, h;
-
-	pos = imgPath.find_last_of ("/");
-	path = imgPath.substr(0, pos);
-
-	if (mode == TAGGED)
-	{
-		pos = imgPath.find_last_of(".");
-
-		name = imgPath.substr (0, pos);
-
-		name.append ("_tagged");
-		name.append(imgPath.substr(pos));
-
-		cv::imwrite(name,im);
-		
-	}
-
-	else if (mode == CUT)
-	{
-		for (int i = 0; i < results->rows; i++)
-		{
-			x = min (results->at<float>(i, 0), results->at<float>(i, 2));
-			y = min (results->at<float>(i, 1), results->at<float>(i, 3));
-			w = abs(results->at<float>(i, 0) - results->at<float>(i, 2));
-			h = abs(results->at<float>(i, 1) - results->at<float>(i, 3));
-
-			cv::Mat cut2(cv::Size(w, h), cv::DataType<cv::Vec<uchar,3>>::type);
-			cout <<  im.channels() << endl;					
-
-			for (int m = x; m < w+x; m++)
-				for (int n = y; n < h+y; n++)					
-					cut2.at<cv::Vec3b>(n-y, m-x) = im.at<cv::Vec3b>(n, m);
-
-
-			pos = imgPath.find_last_of(".");
-
-			name = imgPath.substr (0, pos);
-
-			sprintf (imgNameCh, "_cut%d", i+1);
-
-			name.append (imgNameCh);
-			name.append(imgPath.substr(pos));
-
-			
-			cv::imwrite(name, cut2);
-			cut2.release();
-		}
-	}
-
-	return path;
-}
-*/
 string saveImage (const cv::Mat & im, string imgPath, int mode, const LDetections & results)
 {
 	string name, path;
 	size_t pos;
 	char imgNameCh[8];	
-	
+	int nresults;
 	int x, y, w, h;
 
 	pos = imgPath.find_last_of ("/");
@@ -185,8 +67,8 @@ string saveImage (const cv::Mat & im, string imgPath, int mode, const LDetection
 	    break;
 
 	   case CUT:
-	
-		for (int i = 0; i < results.size(); i++)
+	   nresults = (int) results.size();
+		for (int i = 0; i < nresults; i++)
 		{
 			x = min (results[i].getX1(), results[i].getX2());
 			y = min (results[i].getY1(), results[i].getY2());
