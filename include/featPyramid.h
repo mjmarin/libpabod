@@ -34,6 +34,12 @@ struct alphainfo
   int si;
   int di;
   float alpha;
+
+  alphainfo()
+  {
+     si = di = 0;
+     alpha = 0.0;
+  }
 };
 
 
@@ -154,6 +160,8 @@ public:
  */
   CvMatND *process(const IplImage *mximage, const float mxsbin);
 
+  cv::Mat process2( const IplImage *mximage, const float mxsbin );
+
 /** The function pad the mat array with so many values <tt>val</tt>
  *  like indicates the vector <tt>dimPad</tt>. Each element means
  *  one dimension.
@@ -198,7 +206,8 @@ public:
  *  <tt>_feat</tt>
  *  \note Inline function
  */
-  CvMatND** getFeat() const	{return _feat;}
+  //CvMatND** getFeat() const	{return _feat;}
+	vectorMat const & getFeat(void) const	{return _feat;}
 
 
 /** Sets the value of private variable <tt>_feat</tt> to
@@ -206,12 +215,25 @@ public:
  *  \param feat - new value for the variable <tt>_feat</tt>
  *  \note Inline function
  */
+  /*
 	void setFeat (CvMatND** feat)
 	{
 		if (feat != NULL)
 			_feat = feat;
 	}
+*/
+  	void setFeat (vectorMat & feat)
+	{		
+		if (!_feat.empty())
+			_feat.clear();
 
+		_feat = feat;
+	}
+
+	void addFeatItem(cv::Mat & f)
+	{
+		_feat.push_back(f);
+	}
 
 /** Sets the value of element <tt>i</tt> of private vector variable
  *  <tt>_feat</tt> to <tt>feat</tt>.
@@ -220,6 +242,12 @@ public:
  *  \param i - indicates the index of the element in the vector
  */
   void setFeat (CvMatND* feat, int i)
+  {
+    assert (i < getDim());
+    _feat[i] = feat;
+  }
+
+  void setFeat (const cv::Mat & feat, int i)
   {
     assert (i < getDim());
     _feat[i] = feat;
@@ -329,7 +357,8 @@ public:
 
 private:
 
-  CvMatND **_feat;
+  //CvMatND **_feat;
+  vectorMat _feat; //! Computed features
 
   float *_scales;
 

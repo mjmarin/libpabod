@@ -1,6 +1,7 @@
 // Customized by mjmarin
 
 #include <fconvThreads.h>
+#include <crossplatform.h>
 
 #ifdef USE_PTHREADS
 CvMat** fconv (CvMatND* features, CvMatND** filters, int a, int filtersDim)
@@ -183,6 +184,7 @@ CvMat** fconv (CvMatND* features, CvMatND** filters, int a, int filtersDim)
   int height;
   int width;
 
+
   for (int i = 0; i < len; i++) 
   {    
     mxB = filters[i+start];
@@ -230,6 +232,7 @@ CvMat** fconv (CvMatND* features, CvMatND** filters, int a, int filtersDim)
   delete[] A;
   delete[] td;
 //  delete[] ts;
+
 
   return result;  
 }

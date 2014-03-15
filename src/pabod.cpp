@@ -32,7 +32,7 @@ Pabod::Pabod(const char * modelfile)
 
 Pabod::Pabod(string modelfile)
 {
-	_model = new Model(modelfile);
+	_model = new Model(modelfile); 
 	_isCopied = false;
 }
 
@@ -105,6 +105,90 @@ float Pabod::detect(IplImage * img, float thr, double iouNms, CvMat ** detection
 		cerr << "ERROR: model must be set before calling this method." << endl;
 	
 	return usedThr;
+}
+
+float Pabod::detect(cv::Mat & img, float thr, double iouNms, cv::Mat & detections)
+{
+	float usedThr = -999999;
+	if (!empty())
+	{		
+		CvMat * detections_ = NULL;
+		IplImage img_ = img;
+	   // Call to main detection function
+		usedThr = makeDetection (&detections_, &img_, _model, thr, iouNms);
+		
+		detections = detections_;
+	}
+	else
+		cerr << "ERROR: model must be set before calling this method." << endl;
+	
+	return usedThr;
+}
+
+float Pabod::detect(cv::Mat & img, float thr, double iouNms, LDetections & detections)
+{
+	float usedThr = -999999;
+	if (!empty())
+	{		
+		//CvMat * detections_ = NULL;
+		IplImage img_ = img;
+	   // Call to main detection function
+		usedThr = makeDetection (detections, &img_, _model, thr, iouNms);
+		
+		//detections = detections_;
+	}
+	else
+		cerr << "ERROR: model must be set before calling this method." << endl;
+	
+	return usedThr;
+}
+
+int Pabod::drawDetections(cv::Mat & img, LDetections & detections, int topN)
+{
+	int ndetections = 0;
+	int i;
+	CvPoint p1, p2;
+	//srand(time(NULL));
+	srand(123456);
+	IplImage img_ = img;
+
+	ndetections = detections.size(); 
+        if (topN > 0 && topN < ndetections)
+           ndetections = topN;
+
+	for (i = 0; i < ndetections; i++)
+	{
+           p1 = cvPoint (detections[i].getX1(), detections[i].getY1());
+           p2 = cvPoint (detections[i].getX2(), detections[i].getY2());
+
+	   drawBB(&img_, p1, p2, cvScalar(int(rand()%256), int(rand()%256), int(rand()%256)), detections[i].getScore(), detections[i].getComponent());
+	}
+
+	return ndetections;
+}
+
+int Pabod::drawDetections(cv::Mat & img, cv::Mat & detections, int topN)
+{
+	int ndetections = 0;
+	int i;
+	CvPoint p1, p2;
+	//srand(time(NULL));
+	srand(123456);
+	IplImage img_ = img;
+
+	ndetections = detections.rows; 
+        if (topN > 0 && topN < ndetections)
+           ndetections = topN;
+
+	for (i = 0; i < ndetections; i++)
+	{
+           p1 = cvPoint ((int)detections.at<float>(i, 0), (int)detections.at<float>(i, 1));
+           p2 = cvPoint ((int)detections.at<float>(i, 2), (int)detections.at<float>(i, 3));
+
+	   drawBB(&img_, p1, p2, cvScalar(int(rand()%256), int(rand()%256), int(rand()%256)), (float)detections.at<float>(i, 4), (int)detections.at<float>(i, 5));
+	}
+
+	return ndetections;
 }
 
 int Pabod::drawDetections(IplImage * img, CvMat * detections)

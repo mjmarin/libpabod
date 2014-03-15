@@ -3,7 +3,8 @@
 
 #include <image.h>
 #include <limits>
-
+#include <algorithm>
+#include <crossplatform.h>
 
 /** \file
  *  The file contains a wide variety of different handling matrixes and
@@ -13,6 +14,11 @@
  *  \li Developing of a useful module to use in different projects which
  *  uses library \e OpenCV, arrays and matrixes
  */
+
+/** \typedef vectorMat 
+   Vector of OpenCV Mat
+  */
+typedef std::vector<cv::Mat> vectorMat;
 
 
 /** \def PAIR
@@ -639,6 +645,42 @@ Type* getMatNData (const CvMatND *mat)
   return v;
 }
 
+template <class Type>
+Type* getMatNData (const cv::Mat & mat_)
+{
+  Type *v;
+  CvMatND mat__ = mat_;
+  CvMatND * mat = &mat__;
+
+  int counter = 0;
+  unsigned int dim0 = mat->dim[0].size;
+  unsigned int dim1 = mat->dim[1].size;
+  unsigned int dim2 = mat->dim[2].size;
+
+  assert (dim2 > 0);
+  assert (dim1 > 0);
+  assert (dim0 > 0);
+
+  v = new Type [dim2 * dim1 * dim0];
+
+  assert (v != NULL);
+
+  for (unsigned int i = 0; i < dim2; i++)
+  {
+    for (unsigned int j = 0; j < dim1; j++)
+    {
+      for (unsigned int k = 0; k < dim0; k++)
+      {
+        v[counter] = (Type) cvGetReal3D (mat, k, j, i);
+        counter++;
+      }
+
+    }
+  }
+
+  return v;
+}
+
 
 template <class Type>
 void setMatNData (CvMatND *mat, const Type *v)
@@ -655,6 +697,31 @@ void setMatNData (CvMatND *mat, const Type *v)
       for (unsigned int k = 0; k < dim0; k++)
       {
         cvSetReal3D (mat, k, j, i, v[counter]);
+        counter++;
+      }
+
+    }
+  }
+}
+
+
+template <class Type>
+void setMatNData (cv::Mat & mat_, const Type *v)
+{
+  CvMatND mat = mat_; // Intermediate var
+
+  int counter = 0;
+  unsigned int dim0 = mat.dim[0].size;
+  unsigned int dim1 = mat.dim[1].size;
+  unsigned int dim2 = mat.dim[2].size;
+
+  for (unsigned int i = 0; i < dim2; i++)
+  {
+    for (unsigned int j = 0; j < dim1; j++)
+    {
+      for (unsigned int k = 0; k < dim0; k++)
+      {
+        cvSetReal3D (&mat, k, j, i, v[counter]);
         counter++;
       }
 
@@ -762,6 +829,73 @@ void removeIndexes (Type **original, int dimOr, const int *indexes, int dimIdx)
 
   else
     (*original) = NULL;
+}
+
+template <class Type>
+bool greaterThan (Type i, Type j) { return (i > j); }
+
+//! Remove from original elements at locations defined by indexes
+template <class Type>
+void removeIndexes (Type **original, int dimOr, std::vector<int> &indexes)
+{
+  Type *aux = (*original);
+  //int *sortedIdx = (int*) indexes;
+  std::vector<int> sortedIdx = indexes;
+  int dimIdx = indexes.size();
+
+  if (dimOr - dimIdx > 0)
+  {
+    (*original) = new Type [dimOr - dimIdx];
+
+    //shellSort (sortedIdx, dimIdx, DESCEND);
+	std::sort(sortedIdx.begin(), sortedIdx.end(), greaterThan<Type>);
+
+    for (int i = 0; i < dimIdx; i++)
+      for (int j = 0; j < dimOr - sortedIdx[i]; j++)
+        aux[sortedIdx[i] + j] = aux[sortedIdx[i] + j + 1];
+
+    for (int i = 0; i < dimOr - dimIdx; i++)
+      (*original)[i] = aux[i];
+  }
+
+  else
+    (*original) = NULL;
+}
+
+
+template <class Type>
+void removeIndexes (std::vector<Type> & original, int dimOr, const int *indexes, int dimIdx)
+{
+  //Type *aux = (*original);
+  std::vector<Type> aux = original;
+  int *sortedIdx = (int*) indexes;
+  int siz = dimOr - dimIdx;
+
+  if (siz > 0)
+  {
+    //(*original) = new Type [dimOr - dimIdx];
+	  original.clear();
+	  original.reserve(siz);
+	  for (int i = 0; i < siz; i++)
+		  original.push_back(0);
+
+    shellSort (sortedIdx, dimIdx, DESCEND);
+
+    for (int i = 0; i < dimIdx; i++)
+      for (int j = 0; j < dimOr - sortedIdx[i]; j++)
+        //aux[sortedIdx[i] + j] = aux[sortedIdx[i] + j + 1];
+		aux[sortedIdx[i] + j] = aux[sortedIdx[i] + j + 1];
+
+	/*
+    for (int i = 0; i < dimOr - dimIdx; i++)
+      (*original)[i] = aux[i];
+	  */
+	original = aux;
+  }
+
+  else
+    //(*original) = NULL;
+	original.clear();
 }
 
 

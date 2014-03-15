@@ -1,21 +1,16 @@
 #ifndef _CELL_H_
 #define _CELL_H_
 
+#include <vector>
 #include <readTypes.h>
 #include <handlerOpenCVStructs.h>
 
-
-/** \file
- *  This file contains the definition of Model class. This class is used to
- *  load a the model structure stored on a .mat file.
- */
 
 /** \file
  *  This file contains the definition of <tt>Cell</tt> class. This class is
  *  an auxiliar part of class <tt>Model</tt>, and is used to load the 
  *  field <tt>rules</tt> of .mat model file 
  */  
-
 
 /** \def INVALID_STR 
  *  This define is used to indicate a structure is invalid, which means their 
@@ -54,6 +49,12 @@ typedef struct offset
 {
   float w;
   int blocklabel;
+
+  offset()
+  {
+     w = 0.0;
+     blocklabel = 0;
+  }
 } offset;
 
 
@@ -70,6 +71,12 @@ typedef struct anchor
 {
   int* array;
   int dim;
+
+  anchor()
+  {
+	  dim = 0;
+	  array = NULL;
+  }
 } anchor;
 
 
@@ -88,6 +95,16 @@ typedef struct def
   int blocklabel;
   bool flip;
   char symmetric;
+
+  //! Constructor
+  def()
+  {
+     w[0]=w[1]=w[2]=w[3] = 0.0;
+     blocklabel = 0;
+     flip = false;
+     symmetric = '\0';
+  }
+
 } def;
 
 
@@ -151,6 +168,10 @@ public:
  *  variables to invalid values
 */
   void destroyCell ();
+
+  void releaseScore(void);
+  void releaseIxIy(void);
+
 
 
 ///////////////////////////////
@@ -474,7 +495,8 @@ public:
  *  \sa _score
  *  \sa _scoreDim
  */
-  CvMat** getScore () const  {return _score;}
+  //CvMat** getScore () const  {return _score;}
+  const vectorMat & getScore () const  {return _score;}
 
 
 /** Set the value of private variable <tt>_score</tt> to <tt>score</tt>.
@@ -482,7 +504,8 @@ public:
  *  \sa _score
  *  \sa _scoreDim
  */
-  void setScore (CvMat **score);
+  //void setScore (CvMat **score);
+  void setScore (vectorMat & score);
 
 
 /** Returns the value of private variable <tt>_scoreDim</tt>
@@ -510,7 +533,8 @@ public:
  *  \sa _Ix
  *  \sa _IxDim
  */
-  CvMat** getIx () const  {return _Ix;}
+  //CvMat** getIx () const  {return _Ix;}
+  const vectorMat & getIx () const  {return _Ix;}
 
 
 /** Set the value of private variable <tt>_Ix</tt> to <tt>Ix</tt>.
@@ -518,8 +542,14 @@ public:
  *  \sa _Ix
  *  \sa _IxDim
  */
-  void setIx (CvMat **Ix);
+  //void setIx (CvMat **Ix);
+  void setIx (vectorMat &Ix);
 
+  void addIxItem(cv::Mat &Ix){_Ix.push_back(Ix);};
+  void addIyItem(cv::Mat &Iy){_Iy.push_back(Iy);};
+  
+  void addIxItem(CvMat * Ix){_Ix.push_back(Ix);};
+  void addIyItem(CvMat * Iy){_Iy.push_back(Iy);};
 
 /** Returns the value of private variable <tt>_IxDim</tt>
  *  \return The int value <tt>_IxDim</tt>, which indicates <tt>_Ix</tt> 
@@ -547,7 +577,8 @@ public:
  *  \sa _Iy
  *  \sa _IyDim
  */
-  CvMat** getIy () const  {return _Iy;}
+  //CvMat** getIy () const  {return _Iy;}
+  const vectorMat & getIy () const  {return _Iy;}
 
 
 /** Set the value of private variable <tt>_Iy</tt> to <tt>Iy</tt>.
@@ -555,7 +586,8 @@ public:
  *  \sa _Iy
  *  \sa _IyDim
  */
-  void setIy (CvMat **Iy);
+  //void setIy (CvMat **Iy);
+  void setIy (vectorMat & Iy);
 
 
 /** Returns the value of private variable <tt>_IyDim</tt>
@@ -686,7 +718,8 @@ private:
 /** Is a CvMat* array private variable.
  *  \sa _scoreDim
  */
-  CvMat** _score;
+  //CvMat** _score;
+  vectorMat _score;
 
 
 /** Is an int private variable. Indicates the size of
@@ -699,7 +732,8 @@ private:
 /** Is a CvMat* array private variable.
  *  \sa _IxDim
  */
-  CvMat** _Ix;
+  //CvMat** _Ix;
+  vectorMat _Ix;
 
 
 /** Is an int private variable. Indicates the size of 
@@ -712,7 +746,8 @@ private:
 /** Is a CvMat* array private variable.
  *  \sa _IyDim
  */
-  CvMat** _Iy;
+  //CvMat** _Iy;
+  vectorMat _Iy;
 
 
 /** Is an int private variable. Indicates the size of 

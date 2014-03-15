@@ -4,6 +4,7 @@
 #include <imgdetect.h>
 #include <nms.h>
 #include <export.h>
+#include <detection.h>
 
 
 /** \file
@@ -38,6 +39,8 @@ PABOD_EXPORT float makeDetection (CvMat **results, IplImage *img, string modelTy
    \param iouNms - intersection-over-union threshold used during non-maxima supression. Default is 0.5
 */
 PABOD_EXPORT float makeDetection (CvMat **results, IplImage *img, Model * model, float thresh = POSITIVE_INF, double iouNms = 0.5);
+PABOD_EXPORT float makeDetection (cv::Mat & results, cv::Mat & img, Model * model, float thresh = POSITIVE_INF, double iouNms = 0.5);
+PABOD_EXPORT float makeDetection (LDetections & D, IplImage *img, Model * model, float thresh, double iouNms);
 
 #endif // MAKEDETECTION_H
 

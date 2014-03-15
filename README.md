@@ -1,11 +1,16 @@
+==============================================================================
 libpabod: Library for PArt-Based Object Detection in C++
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==============================================================================
 Daniel Rodriguez Molina and Manuel J. Marin-Jimenez
 
 This software implements the object detection system described in Felzenszwalb et al. [1].
+--------------------------------------------------------------------------------
 
+   Source-Code:   https://github.com/mjmarin/libpabod
+
+--------------------------------------------------------------------------------
 Contents of the package:
-========================
+--------------------------------------------------------------------------------
 - bin - the executable file will be created here
 - data:
   - models - contains all the object model files 
@@ -18,9 +23,9 @@ Contents of the package:
 - tests - contains some programs to test the library
 - makefile - used to compile the library, the documentation and the test program
 
-
+--------------------------------------------------------------------------------
 Requirements:
-=============
+--------------------------------------------------------------------------------
 This software has been tested on Ubuntu 10.10 (Maverick Meerkat) with the following libraries:
  - libmatio-dev - v1.3.4-2 (required)
  - libcv-dev - v2.1.0-2 (required)
@@ -28,9 +33,9 @@ This software has been tested on Ubuntu 10.10 (Maverick Meerkat) with the follow
  - doxygen - v1.7.1-1   (optional; used to generate the documentation)
  - graphviz - v2.26.3-4 (optional; used to generate figures for the documentation)
 
-
+--------------------------------------------------------------------------------
 Quick start:
-============
+--------------------------------------------------------------------------------
 
 A) Classic installation (obsolete --> CMake is highly recommended):
   1. Unpack in <libpabod_directory>
@@ -64,8 +69,9 @@ where <x1_i> <y1_i> <x2_i> <y2_i> are the pairs of coordinates of the i-th bound
 
 Tip: object detection can be performed directly on video frames (e.g. avi file) with the test program named 'detectvid'.
 
+--------------------------------------------------------------------------------
 Citation:
-=========
+--------------------------------------------------------------------------------
 If you use this library for your publications, please cite it as:
 @misc{libpabod,
  author = {Rodriguez-Molina, Daniel and Marin-Jimenez, Manuel J.},
@@ -74,21 +80,22 @@ If you use this library for your publications, please cite it as:
  note =   {Software available at \url{http://www.uco.es/~in1majim/}}
 }
 
-
+--------------------------------------------------------------------------------
 Contact the authors:
-====================
+--------------------------------------------------------------------------------
 Daniel Rodriguez Molina (developer) - i72romod@uco.es / daniel.rodriguez.molina@gmail.com
 Manuel J. Marin-Jimenez (advisor) - mjmarin@uco.es
 
-
+--------------------------------------------------------------------------------
 References:
-===========
+--------------------------------------------------------------------------------
 [1] P. Felzenszwalb, R. Girshick, D. McAllester, D. Ramanan. "Object Detection with Discriminatively Trained Part Based Models." IEEE Transactions on Pattern Analysis and Machine Intelligence, Vol. 32, No. 9, September 2010.
 URL: http://people.cs.uchicago.edu/~pff/latent/
 
-
+--------------------------------------------------------------------------------
 Version history:
-================
+--------------------------------------------------------------------------------
+ - v0.2.10: new option '-k' added to 'detectobj2' to show only K top detections
  - v0.2.9: moving CvMat to cv::Mat
  - v0.2.8: new class Detection
  - v0.2.7: memory leaks found by github/yokox solved. Thanks!

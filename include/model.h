@@ -38,6 +38,18 @@ typedef struct filters
   int sizeDim;
   bool flip;
   int symbol;
+
+  filters()
+  {
+     w = NULL;
+     blocklabel = 0;
+     symmetric = '\0';
+     size = NULL;
+     sizeDim = 0;
+     flip = false;
+     symbol = 0;
+  }
+
 } filters;
 
 /////////////////////////////
@@ -55,6 +67,13 @@ typedef struct rules
 {
   int n;
   Cell *structure;
+
+  rules()
+  {
+    n=0;
+    structure = NULL;
+  }
+
 } rules;
 
 ///////////////////////////////
@@ -73,6 +92,16 @@ typedef struct symbols
   int filter;
   CvMat **score;
   int dimScore;
+
+  symbols()
+  {
+     type = '\0';
+     i = 0;
+     filter = 0;
+	  score = NULL;
+	  dimScore = 0;
+  }
+
 } symbols;
 
 ///////////////////////////////////
@@ -89,6 +118,14 @@ typedef struct lowerbounds
   float *v;
   int f;
   int c;
+
+  lowerbounds()
+  {
+	  v = NULL;
+     f = 0;
+     c = 0;
+  }
+
 } lowerbounds;
 
 ////////////////////////////////
@@ -107,6 +144,12 @@ typedef struct bboxpred
   float *x2;
   float *y2;
   int dim;
+
+  bboxpred()
+  {
+     x1 = x2 = y1 = y2 = NULL;
+	  dim = 0;
+  }
 } bboxpred;
 
 
@@ -883,6 +926,13 @@ public:
  */
   void destroyModel ();
 
+  /** Releases temporal memory from a previous detection.
+    * Model definition is not modified. Then, same model
+	* is ready for a new detection.
+	*/
+
+  void resetModel(); 
+
 /** Allocates dinamic memory for the private vector variable 
  *  <tt>_scoretpt</tt>. This function is necessary because the vector 
  *  is initialized element by element, so the memory must be
@@ -995,6 +1045,15 @@ private:
   CvMat** _scoretpt;
 
   int _scoretptDim;
+
+  // Private methods
+  void initPtrs(void);
+
+  void _releaseRules(bool full=false); //! Release memory allocated during a detection
+
+  void _releaseSymbols(void); //! Release memory allocated during a detection
+
+  void _releaseScores(void); //! Release memory allocated during a detection
 };
 
 

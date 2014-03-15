@@ -8,14 +8,20 @@
 Model::Model ()
   : _filters(0)
   , _scoretpt(0)
+  , _rules(0)
+  , _symbols(0)
 {
+  initPtrs();
   loadEmptyModel();
 }
 
 Model::Model (string fileName)
   : _filters(0)
   , _scoretpt(0)
-{
+  , _rules(0)
+  , _symbols(0)
+{ 
+  initPtrs();
   loadFile (fileName);
 }
 
@@ -23,6 +29,22 @@ Model::Model (string fileName)
 Model::~Model ()
 {  
   destroyModel();
+}
+
+void Model::initPtrs(void)
+{
+  _filters = NULL;
+  _scoretpt = NULL;
+  _rules = NULL;
+  _symbols = NULL;
+  _bboxpred = NULL;
+  _fusage = NULL;
+  _lowerbounds = NULL;
+  _learnmult = NULL;
+  _regmult = NULL;
+  _minSize = NULL;
+  _maxSize = NULL;
+  _blockSizes = NULL;
 }
 
 void Model::destroyModel ()
@@ -76,26 +98,25 @@ void Model::destroyModel ()
     _rules = NULL;
   }
 
+  // filterResponses() fills it
   if (_symbols != NULL)
   {
     for (int i = 0; i < getSymbolsDim(); i++)
     {
-      for (int j = 0; j < getSymbols()[i].dimScore; j++)
-      {
-        if (getSymbols()[i].score[j] != NULL)
-        {
-          cvReleaseMat(&(getSymbols()[i].score[j]));
-          getSymbols()[i].score[j] = NULL;
-        }
-      }
+		if (getSymbols()[i].score != NULL)
+		{
+			for (int j = 0; j < getSymbols()[i].dimScore; j++)
+			{
+				if (getSymbols()[i].score[j] != NULL)
+				{
+					cvReleaseMat(&(getSymbols()[i].score[j]));
+					getSymbols()[i].score[j] = NULL;
+				}
+			}
 
-      /*delete[] getSymbols()[i].score;
-      getSymbols()[i].score = NULL;*/
-      if (getSymbols()[i].score != NULL) 
-      {  
-         delete [] getSymbols()[i].score;  
-         getSymbols()[i].score = NULL;
-      }
+			delete [] getSymbols()[i].score;  
+			getSymbols()[i].score = NULL;
+		}
 
     }
     delete[] _symbols;
@@ -184,7 +205,7 @@ void Model::destroyModel ()
     delete[] _bboxpred;
     _bboxpred = NULL;
   }
-
+  // filterResponses() fills it
   if (_scoretpt != NULL)
   {
     for (int i = 0; i < getScoretptDim(); i++)
@@ -1002,7 +1023,10 @@ void Model::setFilters (filters *f)
   {
     assert (getFiltersDim() > 0);
 
-    _filters = new filters [getFiltersDim()];
+	if (_filters != NULL)
+		delete [] _filters;
+
+    _filters = new filters [getFiltersDim()]; 
 
     assert (_filters != NULL);
 
@@ -1019,8 +1043,10 @@ void Model::setRules (rules *r)
   if (r != NULL)
   {
     assert (getRulesDim() > 0);
+	if (_rules != NULL)
+		delete [] _rules;
 
-    _rules = new rules [getRulesDim()];
+    _rules = new rules [getRulesDim()]; 
 
     assert (_rules != NULL);
 
@@ -1037,8 +1063,10 @@ void Model::setSymbols (symbols *s)
   if (s != NULL)
   {
     assert (getSymbolsDim() > 0);
+	if (_symbols != NULL)
+		delete [] _symbols;
 
-    _symbols = new symbols [getSymbolsDim()];
+    _symbols = new symbols [getSymbolsDim()]; 
 
     assert (_symbols != NULL);
 
@@ -1057,6 +1085,8 @@ void Model::setBlockSizes (int *d)
   {
     assert (getBlockSizesDim() > 0);
 
+	if ( _blockSizes != NULL)
+		delete [] _blockSizes;
     _blockSizes = new int [getBlockSizesDim()];
 
     assert (_blockSizes != NULL);
@@ -1074,6 +1104,9 @@ void Model::setMaxSize (int *d)
   if (d != NULL)
   {
     assert (getMaxSizeDim() > 0);
+
+	if (_maxSize != NULL)
+		delete [] _maxSize;
 
     _maxSize = new int [getMaxSizeDim()];
 
@@ -1093,6 +1126,8 @@ void Model::setMinSize (int *d)
   {
     assert (getMinSizeDim() > 0);
 
+	if (_minSize != NULL)
+		delete [] _minSize;
     _minSize = new int [getMinSizeDim()];
 
     assert (_minSize != NULL);
@@ -1147,6 +1182,8 @@ void Model::setLowerbounds (lowerbounds *l)
   {
     assert (getLowerboundsDim() > 0);
 
+	if ( _lowerbounds != NULL)
+		delete []  _lowerbounds;
     _lowerbounds = new lowerbounds [getLowerboundsDim()];
 
     assert (_lowerbounds != NULL);
@@ -1208,7 +1245,10 @@ void Model::setScoretpt (CvMat **scoretpt)
   if (scoretpt != NULL)
     assert (getScoretptDim() > 0);
 
-  _scoretpt = new CvMat* [getScoretptDim()];
+   if (_scoretpt != NULL) // To be improved: loop over CvMat's
+	  delete [] _scoretpt;
+
+  _scoretpt = new CvMat* [getScoretptDim()]; // Suspicious
 
   assert (_scoretpt != NULL);
 
@@ -1318,7 +1358,10 @@ void Model::initializeRules (matvar_t *rulesStructure)
       {
         /* Allocate memory for a scalar element, the field structure
         of r[i] variable (Cell*) and calls the constructor of Cell */
-        r[i].structure = new Cell(field);
+		if (r[i].structure != NULL)
+			delete r[i].structure;
+
+        r[i].structure = new Cell(field); 
         assert (r[i].structure != NULL);
       }
 
@@ -1327,7 +1370,10 @@ void Model::initializeRules (matvar_t *rulesStructure)
       {
         /* Allocate memory for an array element, the field structure of
         r[i] variable (Cell*) */
-        r[i].structure = new Cell [lengthField];
+		if (r[i].structure != NULL)
+			delete [] r[i].structure;
+
+        r[i].structure = new Cell [lengthField]; 
         assert (r[i].structure != NULL);
 
         // Calls the Cell constructor for each element of the r[i] array
@@ -1507,7 +1553,7 @@ bool Model::existField (matvar_t *matVar, char* var)
 
   field = Mat_VarGetStructField (matVar, (char*) var, BY_NAME, 0);
 
-  if ( field != NULL )
+  if ( field != NULL && field->data_size > 0)
     flag = true;
 
   return flag;
@@ -1521,4 +1567,86 @@ ostream & operator<<(ostream & co, const Model & m)
    return co;
 }
 
+void Model::resetModel()
+{
+	_releaseSymbols();
+	_releaseRules(false);
+	_releaseScores();
+	
+}
 
+// Private methods
+// ---------------------------------------------------------------
+void Model::_releaseRules(bool full)
+{
+	if (_rules != NULL)
+	{
+		// Release some data
+		for (int i = 0; i < _rulesDim; i++)
+		{
+			Cell * c = _rules[i].structure;
+			for (int j = 0; j < _rules[i].n; j++)
+			{
+				// Release score
+				c[j].releaseScore();
+
+				// Release Ix and Iy
+				c[j].releaseIxIy();			
+			}
+			/* // Do not delete this
+			if (_rules[i].n > 1)
+			   delete [] _rules[i].structure;
+			else
+               delete _rules[i].structure;
+			_rules[i].structure = NULL;
+			_rules[i].n = 0;
+			*/
+		}
+
+		// Release remaining data
+		if (full)
+		{
+			// TO DO
+			_rules = NULL;
+			_rulesDim = 0;
+		}
+	}
+
+}
+
+void Model::_releaseSymbols(void)
+  {
+	  symbols * sym = this->getSymbols();
+	  if (sym != NULL)
+	  {
+		  for (int i = 0; i < this->getSymbolsDim(); i++)
+		  {
+			  CvMat ** score = sym[i].score;
+			  /* Do not release score, it is shared by Rules */
+			  /*
+			  for (int j = 0; j < sym[i].dimScore; j++)
+				  cvReleaseMat(&(score[j]));
+			  */
+			  delete [] score;
+			  this->_symbols[i].score = NULL;
+		  }
+		  /* Do not delete member _symbols, it is part of the model definition */
+		  //delete [] sym;
+		  //_symbols = NULL;
+	  }
+  }
+
+  void Model::_releaseScores(void)
+  {
+		 CvMat** scorept = this->getScoretpt() ;
+		 if (scorept != NULL)
+		 {
+
+			 for (int i = 0; i < this->getScoretptDim(); i++)
+			 {
+				 cvReleaseMat(&(scorept[i]));
+			 }
+			 delete [] scorept;
+			 _scoretpt = NULL;
+		 }
+  }

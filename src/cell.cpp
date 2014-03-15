@@ -60,8 +60,10 @@ void Cell::destroyCell ()
         _anchor = NULL;
       } 
 
-      if (_score != NULL)
+     //if (_score != NULL)
+	   if (_score.size() > 0)
       {
+		  /*
         for (int i = 0; i < getScoreDim(); i++)
         {
           if (_score[i] != NULL)
@@ -73,11 +75,16 @@ void Cell::destroyCell ()
       
         delete[] _score;
         _score = NULL;
+		*/
+		  _score.clear();
       }
+	  		  
     }
 
-    if (_Ix != NULL)
+    //if (_Ix != NULL)
+	if(_Ix.size() > 0)
     {
+		/*
       for (int i = 0; i < getIxDim(); i++)
       {
         if (_Ix[i] != NULL)
@@ -89,10 +96,14 @@ void Cell::destroyCell ()
 
       delete[] _Ix;
       _Ix = NULL;
+	  */
+		_Ix.clear();
     }
 
-    if (_Iy != NULL)
+    //if (_Iy != NULL)
+	if (_Iy.size() > 0)
     {
+		/*
       for (int i = 0; i < getIyDim(); i++)
       {
         if (_Iy[i] != NULL)
@@ -104,10 +115,80 @@ void Cell::destroyCell ()
 
       delete[]_Iy;
       _Iy = NULL;
+	  */
+		_Iy.clear();
     }
+	
+		
   }
 
   setFlagStr (INVALID_STR);
+}
+
+
+void Cell::releaseScore(void)
+{
+	  //if (_score != NULL)
+	if(!_score.empty())
+      {
+		  /*
+        for (int i = 0; i < getScoreDim(); i++)
+        {
+          if (_score[i] != NULL)
+          {
+            cvReleaseMat (&_score[i]);
+            _score[i] = NULL;
+          }
+        }
+      
+        delete[] _score;
+        _score = NULL;
+		*/
+		  _score.clear();
+      }
+    
+}
+
+void Cell::releaseIxIy(void)
+{
+	
+    //if (_Ix != NULL)
+	if(!_Ix.empty())
+    {
+		/*
+      for (int i = 0; i < getIxDim(); i++)
+      {
+        if (_Ix[i] != NULL)
+        {
+          cvReleaseMat (&_Ix[i]);
+          _Ix[i] = NULL;
+        }
+      }
+
+      delete[] _Ix;
+      _Ix = NULL;
+	  */
+		_Ix.clear();
+    }
+
+    //if (_Iy != NULL)
+	if (!_Iy.empty())
+    {
+		/*
+      for (int i = 0; i < getIyDim(); i++)
+      {
+        if (_Iy[i] != NULL)
+        {
+          cvReleaseMat (&_Iy[i]);
+          _Iy[i] = NULL;
+        }
+      }
+
+      delete[]_Iy;
+      _Iy = NULL;
+	  */
+		_Iy.clear();
+    }
 }
 
 
@@ -144,18 +225,20 @@ void Cell::loadEmptyCell ()
   getDef().symmetric = 0;
 
   _scoreDim = -1;
-  _score = NULL;
+//  _score = NULL;
 
   _IxDim = -1;
-  _Ix = NULL;
+//  _Ix = NULL;
 
   _IyDim = -1;
-  _Iy = NULL;
+//  _Iy = NULL;
 }
 
 
 void Cell::loadCell (matvar_t *matVar, int i)
 {
+  loadEmptyCell (); // Initialize all members
+
   loadType (matVar, i);
   loadLhs (matVar, i);
   loadDetwindow (matVar, i);
@@ -179,13 +262,13 @@ void Cell::loadCell (matvar_t *matVar, int i)
   }
 
   _IxDim = -1;
-  _Ix = NULL;
+//  _Ix = NULL;
 
   _IyDim = -1;
-  _Iy = NULL;
+//  _Iy = NULL;
 
   _scoreDim = -1;
-  _score = NULL;
+//  _score = NULL;
 }
 
 
@@ -317,7 +400,8 @@ void Cell::loadDef (matvar_t *matVar, int i)
 
   field = Mat_VarGetStructField (matVar, (char*) variable, BY_NAME, i);
 
-  initializeDef (field);
+  if (field != NULL)
+     initializeDef (field);
 
   delete[] variable;
 }
@@ -332,7 +416,10 @@ void Cell::setRhs (int *rhs)
 {
   assert (getRhsDim() > 0);
 
-  _rhs = new int [getRhsDim()];
+  if (_rhs != NULL)
+	  delete [] _rhs;
+
+  _rhs = new int [getRhsDim()]; 
 
   assert (_rhs != NULL);
 
@@ -344,6 +431,9 @@ void Cell::setRhs (int *rhs)
 void Cell::setDetwindow (double *d)
 {
   assert (getDetwindowDim() > 0);
+
+  if (_detwindow != NULL)
+	  delete [] _detwindow;
 
   _detwindow = new int [getDetwindowDim()];
 
@@ -358,7 +448,10 @@ void Cell::setAnchor (anchor *a)
 {
   assert (getAnchorDim() > 0);
 
-  _anchor = new anchor [getAnchorDim()];
+  if (_anchor != NULL)
+	  delete [] _anchor;
+
+  _anchor = new anchor [getAnchorDim()]; // Suspicious
 
   assert (_anchor != NULL);
 
@@ -366,10 +459,17 @@ void Cell::setAnchor (anchor *a)
     _anchor[i] = a[i];
 }
 
-
+/*
 void Cell::setScore (CvMat **score)
 {  
   assert (getScoreDim() > 0);
+
+  if (_score != NULL)
+  {
+	  	  for (int i = 0; i < getScoreDim(); i++)
+		  cvReleaseMat(&_score[i]);
+	  delete [] _score;
+  }
 
   _score = new CvMat* [getScoreDim()];
 
@@ -378,11 +478,23 @@ void Cell::setScore (CvMat **score)
   for (int i = 0; i < getScoreDim(); i++)
     _score[i] = score[i];
 }
+*/
+void Cell::setScore (vectorMat  &score)
+{
+	_score = score;
+}
 
-
+/*
 void Cell::setIx (CvMat **Ix)
 {
   assert (getIxDim() > 0);
+
+  if (_Ix != NULL)
+  {
+	  for (int i = 0; i < getIxDim(); i++)
+		  cvReleaseMat(&_Ix[i]);
+	  delete [] _Ix;
+  }
 
   _Ix = new CvMat* [getIxDim()];
 
@@ -391,11 +503,25 @@ void Cell::setIx (CvMat **Ix)
   for (int i = 0; i < getIxDim(); i++)
     _Ix[i] = Ix[i];
 }
+*/
+
+void Cell::setIx (vectorMat &Ix)
+{
+	_Ix = Ix;
+}
 
 
+/*
 void Cell::setIy (CvMat **Iy)
 {
   assert (getIyDim() > 0);
+
+  if (_Iy != NULL)
+  {
+	  for (int i = 0; i < getIyDim(); i++)
+		  cvReleaseMat(&_Iy[i]);
+	  delete [] _Iy;
+  }
 
   _Iy = new CvMat* [getIyDim()];
 
@@ -404,7 +530,11 @@ void Cell::setIy (CvMat **Iy)
   for (int i = 0; i < getIyDim(); i++)
     _Iy[i] = Iy[i];
 }
-
+*/
+void Cell::setIy (vectorMat &Iy)
+{
+	_Iy = Iy;
+}
 
 ////////////////////////
 ///// INITIALIZERS /////
@@ -475,16 +605,24 @@ void Cell::initializeDef (matvar_t *defStructure)
 
   strcpy (variable, "blocklabel");
   readNumber (defStructure, variable, &el, &dim);
-  d.blocklabel = el[0];
-
+  //d.blocklabel = el[0];
+  if (el) 
+    d.blocklabel = el[0];
+  else 
+    d.blocklabel = 0;
+   
   delete[] el;
 
   strcpy (variable, "flip");
   d.flip = readLogical (defStructure, variable);
 
   strcpy (variable, "symmetric");
-  d.symmetric = readString (defStructure, variable)[0];
-
+  //d.symmetric = readString (defStructure, variable)[0];
+  if ( defStructure ) 
+    d.symmetric = readString (defStructure, variable)[0];
+  else 
+    d.symmetric = 0;
+  
   setDef (d);
 
   delete[] variable;

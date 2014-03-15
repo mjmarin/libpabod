@@ -18,8 +18,12 @@ char* readString (matvar_t *matVar, char* var, int pos)
 bool readLogical (matvar_t *matVar, char* var, int pos)
 {
   matvar_t *field;
-  int *auxInt = NULL;
+  //int *auxInt = NULL;
+  char *auxChar = NULL;
   bool flag = false;
+
+  if (!matVar)
+     return false;
 
   field = Mat_VarGetStructField (matVar, (char*) var, BY_NAME, pos);
 
@@ -27,9 +31,10 @@ bool readLogical (matvar_t *matVar, char* var, int pos)
   {
     if ( field->data_type == MAT_T_UINT8 )
     {
-    auxInt = (int*) field->data;
+    //auxInt = (int*) field->data;
+		auxChar = (char*) field->data;
 
-    if (*auxInt == 1)
+    if (*auxChar == 1)
       flag = true;
     }
   }
