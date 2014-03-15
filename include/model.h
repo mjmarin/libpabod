@@ -38,6 +38,18 @@ typedef struct filters
   int sizeDim;
   bool flip;
   int symbol;
+
+  filters()
+  {
+     w = NULL;
+     blocklabel = 0;
+     symmetric = '\0';
+     size = NULL;
+     sizeDim = 0;
+     flip = false;
+     symbol = 0;
+  }
+
 } filters;
 
 /////////////////////////////
@@ -83,6 +95,9 @@ typedef struct symbols
 
   symbols()
   {
+     type = '\0';
+     i = 0;
+     filter = 0;
 	  score = NULL;
 	  dimScore = 0;
   }
@@ -107,6 +122,8 @@ typedef struct lowerbounds
   lowerbounds()
   {
 	  v = NULL;
+     f = 0;
+     c = 0;
   }
 
 } lowerbounds;
@@ -130,6 +147,7 @@ typedef struct bboxpred
 
   bboxpred()
   {
+     x1 = x2 = y1 = y2 = NULL;
 	  dim = 0;
   }
 } bboxpred;

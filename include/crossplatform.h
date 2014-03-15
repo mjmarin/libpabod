@@ -1,3 +1,6 @@
+//! \file crossplatform.h
+//! \author Manuel J. Marin-Jimenez
+
 #if defined _WIN32
   #include <windows.h> 
   #include <ctime>

@@ -34,6 +34,12 @@ struct alphainfo
   int si;
   int di;
   float alpha;
+
+  alphainfo()
+  {
+     si = di = 0;
+     alpha = 0.0;
+  }
 };
 
 

@@ -49,6 +49,12 @@ typedef struct offset
 {
   float w;
   int blocklabel;
+
+  offset()
+  {
+     w = 0.0;
+     blocklabel = 0;
+  }
 } offset;
 
 
@@ -93,10 +99,10 @@ typedef struct def
   //! Constructor
   def()
   {
-     w[0]=w[1]=w[2]=w[3] = 0;
+     w[0]=w[1]=w[2]=w[3] = 0.0;
      blocklabel = 0;
-     flip = 0;
-     symmetric = 'N';
+     flip = false;
+     symmetric = '\0';
   }
 
 } def;

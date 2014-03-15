@@ -185,7 +185,7 @@ int Pabod::drawDetections(cv::Mat & img, cv::Mat & detections, int topN)
            p1 = cvPoint ((int)detections.at<float>(i, 0), (int)detections.at<float>(i, 1));
            p2 = cvPoint ((int)detections.at<float>(i, 2), (int)detections.at<float>(i, 3));
 
-	   drawBB(&img_, p1, p2, cvScalar(int(rand()%256), int(rand()%256), int(rand()%256)), (float)detections.at<float>(i, 4), detections.at<float>(i, 5));
+	   drawBB(&img_, p1, p2, cvScalar(int(rand()%256), int(rand()%256), int(rand()%256)), (float)detections.at<float>(i, 4), (int)detections.at<float>(i, 5));
 	}
 
 	return ndetections;
