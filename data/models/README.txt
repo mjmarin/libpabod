@@ -18,7 +18,7 @@ Installation
 Test
 ====
    > cd <libpabod_dir>
-   > bin/detectobj -i data/testimages/2009_004848.jpg -m data/models/ubf_libpabod.mat -d 1 -o ubdets.txt
+   > bin/detectobj2 -i data/testimages/2009_004848.jpg -m data/models/ubf_libpabod.mat -d 1 -o ubdets.txt -t 0.0
 	
 Contact	
 =======
