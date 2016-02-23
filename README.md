@@ -37,30 +37,15 @@ This software has been tested on Ubuntu 10.10 (Maverick Meerkat) with the follow
 Quick start:
 --------------------------------------------------------------------------------
 
-A) Classic installation (obsolete --> CMake is highly recommended):
-  1. Unpack in <libpabod_directory>
-  2. cd <libpabod_directory>
-  3.1. Generating the library  
-    > make
-  3.2. Creating the test programs
-    > make alltests
-  3.3. Generating the documentation
-    > make docum
-  3.4. Recompiling all
-    > make cleanobj
-    > make   
-
-Tip: use 'make all' to generate both the library and the test programs.
-
-B) Installing with CMake:
+A) Installing with CMake:
    Please, follow the steps described in the file named INSTALL.
 
-C) Testing the library:
+B) Testing the library:
   (assuming test program has been already generated)
   1. cd <libpabod_directory> 
-  2.  ./bin/detectobj -m <model_path> -i <image_path> [-t <threshold>] [-o <detections_path>] [-d <0/1>]
+  2.  ./bin/detectobj2 -m <model_path> -i <image_path> [-t <threshold>] [-o <detections_path>] [-d <0/1>]
   Example:
-    > ./bin/detectobj -m data/models/person_v6.mat -i data/testimages/2008_007537.jpg -t -0.3 -o detections.txt
+    > ./bin/detectobj2 -m data/models/person_v6.mat -i data/testimages/2008_007537.jpg -t -0.3 -o detections.txt
 
 If the program has finished correctly, you will find a text file named 'detections.txt' with the following structure:
   <number_of_detected_objects>
